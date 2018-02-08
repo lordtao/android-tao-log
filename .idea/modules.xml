@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/android-tao-log.iml" filepath="$PROJECT_DIR$/android-tao-log.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/logdemo/logdemo.iml" filepath="$PROJECT_DIR$/logdemo/logdemo.iml" />
+    </modules>
+  </component>
+</project>
