@@ -1,19 +1,21 @@
-package ua.at.tsvetkov.util;
+package ua.at.tsvetkov.demo;
 
 import android.app.Application;
+
+import ua.at.tsvetkov.util.Log;
 
 /**
  * Created by lordtao on 06.12.2017.
  */
 
-public class AppTaoCoreDemo extends Application {
+public class AppTaoLogDemo extends Application {
 
    @Override
    public void onCreate() {
       super.onCreate();
 
       Log.setStamp(BuildConfig.GIT_SHA);
-      Log.enableActivityLifecycleAutoLogger(this);
+      Log.enableComponentsChangesLogging(this);
 
    }
 

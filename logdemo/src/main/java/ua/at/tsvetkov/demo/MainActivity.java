@@ -1,6 +1,7 @@
-package ua.at.tsvetkov.util;
+package ua.at.tsvetkov.demo;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -135,6 +136,56 @@ public class MainActivity extends AppCompatActivity {
               "<body>Don't forget me this weekend!</body>\n" +
               "</note>";
       Log.xml(xml);
-      Log.xml(xml,3);
+      Log.xml(xml, 3);
+
+      runFragmentStackLogger();
    }
+
+   private void runFragmentStackLogger() {
+      getSupportFragmentManager().beginTransaction()
+              .replace(R.id.content, new Fragment())
+              .addToBackStack("Fragment")
+              .commit();
+
+      new Thread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               Thread.sleep(1000);
+            } catch (InterruptedException e) {
+               Log.e(e);
+            }
+            replaceFragment();
+         }
+      }).start();
+   }
+
+   private void replaceFragment() {
+      runOnUiThread(new Runnable() {
+         @Override
+         public void run() {
+            TestFragment fr = new TestFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content, fr)
+                    .addToBackStack("TestFragment")
+                    .commit();
+            popFragment();
+         }
+      });
+   }
+
+   private void popFragment() {
+      new Thread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               Thread.sleep(1000);
+            } catch (InterruptedException e) {
+               Log.e(e);
+            }
+            getSupportFragmentManager().popBackStack();
+         }
+      }).start();
+   }
+
 }

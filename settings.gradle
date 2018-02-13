@@ -1,1 +1,1 @@
-include ':logdemo', ':lib'
+include ':logdemo', ':taolog'

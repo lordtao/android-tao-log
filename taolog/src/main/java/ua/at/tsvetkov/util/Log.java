@@ -28,13 +28,18 @@ package ua.at.tsvetkov.util;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,14 +68,21 @@ public class Log {
    private static final String THROWABLE_DELIMITER_PREFIX = "    ";
    private static final String THROWABLE_DELIMITER = "===========================================================================================";
    private static final String NL = "\n";
+   public static final String FRAGMENT_STACK = "FRAGMENT STACK [";
 
 
    private static boolean isDisabled = false;
    private static int maxTagLength = MAX_TAG_LENGTH;
    private static String stamp = null;
    private static Application.ActivityLifecycleCallbacks activityLifecycleCallback = null;
+   private static HashMap<String, FragmentManager.FragmentLifecycleCallbacks> fragmentLifecycleCallbacks = new HashMap<>();
+   private static HashMap<String, android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks> supportFragmentLifecycleCallbacks = new HashMap<>();
 
    private Log() {
+   }
+
+   public static void enableComponentsChangesLogging(@NonNull Application application) {
+      enableActivityLifecycleLogger(application, true);
    }
 
    /**
@@ -79,9 +91,20 @@ public class Log {
     * @param application the application instance
     */
    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-   public static void enableActivityLifecycleAutoLogger(@NonNull Application application) {
+   public static void enableActivityLifecycleLogger(@NonNull Application application) {
+      enableActivityLifecycleLogger(application, false);
+   }
+
+   /**
+    * Added auto log messages for activity lifecycle.
+    *
+    * @param application            the application instance
+    * @param isAttachFragmentLogger attach fragment stack changes logger
+    */
+   @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+   private static void enableActivityLifecycleLogger(@NonNull Application application, final boolean isAttachFragmentLogger) {
       if (application == null) {
-         Log.w("Can't enable Activity auto logger, application=null");
+         Log.w("Can't enable Activity auto logger, application == null");
       }
       if (isDisabled) {
          return;
@@ -92,6 +115,9 @@ public class Log {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
                printActivityCallMethod(activity);
+               if (isAttachFragmentLogger) {
+                  enableFragmentStackChangesLogger(activity);
+               }
             }
 
             @Override
@@ -122,10 +148,13 @@ public class Log {
             @Override
             public void onActivityDestroyed(Activity activity) {
                printActivityCallMethod(activity);
+               if (isAttachFragmentLogger) {
+                  disableFragmentStackChangesLogger(activity);
+               }
             }
 
             private void printActivityCallMethod(Activity activity) {
-               android.util.Log.i(getActivityTag(activity), getActivityMethodInfo(activity));
+               android.util.Log.v(getActivityTag(activity), getActivityMethodInfo(activity));
             }
 
          };
@@ -140,7 +169,7 @@ public class Log {
     * @param application the application instance
     */
    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-   public static void disableActivityLifecycleAutoLogger(@NonNull Application application) {
+   public static void disableActivityLifecycleLogger(@NonNull Application application) {
       if (isDisabled) {
          return;
       }
@@ -148,6 +177,49 @@ public class Log {
          Log.w("Can't disable Activity auto logger, application=null");
       } else {
          application.unregisterActivityLifecycleCallbacks(activityLifecycleCallback);
+      }
+   }
+
+   /**
+    * Enabled auto log fragment stack changes.
+    *
+    * @param activity
+    */
+   public static void enableFragmentStackChangesLogger(@NonNull Activity activity) {
+      if (isDisabled) {
+         if (activity instanceof AppCompatActivity) {
+            android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks callback = createSupportFragmentLifecycleCallbacks();
+            supportFragmentLifecycleCallbacks.put(activity.toString(), callback);
+            ((AppCompatActivity) activity).getSupportFragmentManager().registerFragmentLifecycleCallbacks(callback, true);
+            Log.i("SupportFragment Lifecycle Logger attached");
+         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            FragmentManager.FragmentLifecycleCallbacks callback = createFragmentLifecycleCallbacks();
+            fragmentLifecycleCallbacks.put(activity.toString(), callback);
+            activity.getFragmentManager().registerFragmentLifecycleCallbacks(callback, true);
+            Log.i("Fragment Lifecycle Logger attached");
+         } else {
+            Log.w("Fragment Lifecycle Logger requires API level 26");
+         }
+      }
+   }
+
+   /**
+    * Disabled auto log fragment stack changes.
+    *
+    * @param activity
+    */
+   public static void disableFragmentStackChangesLogger(@NonNull Activity activity) {
+      if (isDisabled) {
+         if (activity instanceof AppCompatActivity) {
+            android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks callback = supportFragmentLifecycleCallbacks.get(activity.toString());
+            ((AppCompatActivity) activity).getSupportFragmentManager().unregisterFragmentLifecycleCallbacks(callback);
+            supportFragmentLifecycleCallbacks.remove(activity.toString());
+         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            FragmentManager.FragmentLifecycleCallbacks callback = fragmentLifecycleCallbacks.get(activity.toString());
+            activity.getFragmentManager().unregisterFragmentLifecycleCallbacks(callback);
+            fragmentLifecycleCallbacks.remove(activity.toString());
+         }
+         Log.i("Fragment Lifecycle Logger detached");
       }
    }
 
@@ -1036,9 +1108,7 @@ public class Log {
       sb.append(classSimpleName);
 
       if (isOverride) {
-         sb.append(" @Override");
-      } else {
-         sb.append(" not override");
+         sb.append(" (method overridden)");
       }
 
       sb.append(" -> ");
@@ -1179,6 +1249,86 @@ public class Log {
             sb.append(NL);
          }
       }
+   }
+
+
+   private static FragmentManager.FragmentLifecycleCallbacks createFragmentLifecycleCallbacks() {
+      return new FragmentManager.FragmentLifecycleCallbacks() {
+
+         @Override
+         public void onFragmentAttached(FragmentManager fm, Fragment fr, Context context) {
+            super.onFragmentAttached(fm, fr, context);
+            int backStackCount = fm.getBackStackEntryCount();
+            printFragmentsStack(fr.getActivity().getLocalClassName(),fm, FRAGMENT_STACK + backStackCount + "]", "attached " + fr.getClass().getSimpleName(), backStackCount);
+         }
+
+         @Override
+         public void onFragmentDetached(FragmentManager fm, Fragment fr) {
+            super.onFragmentDetached(fm, fr);
+            int backStackCount = fm.getBackStackEntryCount();
+            printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "detached " + fr.getClass().getSimpleName(), backStackCount);
+         }
+
+      };
+   }
+
+   private static android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks createSupportFragmentLifecycleCallbacks() {
+      return new android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks() {
+         @Override
+         public void onFragmentAttached(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment fr, Context context) {
+            super.onFragmentAttached(fm, fr, context);
+            int backStackCount = fm.getBackStackEntryCount();
+            printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "attached " + fr.getClass().getSimpleName(), backStackCount);
+         }
+
+         @Override
+         public void onFragmentDetached(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment fr) {
+            super.onFragmentDetached(fm, fr);
+            int backStackCount = fm.getBackStackEntryCount();
+            printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "detached " + fr.getClass().getSimpleName(), backStackCount);
+         }
+      };
+   }
+
+   private static void printFragmentsStack(String className, FragmentManager fm, String title, String operation, int backStackCount) {
+      String[] logs = new String[backStackCount];
+      for (int i = 0; i < backStackCount; i++) {
+         FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(i);
+         logs[i] = "     #" + i + "  " + entry.getName();
+      }
+      Log.printFragmentsStack(className, title, operation, logs);
+   }
+
+
+   private static void printFragmentsStack(String className, android.support.v4.app.FragmentManager fm, String title, String operation, int backStackCount) {
+      String[] logs = new String[backStackCount];
+      for (int i = 0; i < backStackCount; i++) {
+         android.support.v4.app.FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(i);
+         logs[i] = "|    #" + i + "  " + entry.getName();
+      }
+      Log.printFragmentsStack(className, title, operation, logs);
+   }
+
+   private static void printFragmentsStack(String className, String title, String operation, String[] logs) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("------------------ ");
+      sb.append(title);
+      sb.append(" ------------------\n");
+      sb.append("|                 ");
+      sb.append(operation );
+      sb.append(NL);
+      for (int i = 0; i < logs.length; i++) {
+         sb.append(logs[i]);
+         sb.append(NL);
+      }
+      sb.append(" --------------------------------------------------------");
+
+      StringBuilder spSb = new StringBuilder();
+      spSb.append(PREFIX_MAIN_STRING);
+      addStamp(spSb);
+      spSb.append(className);
+      addSpaces(spSb);
+      android.util.Log.v(spSb.toString(), sb.toString());
    }
 
 }
