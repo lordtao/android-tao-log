@@ -64,11 +64,13 @@ public class Log {
    private static final String ACTIVITY_CLASS = "android.app.Activity";
    private static final String DELIMITER_START = " · ";
    private static final String DELIMITER = "···························································································";
+   private static final String HALF_DELIMITER = "·····································";
    private static final String THROWABLE_DELIMITER_START = " ‖ ";
    private static final String THROWABLE_DELIMITER_PREFIX = "    ";
    private static final String THROWABLE_DELIMITER = "===========================================================================================";
    private static final String NL = "\n";
    public static final String FRAGMENT_STACK = "FRAGMENT STACK [";
+   public static final String ARRAY = "Array";
 
 
    private static boolean isDisabled = false;
@@ -704,7 +706,19 @@ public class Log {
     * @param map a Map
     */
    public static void map(Map<?, ?> map) {
-      Log.i(LogFormatter.map(map));
+      map(map, "Map");
+   }
+
+   /**
+    * Logged String representation of map. Each item in new line.
+    *
+    * @param map a Map
+    */
+   public static void map(Map<?, ?> map, String title) {
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.map(map), title));
    }
 
    /**
@@ -713,7 +727,19 @@ public class Log {
     * @param list a List
     */
    public static void list(List<?> list) {
-      Log.i(LogFormatter.list(list));
+      list(list, "List");
+   }
+
+   /**
+    * Logged String representation of list. Each item in new line.
+    *
+    * @param list a List
+    */
+   public static void list(List<?> list, String title) {
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.list(list), title));
    }
 
    /**
@@ -722,7 +748,19 @@ public class Log {
     * @param array an array
     */
    public static <T> void array(T[] array) {
-      Log.i(LogFormatter.array(array));
+      array(array, ARRAY);
+   }
+
+     /**
+    * Logged String representation of Objects array. Each item in new line.
+    *
+    * @param array an array
+    */
+   public static <T> void array(T[] array, String title) {
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), title));
    }
 
    /**
@@ -731,7 +769,19 @@ public class Log {
     * @param array an array
     */
    public static void array(int[] array) {
-      Log.i(LogFormatter.array(array));
+      array(array, ARRAY);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(int[] array, String title) {
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), title));
    }
 
    /**
@@ -740,7 +790,19 @@ public class Log {
     * @param array an array
     */
    public static void array(float[] array) {
-      Log.i(LogFormatter.array(array));
+      array(array, ARRAY);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(float[] array, String title) {
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), title));
    }
 
    /**
@@ -749,7 +811,19 @@ public class Log {
     * @param array an array
     */
    public static void array(boolean[] array) {
-      Log.i(LogFormatter.array(array));
+      array(array, ARRAY);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(boolean[] array, String title) {
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), title));
    }
 
    /**
@@ -758,7 +832,10 @@ public class Log {
     * @param array an array
     */
    public static void array(char[] array) {
-      Log.i(LogFormatter.array(array));
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), ARRAY));
    }
 
    /**
@@ -767,7 +844,10 @@ public class Log {
     * @param array an array
     */
    public static void array(double[] array) {
-      Log.i(LogFormatter.array(array));
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), ARRAY));
    }
 
    /**
@@ -776,7 +856,10 @@ public class Log {
     * @param array an array
     */
    public static void array(long[] array) {
-      Log.i(LogFormatter.array(array));
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), ARRAY));
    }
 
    /**
@@ -785,7 +868,10 @@ public class Log {
     * @param obj a class for representation
     */
    public static void objl(Object obj) {
-      Log.i(LogFormatter.objl(obj));
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.objl(obj), obj.getClass().getSimpleName()));
    }
 
    /**
@@ -794,7 +880,10 @@ public class Log {
     * @param obj a class for representation
     */
    public static void objn(Object obj) {
-      Log.i(LogFormatter.objn(obj));
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.objl(obj), obj.getClass().getSimpleName()));
    }
 
    /**
@@ -1195,9 +1284,21 @@ public class Log {
    }
 
    private static String getFormattedMessage(String message) {
+      return getFormattedMessage(message, null);
+   }
+
+   private static String getFormattedMessage(String message, String title) {
       String[] lines = message.split("\\n");
       StringBuilder sb = new StringBuilder();
-      sb.append(DELIMITER);
+      if (title == null) {
+         sb.append(DELIMITER);
+      } else {
+         sb.append(HALF_DELIMITER);
+         sb.append(' ');
+         sb.append(title);
+         sb.append(' ');
+         sb.append(HALF_DELIMITER);
+      }
       sb.append(NL);
       for (int i = 0; i < lines.length; i++) {
          sb.append(DELIMITER_START);
@@ -1259,7 +1360,7 @@ public class Log {
          public void onFragmentAttached(FragmentManager fm, Fragment fr, Context context) {
             super.onFragmentAttached(fm, fr, context);
             int backStackCount = fm.getBackStackEntryCount();
-            printFragmentsStack(fr.getActivity().getLocalClassName(),fm, FRAGMENT_STACK + backStackCount + "]", "attached " + fr.getClass().getSimpleName(), backStackCount);
+            printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "attached " + fr.getClass().getSimpleName(), backStackCount);
          }
 
          @Override
@@ -1315,7 +1416,7 @@ public class Log {
       sb.append(title);
       sb.append(" ------------------\n");
       sb.append("|                 ");
-      sb.append(operation );
+      sb.append(operation);
       sb.append(NL);
       for (int i = 0; i < logs.length; i++) {
          sb.append(logs[i]);

@@ -57,11 +57,11 @@ public class LogFormatter {
    private static final String HEX_FORM = "%02X ";
    private static final char PREFIX = '|';
    private static final String NL = "\n";
-   private static final String HALF_LINE = "---------------------";
-   private static final String MAP_LINE = "-------------------------- Map ---------------------------" + NL;
-   private static final String LIST_LINE = "-------------------------- List --------------------------" + NL;
-   private static final String OBJECT_ARRAY_LINE = "----------------------- Objects Array ---------------------" + NL;
-   private static final String LINE = "----------------------------------------------------------" + NL;
+//   private static final String HALF_LINE = "---------------------";
+//   private static final String MAP_LINE = "-------------------------- Map ---------------------------" + NL;
+//   private static final String LIST_LINE = "-------------------------- List --------------------------" + NL;
+//   private static final String OBJECT_ARRAY_LINE = "----------------------- Objects Array ---------------------" + NL;
+//   private static final String LINE = "----------------------------------------------------------" + NL;
 
    private LogFormatter() {
    }
@@ -85,12 +85,10 @@ public class LogFormatter {
       }
       StringBuilder sb = new StringBuilder();
       String formatString = "%-" + max + "s = %s";
-      sb.append(MAP_LINE);
       for (Map.Entry<?, ?> item : map.entrySet()) {
          sb.append(String.format(formatString, item.getKey(), item.getValue()));
          sb.append(NL);
       }
-      sb.append(LINE);
       return sb.toString();
    }
 
@@ -105,12 +103,10 @@ public class LogFormatter {
          return "null";
       }
       StringBuilder sb = new StringBuilder();
-      sb.append(LIST_LINE);
       for (Object item : list) {
          sb.append(item.toString());
          sb.append(NL);
       }
-      sb.append(LINE);
       return sb.toString();
    }
 
@@ -126,12 +122,16 @@ public class LogFormatter {
       }
       List<T> list = Arrays.asList(array);
       StringBuilder sb = new StringBuilder();
-      sb.append(OBJECT_ARRAY_LINE);
+      int indx = 0;
       for (Object item : list) {
+         sb.append('[');
+         sb.append(indx++);
+         sb.append("] ");
+         sb.append(item.getClass().getSimpleName());
+         sb.append(": ");
          sb.append(item.toString());
          sb.append(NL);
       }
-      sb.append(LINE);
       return sb.toString();
    }
 
@@ -142,6 +142,9 @@ public class LogFormatter {
     * @return String representation of array
     */
    public static String array(int[] array) {
+      if (array == null) {
+         return "null";
+      }
       StringBuilder sb = new StringBuilder();
       sb.append('[');
       for (int i = 0; i < array.length; i++) {
@@ -162,6 +165,9 @@ public class LogFormatter {
     * @return String representation of array
     */
    public static String array(float[] array) {
+      if (array == null) {
+         return "null";
+      }
       StringBuilder sb = new StringBuilder();
       sb.append('[');
       for (int i = 0; i < array.length; i++) {
@@ -182,6 +188,9 @@ public class LogFormatter {
     * @return String representation of array
     */
    public static String array(boolean[] array) {
+      if (array == null) {
+         return "null";
+      }
       StringBuilder sb = new StringBuilder();
       sb.append('[');
       for (int i = 0; i < array.length; i++) {
@@ -202,6 +211,9 @@ public class LogFormatter {
     * @return String representation of array
     */
    public static String array(char[] array) {
+      if (array == null) {
+         return "null";
+      }
       StringBuilder sb = new StringBuilder();
       sb.append('[');
       for (int i = 0; i < array.length; i++) {
@@ -222,6 +234,9 @@ public class LogFormatter {
     * @return String representation of array
     */
    public static String array(double[] array) {
+      if (array == null) {
+         return "null";
+      }
       StringBuilder sb = new StringBuilder();
       sb.append('[');
       for (int i = 0; i < array.length; i++) {
@@ -242,6 +257,9 @@ public class LogFormatter {
     * @return String representation of array
     */
    public static String array(long[] array) {
+      if (array == null) {
+         return "null";
+      }
       StringBuilder sb = new StringBuilder();
       sb.append('[');
       for (int i = 0; i < array.length; i++) {
@@ -278,12 +296,6 @@ public class LogFormatter {
       }
       String formatString = PREFIX + "%-" + max + "s = %s" + NL;
 
-      sb.append(HALF_LINE);
-      sb.append(' ');
-      sb.append(cl.getSimpleName());
-      sb.append(' ');
-      sb.append(HALF_LINE);
-      sb.append(NL);
       for (Field field : fields) {
          try {
             Field myField = Log.getField(cl, field.getName());
@@ -295,7 +307,6 @@ public class LogFormatter {
             sb.append(field.getName());
          }
       }
-      sb.append(LINE);
       return sb.toString();
    }
 
