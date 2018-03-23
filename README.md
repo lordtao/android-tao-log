@@ -1,8 +1,6 @@
 android-tao-log
 ================
 
-IN DEVELOPMENT NOW!!!
-
 Tiny, lightweight and informative logger for Android.
 
 Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-log/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-log/_latestVersion)
