@@ -19,7 +19,7 @@
  * 2. Author does not give a garantee, that this code is error free.
  * 3. This code can be used in NON-COMMERCIAL applications AS IS without any special
  * permission from author.
- * 4. This code can be modified without any special permission from author IF AND ONLY IF
+ * 4. This code can be modified without any special permission from author IF AND OFormat.NLY IF
  * this license agreement will remain unchanged.
  * ****************************************************************************
  */
@@ -36,49 +36,25 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Extended logger. Allows you to automatically adequately logged class, method and line call in the log. Makes it easy to write logs. For
- * example Log.v("Test") will in the log some the record: 04-04 08:29:40.336: V > SomeClass: someMethod: 286 Test
+ * example Log.v("Boo") will in the log some the record: 04-04 08:29:40.336: V > SomeClass: someMethod: 286 Boo
  *
  * @author A.Tsvetkov 2010 http://tsvetkov.at.ua mailto:al@ukr.net
  */
 public class Log {
 
-    private static final int MAX_TAG_LENGTH = 65;
-    private static final char COLON = ':';
-    private static final String PREFIX_MAIN_STRING = " ▪ ";
-    private static final String GROUP = "|Group:";
-    private static final String PRIORITY = "|Priority:";
-    private static final String ID = "|Id:";
-    private static final String THREAD_NAME = "Thread Name:";
-    private static final String HALF_LINE = "---------------------";
-    private static final String ACTIVITY_MESSAGE = " Activity: ";
-    private static final String JAVA = ".java";
-    private static final String ACTIVITY_CLASS = "android.app.Activity";
-    private static final String DELIMITER_START = " · ";
-    private static final String DELIMITER = "···························································································";
-    private static final String HALF_DELIMITER = "·····································";
-    private static final String THROWABLE_DELIMITER_START = " ‖ ";
-    private static final String THROWABLE_DELIMITER_PREFIX = "    ";
-    private static final String THROWABLE_DELIMITER = "===========================================================================================";
-    private static final String NL = "\n";
-    public static final String FRAGMENT_STACK = "FRAGMENT STACK [";
-    public static final String ARRAY = "Array";
-
-
-    private static boolean isDisabled = false;
-    private static int maxTagLength = MAX_TAG_LENGTH;
-    private static String stamp = null;
-    private static Application.ActivityLifecycleCallbacks activityLifecycleCallback = null;
-    private static HashMap<String, FragmentManager.FragmentLifecycleCallbacks> fragmentLifecycleCallbacks = new HashMap<>();
-    private static HashMap<String, android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks> supportFragmentLifecycleCallbacks = new HashMap<>();
+    static volatile boolean isDisabled = false;
+    static volatile boolean isLogOutlined = true;
+    private static final String FRAGMENT_STACK = "FRAGMENT STACK [";
+    private static volatile Application.ActivityLifecycleCallbacks activityLifecycleCallback = null;
+    private static volatile HashMap<String, FragmentManager.FragmentLifecycleCallbacks> fragmentLifecycleCallbacks = new HashMap<>();
+    private static volatile HashMap<String, android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks> supportFragmentLifecycleCallbacks = new HashMap<>();
 
     private Log() {
     }
@@ -161,7 +137,7 @@ public class Log {
                 }
 
                 private void printActivityCallMethod(Activity activity) {
-                    android.util.Log.v(getActivityTag(activity), getActivityMethodInfo(activity));
+                    android.util.Log.v(Format.getActivityTag(activity), Format.getActivityMethodInfo(activity));
                 }
 
             };
@@ -240,7 +216,16 @@ public class Log {
     }
 
     /**
-     * Is logs disabled or enabled
+     * Create the line boundaries of the log
+     * @param isLogOutlined default - false
+     */
+    public static void setLogOutlined(boolean isLogOutlined) {
+        Log.isLogOutlined = isLogOutlined;
+    }
+
+
+    /**
+     * Is logs disabled
      *
      * @return is disabled
      */
@@ -263,7 +248,7 @@ public class Log {
      * @param stamp
      */
     public static void setStamp(String stamp) {
-        Log.stamp = stamp;
+        Format.stamp = stamp;
     }
 
     /**
@@ -275,7 +260,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.v(getTag(), getFormattedMessage(message));
+        android.util.Log.v(Format.getTag(), Format.getFormattedMessage(message));
     }
 
     /**
@@ -287,7 +272,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.d(getTag(), getFormattedMessage(message));
+        android.util.Log.d(Format.getTag(), Format.getFormattedMessage(message));
     }
 
     /**
@@ -299,7 +284,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(message));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(message));
     }
 
     /**
@@ -311,7 +296,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.w(getTag(), getFormattedMessage(message));
+        android.util.Log.w(Format.getTag(), Format.getFormattedMessage(message));
     }
 
     /**
@@ -323,7 +308,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(getTag(), getFormattedMessage(message));
+        android.util.Log.e(Format.getTag(), Format.getFormattedMessage(message));
     }
 
     /**
@@ -337,7 +322,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.wtf(getTag(), getFormattedMessage(message));
+        android.util.Log.wtf(Format.getTag(), Format.getFormattedMessage(message));
     }
 
     // ==========================================================
@@ -352,7 +337,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.v(getTag(), getFormattedThrowable(message, tr));
+        android.util.Log.v(Format.getTag(), Format.getFormattedThrowable(message, tr));
     }
 
     /**
@@ -365,7 +350,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.d(getTag(), getFormattedThrowable(message, tr));
+        android.util.Log.d(Format.getTag(), Format.getFormattedThrowable(message, tr));
     }
 
     /**
@@ -378,7 +363,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedThrowable(message, tr));
+        android.util.Log.i(Format.getTag(), Format.getFormattedThrowable(message, tr));
     }
 
     /**
@@ -391,7 +376,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.w(getTag(), getFormattedThrowable(message, tr));
+        android.util.Log.w(Format.getTag(), Format.getFormattedThrowable(message, tr));
     }
 
     /**
@@ -404,7 +389,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(getTag(), getFormattedThrowable(message, tr));
+        android.util.Log.e(Format.getTag(), Format.getFormattedThrowable(message, tr));
     }
 
     /**
@@ -420,7 +405,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(getTag(), getFormattedThrowable(message, tr));
+        android.util.Log.e(Format.getTag(), Format.getFormattedThrowable(message, tr));
     }
 
     /**
@@ -433,7 +418,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.wtf(getTag(), getFormattedThrowable(message, tr));
+        android.util.Log.wtf(Format.getTag(), Format.getFormattedThrowable(message, tr));
     }
 
     // ==========================================================
@@ -447,7 +432,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.v(getTag(), getFormattedThrowable(tr));
+        android.util.Log.v(Format.getTag(), Format.getFormattedThrowable(tr));
     }
 
     /**
@@ -459,7 +444,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.d(getTag(), getFormattedThrowable(tr));
+        android.util.Log.d(Format.getTag(), Format.getFormattedThrowable(tr));
     }
 
     /**
@@ -471,7 +456,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedThrowable(tr));
+        android.util.Log.i(Format.getTag(), Format.getFormattedThrowable(tr));
     }
 
     /**
@@ -483,7 +468,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.w(getTag(), getFormattedThrowable(tr));
+        android.util.Log.w(Format.getTag(), Format.getFormattedThrowable(tr));
     }
 
     /**
@@ -495,7 +480,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(getTag(), getFormattedThrowable(tr));
+        android.util.Log.e(Format.getTag(), Format.getFormattedThrowable(tr));
     }
 
     /**
@@ -510,7 +495,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(getTag(), getFormattedThrowable(tr));
+        android.util.Log.e(Format.getTag(), Format.getFormattedThrowable(tr));
     }
 
     /**
@@ -522,7 +507,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.wtf(getTag(), getFormattedThrowable(tr));
+        android.util.Log.wtf(Format.getTag(), Format.getFormattedThrowable(tr));
     }
 
     // ==========================================================
@@ -539,7 +524,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.v(gatExtendedTag(obj), getFormattedMessage(message));
+        android.util.Log.v(Format.gatExtendedTag(obj), Format.getFormattedMessage(message));
     }
 
     /**
@@ -553,7 +538,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.d(gatExtendedTag(obj), getFormattedMessage(message));
+        android.util.Log.d(Format.gatExtendedTag(obj), Format.getFormattedMessage(message));
     }
 
     /**
@@ -567,7 +552,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(gatExtendedTag(obj), getFormattedMessage(message));
+        android.util.Log.i(Format.gatExtendedTag(obj), Format.getFormattedMessage(message));
     }
 
     /**
@@ -581,7 +566,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.w(gatExtendedTag(obj), getFormattedMessage(message));
+        android.util.Log.w(Format.gatExtendedTag(obj), Format.getFormattedMessage(message));
     }
 
     /**
@@ -596,7 +581,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(gatExtendedTag(obj), getFormattedMessage(message));
+        android.util.Log.e(Format.gatExtendedTag(obj), Format.getFormattedMessage(message));
     }
 
     /**
@@ -611,7 +596,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.wtf(gatExtendedTag(obj), getFormattedMessage(message));
+        android.util.Log.wtf(Format.gatExtendedTag(obj), Format.getFormattedMessage(message));
     }
 
     // ==========================================================
@@ -629,7 +614,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.v(gatExtendedTag(obj), getFormattedThrowable(message, tr));
+        android.util.Log.v(Format.gatExtendedTag(obj), Format.getFormattedThrowable(message, tr));
     }
 
     /**
@@ -645,7 +630,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.d(gatExtendedTag(obj), getFormattedThrowable(message, tr));
+        android.util.Log.d(Format.gatExtendedTag(obj), Format.getFormattedThrowable(message, tr));
     }
 
     /**
@@ -661,7 +646,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(gatExtendedTag(obj), getFormattedThrowable(message, tr));
+        android.util.Log.i(Format.gatExtendedTag(obj), Format.getFormattedThrowable(message, tr));
     }
 
     /**
@@ -677,7 +662,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.w(gatExtendedTag(obj), getFormattedThrowable(message, tr));
+        android.util.Log.w(Format.gatExtendedTag(obj), Format.getFormattedThrowable(message, tr));
     }
 
     /**
@@ -693,7 +678,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(gatExtendedTag(obj), getFormattedThrowable(message, tr));
+        android.util.Log.e(Format.gatExtendedTag(obj), Format.getFormattedThrowable(message, tr));
     }
 
     /**
@@ -709,7 +694,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.wtf(gatExtendedTag(obj), getFormattedThrowable(message, tr));
+        android.util.Log.wtf(Format.gatExtendedTag(obj), Format.getFormattedThrowable(message, tr));
     }
 
     // =========================== Collections, arrays and objects ===============================
@@ -732,7 +717,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.map(map), title));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.map(map), title));
     }
 
     /**
@@ -753,7 +738,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.list(list), title));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.list(list), title));
     }
 
     /**
@@ -762,7 +747,7 @@ public class Log {
      * @param array an array
      */
     public static <T> void array(T[] array) {
-        array(array, ARRAY);
+        array(array, Format.ARRAY);
     }
 
     /**
@@ -774,7 +759,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), title));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.array(array), title));
     }
 
     /**
@@ -783,7 +768,7 @@ public class Log {
      * @param array an array
      */
     public static void array(int[] array) {
-        array(array, ARRAY);
+        array(array, Format.ARRAY);
     }
 
     /**
@@ -795,7 +780,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), title));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.array(array), title));
     }
 
     /**
@@ -804,7 +789,7 @@ public class Log {
      * @param array an array
      */
     public static void array(float[] array) {
-        array(array, ARRAY);
+        array(array, Format.ARRAY);
     }
 
     /**
@@ -816,7 +801,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), title));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.array(array), title));
     }
 
     /**
@@ -825,7 +810,7 @@ public class Log {
      * @param array an array
      */
     public static void array(boolean[] array) {
-        array(array, ARRAY);
+        array(array, Format.ARRAY);
     }
 
     /**
@@ -837,7 +822,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), title));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.array(array), title));
     }
 
     /**
@@ -849,7 +834,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), ARRAY));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.array(array), Format.ARRAY));
     }
 
     /**
@@ -861,7 +846,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), ARRAY));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.array(array), Format.ARRAY));
     }
 
     /**
@@ -873,7 +858,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.array(array), ARRAY));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.array(array), Format.ARRAY));
     }
 
     /**
@@ -885,7 +870,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.objl(obj), obj.getClass().getSimpleName()));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.objl(obj), obj.getClass().getSimpleName()));
     }
 
     /**
@@ -897,7 +882,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getTag(), getFormattedMessage(LogFormatter.objl(obj), obj.getClass().getSimpleName()));
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.objl(obj), obj.getClass().getSimpleName()));
     }
 
     /**
@@ -907,7 +892,7 @@ public class Log {
      * @param countPerLine count byte per line
      */
     public static void hex(byte[] data, int countPerLine) {
-        Log.i(LogFormatter.hex(data, countPerLine));
+        Log.i(Format.hex(data, countPerLine));
     }
 
     /**
@@ -916,7 +901,7 @@ public class Log {
      * @param data your bytes array data
      */
     public static void hex(byte[] data) {
-        Log.i(LogFormatter.hex(data));
+        Log.i(Format.hex(data));
     }
 
     /**
@@ -925,7 +910,7 @@ public class Log {
      * @param xmlStr your xml data
      */
     public static void xml(String xmlStr) {
-        Log.i(LogFormatter.xml(xmlStr));
+        Log.i(Format.xml(xmlStr));
     }
 
     /**
@@ -935,7 +920,7 @@ public class Log {
      * @param indentation xml identetion
      */
     public static void xml(String xmlStr, int indentation) {
-        Log.i(LogFormatter.xml(xmlStr, indentation));
+        Log.i(Format.xml(xmlStr, indentation));
     }
 
 
@@ -949,9 +934,9 @@ public class Log {
             return;
         }
         StringBuilder sb = new StringBuilder();
-        addThreadInfo(sb, Thread.currentThread());
-        sb.append(NL);
-        android.util.Log.v(getTag(), getFormattedMessage(sb.toString()));
+        Format.addThreadInfo(sb, Thread.currentThread());
+        sb.append(Format.NL);
+        android.util.Log.v(Format.getTag(), Format.getFormattedMessage(sb.toString()));
     }
 
     /**
@@ -964,10 +949,10 @@ public class Log {
             return;
         }
         StringBuilder sb = new StringBuilder();
-        addThreadInfo(sb, Thread.currentThread());
-        sb.append(NL);
-        addStackTrace(sb, throwable);
-        android.util.Log.v(getTag(), getFormattedMessage(sb.toString()));
+        Format.addThreadInfo(sb, Thread.currentThread());
+        sb.append(Format.NL);
+        Format.addStackTrace(sb, throwable);
+        android.util.Log.v(Format.getTag(), Format.getFormattedMessage(sb.toString()));
     }
 
     /**
@@ -978,10 +963,10 @@ public class Log {
             return;
         }
         StringBuilder sb = new StringBuilder();
-        addThreadInfo(sb, Thread.currentThread());
-        sb.append(NL);
-        addMessage(sb, message);
-        android.util.Log.v(getTag(), getFormattedMessage(sb.toString()));
+        Format.addThreadInfo(sb, Thread.currentThread());
+        sb.append(Format.NL);
+        Format.addMessage(sb, message);
+        android.util.Log.v(Format.getTag(), Format.getFormattedMessage(sb.toString()));
     }
 
     /**
@@ -995,11 +980,11 @@ public class Log {
             return;
         }
         StringBuilder sb = new StringBuilder();
-        addThreadInfo(sb, Thread.currentThread());
-        sb.append(NL);
-        addMessage(sb, message);
-        addStackTrace(sb, throwable);
-        android.util.Log.v(getTag(), getFormattedMessage(sb.toString()));
+        Format.addThreadInfo(sb, Thread.currentThread());
+        sb.append(Format.NL);
+        Format.addMessage(sb, message);
+        Format.addStackTrace(sb, throwable);
+        android.util.Log.v(Format.getTag(), Format.getFormattedMessage(sb.toString()));
     }
 
     /**
@@ -1013,17 +998,17 @@ public class Log {
             return;
         }
         StringBuilder sb = new StringBuilder();
-        addThreadInfo(sb, thread);
-        sb.append(NL);
-        addStackTrace(sb, throwable);
-        android.util.Log.v(getTag(), getFormattedMessage(sb.toString()));
+        Format.addThreadInfo(sb, thread);
+        sb.append(Format.NL);
+        Format.addStackTrace(sb, throwable);
+        android.util.Log.v(Format.getTag(), Format.getFormattedMessage(sb.toString()));
     }
 
     /**
      * Logged current stack trace.
      */
     public static void stackTrace() {
-        stackTrace(null);
+        stackTrace("Current stack trace:");
     }
 
     /**
@@ -1036,336 +1021,10 @@ public class Log {
             return;
         }
         StringBuilder sb = new StringBuilder();
-        addMessage(sb, message);
-        addStackTrace(sb, Thread.currentThread());
-        android.util.Log.v(getTag(), getFormattedMessage(sb.toString()));
+        Format.addMessage(sb, message);
+        Format.addStackTrace(sb, Thread.currentThread());
+        android.util.Log.v(Format.getTag(), Format.getFormattedMessage(sb.toString()));
     }
-
-    private static void addStackTrace(StringBuilder sb, Throwable throwable) {
-        final StackTraceElement[] traces = throwable.getStackTrace();
-        addStackTrace(sb, traces);
-    }
-
-    private static void addStackTrace(StringBuilder sb, Thread thread) {
-        final StackTraceElement[] traces = thread.getStackTrace();
-        addStackTrace(sb, traces);
-    }
-
-    @NonNull
-    private static void addStackTrace(StringBuilder sb, StackTraceElement[] traces) {
-        for (int i = 4; i < traces.length; i++) {
-            sb.append(THROWABLE_DELIMITER_PREFIX);
-            sb.append(traces[i].toString());
-            sb.append('\n');
-        }
-    }
-
-    /**
-     * @param thread thread for Logged
-     * @return filled StringBuilder for next filling
-     */
-    static void addThreadInfo(StringBuilder sb, Thread thread) {
-        if (thread != null) {
-            long id = thread.getId();
-            String name = thread.getName();
-            long priority = thread.getPriority();
-            sb.append(THREAD_NAME);
-            sb.append(name);
-            sb.append(ID);
-            sb.append(id);
-            sb.append(PRIORITY);
-            sb.append(priority);
-            sb.append(GROUP);
-            ThreadGroup group = thread.getThreadGroup();
-            if (group != null) {
-                String groupName = group.getName();
-                sb.append(groupName);
-            } else {
-                sb.append("null");
-            }
-        } else {
-            sb.append("The thread == null");
-        }
-    }
-
-    private static void addMessage(StringBuilder sb, String message) {
-        if (message != null && message.length() > 0) {
-            sb.append(message);
-            sb.append(NL);
-        }
-    }
-
-    // ============================ Private common methods ==============================
-
-    static Field getField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
-        try {
-            return clazz.getDeclaredField(fieldName);
-        } catch (NoSuchFieldException e) {
-            Class<?> superClass = clazz.getSuperclass();
-            if (superClass == null) {
-                throw e;
-            } else {
-                return getField(superClass, fieldName);
-            }
-        }
-    }
-
-    private static String getTag() {
-        final String className = Log.class.getName();
-        final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
-        StringBuilder sb = new StringBuilder();
-        sb.append(PREFIX_MAIN_STRING);
-        addStamp(sb);
-        addLocation(className, traces, sb);
-        addSpaces(sb);
-
-        return sb.toString();
-    }
-
-    private static String gatExtendedTag(Object obj) {
-        if (obj == null) {
-            Log.v("null");
-        }
-        Class clazz = obj.getClass();
-        String className = clazz.getName();
-        String classSimpleName = clazz.getSimpleName();
-        String parentClassName = Log.class.getName();
-
-        final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(PREFIX_MAIN_STRING);
-        addStamp(sb);
-
-        int sbPrefixLength = sb.length();
-
-        if (!clazz.isAnonymousClass()) {
-            for (int i = 0; i < traces.length; i++) {
-                if (traces[i].getClassName().startsWith(className)) {
-                    sb.append(classSimpleName);
-                    sb.append(JAVA);
-                    sb.append(' ');
-                    break;
-                }
-            }
-        } else {
-            sb.append("(Anonymous Class) ");
-        }
-        if (sb.length() > sbPrefixLength) {
-            sb.append('<');
-            sb.append('-');
-            sb.append(' ');
-        }
-        addLocation(parentClassName, traces, sb);
-        addSpaces(sb);
-
-        return sb.toString();
-    }
-
-    private static String getActivityTag(Activity activity) {
-        String className = activity.getClass().getCanonicalName();
-        String classSimpleName = activity.getClass().getSimpleName();
-
-        final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(PREFIX_MAIN_STRING);
-        addStamp(sb);
-
-        StackTraceElement trace = findStackTraceElement(traces, className);
-
-        if (trace != null) {
-            addClassLink(sb, classSimpleName, trace.getLineNumber());
-        } else {
-            addClassLink(sb, classSimpleName, 0);
-            trace = findStackTraceElement(traces, ACTIVITY_CLASS);
-        }
-
-        sb.append(trace.getMethodName());
-
-        addSpaces(sb);
-
-        return sb.toString();
-    }
-
-    private static String getActivityMethodInfo(Activity activity) {
-        String className = activity.getClass().getCanonicalName();
-        String classSimpleName = activity.getClass().getSimpleName();
-
-        final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(HALF_LINE);
-        sb.append(ACTIVITY_MESSAGE);
-
-        StackTraceElement trace = findStackTraceElement(traces, className);
-
-        boolean isOverride = false;
-        if (trace != null) {
-            isOverride = true;
-        } else {
-            trace = findStackTraceElement(traces, ACTIVITY_CLASS);
-        }
-
-        sb.append(' ');
-        sb.append(classSimpleName);
-
-        if (isOverride) {
-            sb.append(" (method overridden)");
-        }
-
-        sb.append(" -> ");
-        sb.append(trace.getMethodName());
-        sb.append(' ');
-        sb.append(HALF_LINE);
-
-        return sb.toString();
-    }
-
-    private static void addStamp(StringBuilder sb) {
-        if (stamp != null && stamp.length() > 0) {
-            sb.append(stamp);
-            sb.append(' ');
-        }
-    }
-
-    private static void addLocation(String className, StackTraceElement[] traces, StringBuilder sb) {
-        boolean found = false;
-        for (int i = 0; i < traces.length; i++) {
-            try {
-                if (found) {
-                    if (!traces[i].getClassName().startsWith(className)) {
-                        Class<?> clazz = Class.forName(traces[i].getClassName());
-                        addClassLink(sb, getClassName(clazz), traces[i].getLineNumber());
-                        sb.append(traces[i].getMethodName());
-                        break;
-                    }
-                } else if (traces[i].getClassName().startsWith(className)) {
-                    found = true;
-                }
-            } catch (ClassNotFoundException e) {
-                android.util.Log.e("LOG", e.toString());
-            }
-        }
-    }
-
-    private static void addClassLink(StringBuilder sb, String className, int lineNumber) {
-        sb.append('(');
-        sb.append(className);
-        sb.append(JAVA);
-        sb.append(COLON);
-        sb.append(lineNumber);
-        sb.append(')');
-        sb.append(' ');
-    }
-
-    private static void addSpaces(StringBuilder sb) {
-        sb.append(' ');
-        int extraSpaceCount = maxTagLength - sb.length();
-        if (extraSpaceCount < 0) {
-            maxTagLength = sb.length();
-            extraSpaceCount = 0;
-        }
-        for (int i = 0; i < extraSpaceCount; i++) {
-            sb.append(' ');
-        }
-        sb.append('\u21DB');
-    }
-
-    private static String getClassName(Class<?> clazz) {
-        if (clazz != null) {
-            if (!TextUtils.isEmpty(clazz.getSimpleName())) {
-                if (clazz.getName().contains("$")) {
-                    return clazz.getName().substring(clazz.getName().lastIndexOf(0x2e) + 1, clazz.getName().lastIndexOf(0x24));
-                } else {
-                    return clazz.getSimpleName();
-                }
-            }
-            return getClassName(clazz.getEnclosingClass());
-        }
-        return "";
-    }
-
-    private static StackTraceElement findStackTraceElement(StackTraceElement[] traces, String startsFrom) {
-        StackTraceElement trace = null;
-        for (int i = 0; i < traces.length; i++) {
-            if (traces[i].getClassName().startsWith(startsFrom)) {
-                trace = traces[i];
-                break;
-            }
-        }
-        return trace;
-    }
-
-    private static String getFormattedMessage(String message) {
-        return getFormattedMessage(message, null);
-    }
-
-    private static String getFormattedMessage(String message, String title) {
-        String[] lines = message.split("\\n");
-        StringBuilder sb = new StringBuilder();
-        if (title == null) {
-            sb.append(DELIMITER);
-        } else {
-            sb.append(HALF_DELIMITER);
-            sb.append(' ');
-            sb.append(title);
-            sb.append(' ');
-            sb.append(HALF_DELIMITER);
-        }
-        sb.append(NL);
-        for (int i = 0; i < lines.length; i++) {
-            sb.append(DELIMITER_START);
-            sb.append(lines[i]);
-            sb.append(NL);
-        }
-        sb.append(' ');
-        sb.append(DELIMITER);
-        return sb.toString();
-    }
-
-    private static String getFormattedThrowable(Throwable throwable) {
-        return getFormattedThrowable(null, throwable);
-    }
-
-    private static String getFormattedThrowable(String message, Throwable throwable) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(THROWABLE_DELIMITER);
-        sb.append(NL);
-        addFormattedMessageForTrowable(sb, message);
-        sb.append(THROWABLE_DELIMITER_START);
-        sb.append(throwable.toString());
-        sb.append(NL);
-        if (throwable == null) {
-            sb.append(THROWABLE_DELIMITER_START);
-            sb.append(THROWABLE_DELIMITER_PREFIX);
-            sb.append("throwable == null");
-            sb.append(NL);
-        } else {
-            StackTraceElement[] st = throwable.getStackTrace();
-            for (int i = 0; i < st.length; i++) {
-                sb.append(THROWABLE_DELIMITER_START);
-                sb.append(THROWABLE_DELIMITER_PREFIX);
-                sb.append(st[i].toString());
-                sb.append(NL);
-            }
-        }
-        sb.append(' ');
-        sb.append(THROWABLE_DELIMITER);
-        return sb.toString();
-    }
-
-    private static void addFormattedMessageForTrowable(StringBuilder sb, String message) {
-        if (message != null) {
-            String[] lines = message.split("\\n");
-            for (int i = 0; i < lines.length; i++) {
-                sb.append(THROWABLE_DELIMITER_START);
-                sb.append(lines[i]);
-                sb.append(NL);
-            }
-        }
-    }
-
 
     private static FragmentManager.FragmentLifecycleCallbacks createFragmentLifecycleCallbacks() {
         return new FragmentManager.FragmentLifecycleCallbacks() {
@@ -1374,14 +1033,14 @@ public class Log {
             public void onFragmentAttached(FragmentManager fm, Fragment fr, Context context) {
                 super.onFragmentAttached(fm, fr, context);
                 int backStackCount = fm.getBackStackEntryCount();
-                printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "attached " + fr.getClass().getSimpleName(), backStackCount);
+                Format.printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "attached " + fr.getClass().getSimpleName(), backStackCount);
             }
 
             @Override
             public void onFragmentDetached(FragmentManager fm, Fragment fr) {
                 super.onFragmentDetached(fm, fr);
                 int backStackCount = fm.getBackStackEntryCount();
-                printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "detached " + fr.getClass().getSimpleName(), backStackCount);
+                Format.printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "detached " + fr.getClass().getSimpleName(), backStackCount);
             }
 
         };
@@ -1393,57 +1052,17 @@ public class Log {
             public void onFragmentAttached(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment fr, Context context) {
                 super.onFragmentAttached(fm, fr, context);
                 int backStackCount = fm.getBackStackEntryCount();
-                printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "attached " + fr.getClass().getSimpleName(), backStackCount);
+                Format.printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "attached " + fr.getClass().getSimpleName(), backStackCount);
             }
 
             @Override
             public void onFragmentDetached(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment fr) {
                 super.onFragmentDetached(fm, fr);
                 int backStackCount = fm.getBackStackEntryCount();
-                printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "detached " + fr.getClass().getSimpleName(), backStackCount);
+                Format.printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "detached " + fr.getClass().getSimpleName(), backStackCount);
             }
         };
     }
 
-    private static void printFragmentsStack(String className, FragmentManager fm, String title, String operation, int backStackCount) {
-        String[] logs = new String[backStackCount];
-        for (int i = 0; i < backStackCount; i++) {
-            FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(i);
-            logs[i] = "     #" + i + "  " + entry.getName();
-        }
-        Log.printFragmentsStack(className, title, operation, logs);
-    }
-
-
-    private static void printFragmentsStack(String className, android.support.v4.app.FragmentManager fm, String title, String operation, int backStackCount) {
-        String[] logs = new String[backStackCount];
-        for (int i = 0; i < backStackCount; i++) {
-            android.support.v4.app.FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(i);
-            logs[i] = "|    #" + i + "  " + entry.getName();
-        }
-        Log.printFragmentsStack(className, title, operation, logs);
-    }
-
-    private static void printFragmentsStack(String className, String title, String operation, String[] logs) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("------------------ ");
-        sb.append(title);
-        sb.append(" ------------------\n");
-        sb.append("|                 ");
-        sb.append(operation);
-        sb.append(NL);
-        for (int i = 0; i < logs.length; i++) {
-            sb.append(logs[i]);
-            sb.append(NL);
-        }
-        sb.append(" --------------------------------------------------------");
-
-        StringBuilder spSb = new StringBuilder();
-        spSb.append(PREFIX_MAIN_STRING);
-        addStamp(spSb);
-        spSb.append(className);
-        addSpaces(spSb);
-        android.util.Log.v(spSb.toString(), sb.toString());
-    }
 
 }

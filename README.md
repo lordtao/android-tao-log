@@ -25,12 +25,41 @@ Code example:
        Log.rt("RuntimeException is not handled by Log.rt()", e);
    }
 ```
-
-You'll get in your LogCat the lines like below. 
+You'll get in your LogCat the lines like below.
 Clicking on the tag brings you to log into the source code of the class which was caused by the logger:
 
 ![Image of LogCat example](log_example.png)
 
+Also you can use @ToLog annotatin for constructors and methods/
+Simply add @ToLog to your methods/constructors and you will automatically get all of the things listed
+
+```
+public class Boo {
+
+    private final boolean isNeed;
+
+    @ToLog
+    public Boo(boolean isNeed) {
+        this.isNeed = isNeed;
+    }
+
+    @ToLog
+    public boolean isNeed() {
+        return isNeed;
+    }
+
+}
+```
+you will got something like:
+```
+(MainActivity.java:33) runToLogAnnotationsExamples    ⇛: ⇢ <init Boo> (isNeed=true)
+(MainActivity.java:33) runToLogAnnotationsExamples    ⇛: ⇠ <init Boo> [0ms]
+(MainActivity.java:34) runToLogAnnotationsExamples    ⇛: ⇢ isNeed ()
+(MainActivity.java:34) runToLogAnnotationsExamples    ⇛: ⇠ isNeed [0ms] = true
+```
+
+The idea is taken from Jake Wharton's [Hugo] (https://github.com/JakeWharton/hugo)
+In addition,I used Archinamon's AspectJ plugin [GradleAspectJ-Android] (https://github.com/Archinamon/android-gradle-aspectj)
 
 Add android-tao-core to your project
 ----------------------------
@@ -63,5 +92,23 @@ allprojects {
 ```
 add to your dependencies in build.gradle
 ```
-    compile 'ua.at.tsvetkov:taolog:1.3.5'
+    compile 'ua.at.tsvetkov:taolog:1.4.0'
 ```
+
+For use @ToLog annotation please add to build.gradle
+---------------------------------------------------
+```
+apply plugin: 'com.archinamon.aspectj'
+```
+
+and
+```
+aspectj {
+    includeAspectsFromJar 'taolog'
+}
+```
+
+Changelog
+---------
+#### 1.4.0 -- ToLog annotation
+* added support @ToLog annotation;

@@ -2,7 +2,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
 
-version = '1.3.5'
+version = '1.4.0'
 
 def LIB_DESCRIPTION = 'Tiny, lightweight and informative logger for Android. Version 1.3.5'
 def GROUP_ID = 'ua.at.tsvetkov'

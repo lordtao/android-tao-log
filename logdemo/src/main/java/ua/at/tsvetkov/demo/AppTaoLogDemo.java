@@ -10,13 +10,14 @@ import ua.at.tsvetkov.util.Log;
 
 public class AppTaoLogDemo extends Application {
 
-   @Override
-   public void onCreate() {
-      super.onCreate();
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
-      Log.setStamp(BuildConfig.GIT_SHA);
-      Log.enableComponentsChangesLogging(this);
+        Log.setStamp(BuildConfig.GIT_SHA);
+        Log.enableComponentsChangesLogging(this);
+        Log.setLogOutlined(false);
 
-   }
+    }
 
 }

@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.archinamon.aspectj'
 
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 0
+def versionPatch = 1
 
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 version = "${versionMajor}.${versionMinor}.${versionPatch}"
@@ -33,9 +34,13 @@ android {
     }
 }
 
+aspectj {
+    includeAspectsFromJar 'taolog'
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation project(path: ':taolog')
 }
