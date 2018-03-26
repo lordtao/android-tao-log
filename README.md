@@ -1,7 +1,7 @@
 android-tao-log
 ================
 
-Tiny, lightweight, informative and very usefull logger for Android. Usштп see in demo app (https://github.com/lordtao/android-tao-log/tree/master/logdemo)
+Tiny, lightweight, informative and very usefull logger for Android. See in demo app (https://github.com/lordtao/android-tao-log/tree/master/logdemo)
 
 Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-log/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-log/_latestVersion)
 
@@ -31,8 +31,8 @@ Clicking on the tag brings you to log into the source code of the class which wa
 
 ![Image of LogCat example](log_example.png)
 
-@ToLog annotatin for constructors and methods.
-----------------------------------------------
+@ToLog annotatin for constructors and methods. Experemental!!! AspectJ plugin incompatibility with java 8. Will be fixed soon in 3.3.0
+--------------------------------------------------------------
 Simply add @ToLog to your methods/constructors and you will automatically get all of the things listed
 
 ```
@@ -97,8 +97,8 @@ add to your dependencies in build.gradle
     compile 'ua.at.tsvetkov:taolog:1.4.0'
 ```
 
-For use @ToLog annotation please add to build.gradle
-----------------------------------------------------
+For use @ToLog annotation please add to build.gradle. 
+-----------------------------------------------------
 
 ```
 dependencies {
@@ -116,6 +116,9 @@ aspectj {
     includeAspectsFromJar 'taolog'
 }
 ```
+
+If you have an issues with build your project, please read the Archinamon's AspectJ plugin docs [GradleAspectJ-Android] (https://github.com/Archinamon/android-gradle-aspectj)
+For example, to build a multidex project you will need to turn off the InstantRun
 
 Changelog
 ---------
