@@ -32,6 +32,7 @@ Clicking on the tag brings you to log into the source code of the class which wa
 ![Image of LogCat example](log_example.png)
 
 @ToLog annotatin for constructors and methods. Experemental!!! AspectJ plugin incompatibility with java 8. Will be fixed soon in 3.3.0
+
 --------------------------------------------------------------
 Simply add @ToLog to your methods/constructors and you will automatically get all of the things listed
 
