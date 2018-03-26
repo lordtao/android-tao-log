@@ -99,6 +99,7 @@ add to your dependencies in build.gradle
 
 For use @ToLog annotation please add to build.gradle
 ----------------------------------------------------
+
 ```
 dependencies {
         classpath 'com.archinamon:android-gradle-aspectj:3.2.0'
