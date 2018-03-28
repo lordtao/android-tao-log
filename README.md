@@ -95,7 +95,7 @@ allprojects {
 ```
 add to your dependencies in build.gradle
 ```
-    compile 'ua.at.tsvetkov:taolog:1.4.0'
+    compile 'ua.at.tsvetkov:taolog:1.4.0@aar'
 ```
 
 For use @ToLog annotation please add to build.gradle. 
