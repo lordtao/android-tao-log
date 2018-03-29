@@ -15,8 +15,9 @@ public class AppTaoLogDemo extends Application {
         super.onCreate();
 
         Log.setStamp(BuildConfig.GIT_SHA);
-        Log.enableComponentsChangesLogging(this);
-        Log.setLogOutlined(true);
+//        Log.enableComponentsChangesLogging(this);
+        Log.setLogOutlined(false);
+        Log.setAlignNewLines(false);
 
     }
 

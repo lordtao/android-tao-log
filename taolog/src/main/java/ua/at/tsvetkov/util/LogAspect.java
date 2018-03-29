@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Aspect
 public class LogAspect {
 
+
     @Pointcut("within(@ua.at.tsvetkov.annotations.ToLog *)")
     public void withinAnnotatedClass() {}
 
@@ -34,20 +35,20 @@ public class LogAspect {
 
     @Around("method() || constructor()")
     public Object logAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
-        enterMethod(joinPoint);
+        String startInfo =enterMethod(joinPoint);
 
         long startNanos = System.nanoTime();
         Object result = joinPoint.proceed();
         long stopNanos = System.nanoTime();
         long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
 
-        exitMethod(joinPoint, result, lengthMillis);
+        exitMethod(joinPoint, result, lengthMillis, startInfo);
 
         return result;
     }
 
-    private static void enterMethod(JoinPoint joinPoint) {
-        if (ua.at.tsvetkov.util.Log.isDisabled()) return;
+    private static String enterMethod(JoinPoint joinPoint) {
+        if (ua.at.tsvetkov.util.Log.isDisabled()) return null;
 
         CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
 
@@ -65,27 +66,25 @@ public class LogAspect {
             if (i > 0) {
                 builder.append(", ");
             }
-//            if(methodName.contains("<init>")){
-//
-//            } else {
             builder.append(parameterNames[i]).append('=');
             builder.append(ObjectFormatter.toString(parameterValues[i]));
-//            }
         }
         builder.append(')');
 
-        StringBuilder sb = new StringBuilder();
-        Format.fillTag(cls.getName(), Thread.currentThread().getStackTrace(), sb);
 
-        android.util.Log.v(sb.toString(), Format.getFormattedMessage(builder.toString()));
+//       String startInfo = Format.getFormattedMessage(builder.toString());
+//        StringBuilder sb = new StringBuilder();
+//        Format.fillTag(cls.getName(), Thread.currentThread().getStackTrace(), sb);
+//        android.util.Log.v(sb.toString(), Format.getFormattedMessage(builder.toString()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             final String section = builder.toString().substring(2);
             Trace.beginSection(section);
         }
+        return builder.toString();
     }
 
-    private static void exitMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
+    private static void exitMethod(JoinPoint joinPoint, Object result, long lengthMillis, String startInfo) {
         if (ua.at.tsvetkov.util.Log.isDisabled()) return;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -99,7 +98,7 @@ public class LogAspect {
         boolean hasReturnType = signature instanceof MethodSignature
                 && ((MethodSignature) signature).getReturnType() != void.class;
 
-        StringBuilder builder = new StringBuilder("\u21E0 ");
+        StringBuilder builder = new StringBuilder(startInfo + "\n\u21E0 ");
 
         checkForClass(cls.getSimpleName(), methodName, builder);
 

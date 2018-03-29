@@ -60,6 +60,7 @@ import javax.xml.xpath.XPathFactory;
 final class Format {
 
     static final int MAX_TAG_LENGTH = 65;
+    static final int MAGIC_SPACES_COUNT = 34;
     static final char PREFIX = '|';
     static final char COLON = ':';
     static final String HEX_FORM = "%02X ";
@@ -72,20 +73,53 @@ final class Format {
     static final String ACTIVITY_MESSAGE = " Activity: ";
     static final String JAVA = ".java";
     static final String ACTIVITY_CLASS = "android.app.Activity";
-    static final String DELIMITER_START = " · ";
+    static final String DELIMITER_START = "· ";
     static final String DELIMITER = "···························································································";
     static final String HALF_DELIMITER = "·····································";
-    static final String THROWABLE_DELIMITER_START = " ‖ ";
+    static final String THROWABLE_DELIMITER_START = "‖ ";
     static final String THROWABLE_DELIMITER_PREFIX = "    ";
     static final String THROWABLE_DELIMITER = "===========================================================================================";
     static final String NL = "\n";
     static final String ARRAY = "Array";
+    public static final char SPACE = ' ';
 
     static volatile int maxTagLength = MAX_TAG_LENGTH;
+    static volatile int beforeTagSpacesCount;
     static volatile String stamp = null;
 
+    static {
+        beforeTagSpacesCount = getPackageNameLength() + MAGIC_SPACES_COUNT;
+    }
 
     private Format() {
+
+    }
+
+    private static int getPackageNameLength() {
+        String thisPackageName = Log.class.getPackage().getName();
+        StackTraceElement[] tr = Thread.currentThread().getStackTrace();
+        boolean notFound = true;
+        int id = 0;
+        String appPackageName = null;
+        while (notFound) {
+            appPackageName = tr[id++].getClassName();
+            if (appPackageName.contains(thisPackageName)) {
+                notFound = false;
+            }
+        }
+        notFound = true;
+        while (notFound) {
+            appPackageName = tr[id++].getClassName();
+            if (!appPackageName.contains(thisPackageName)) {
+                notFound = false;
+                appPackageName = appPackageName.substring(0, appPackageName.lastIndexOf('.'));
+            }
+        }
+        if (notFound) {
+            return 0;
+        } else {
+            return appPackageName.length();
+        }
     }
 
     /**
@@ -496,10 +530,7 @@ final class Format {
         sb.append("|                 ");
         sb.append(operation);
         sb.append(NL);
-        for (int i = 0; i < logs.length; i++) {
-            sb.append(logs[i]);
-            sb.append(NL);
-        }
+        appendLines(logs, sb);
         sb.append(" --------------------------------------------------------");
 
         StringBuilder spSb = new StringBuilder();
@@ -548,7 +579,7 @@ final class Format {
         }
         Class clazz = obj.getClass();
         String className = clazz.getName();
-        String classSimpleName = clazz.getSimpleName();
+//        String classSimpleName = clazz.getSimpleName();
         String parentClassName = Log.class.getName();
 
         final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
@@ -562,9 +593,10 @@ final class Format {
         if (!clazz.isAnonymousClass()) {
             for (int i = 0; i < traces.length; i++) {
                 if (traces[i].getClassName().startsWith(className)) {
-                    sb.append(classSimpleName);
-                    sb.append(JAVA);
-                    sb.append(' ');
+                    sb.append(traces[i].getFileName());
+//                    sb.append(classSimpleName);
+//                    sb.append(JAVA);
+                    sb.append(SPACE);
                     break;
                 }
             }
@@ -574,7 +606,7 @@ final class Format {
         if (sb.length() > sbPrefixLength) {
             sb.append('<');
             sb.append('-');
-            sb.append(' ');
+            sb.append(SPACE);
         }
         addLocation(parentClassName, traces, sb);
         addSpaces(sb);
@@ -627,7 +659,7 @@ final class Format {
             trace = findStackTraceElement(traces, ACTIVITY_CLASS);
         }
 
-        sb.append(' ');
+        sb.append(SPACE);
         sb.append(classSimpleName);
 
         if (isOverride) {
@@ -636,7 +668,7 @@ final class Format {
 
         sb.append(" -> ");
         sb.append(trace.getMethodName());
-        sb.append(' ');
+        sb.append(SPACE);
         sb.append(HALF_LINE);
 
         return sb.toString();
@@ -645,7 +677,7 @@ final class Format {
     static void addStamp(StringBuilder sb) {
         if (stamp != null && stamp.length() > 0) {
             sb.append(stamp);
-            sb.append(' ');
+            sb.append(SPACE);
         }
     }
 
@@ -661,7 +693,8 @@ final class Format {
                         while (lineNumber == 0) {
                             lineNumber = traces[i + notZeroLineNumberOffset++].getLineNumber();
                         }
-                        addClassLink(sb, getClassName(clazz), lineNumber);
+//                        addClassLink(sb, getClassName(clazz), lineNumber);
+                        addClassLink(sb, traces[i].getFileName(), lineNumber);
                         sb.append(traces[i].getMethodName());
                         break;
                     }
@@ -673,26 +706,38 @@ final class Format {
             }
         }
     }
-
-    static void addClassLink(StringBuilder sb, String className, int lineNumber) {
+    static void addClassLink(StringBuilder sb, String fileName, int lineNumber) {
         sb.append('(');
-        sb.append(className);
-        sb.append(JAVA);
+        sb.append(fileName);
         sb.append(COLON);
         sb.append(lineNumber);
         sb.append(')');
-        sb.append(' ');
+        sb.append(SPACE);
     }
 
+
+//    static void addClassLink(StringBuilder sb, String className, int lineNumber) {
+//        sb.append('(');
+//        sb.append(className);
+//        sb.append(JAVA);
+//        sb.append(COLON);
+//        sb.append(lineNumber);
+//        sb.append(')');
+//        sb.append(SPACE);
+//    }
+
     static void addSpaces(StringBuilder sb) {
-        sb.append(' ');
+        if (!Log.isAlignNewLines()) {
+//            sb.append(" \u21B4 ");
+            return;
+        }
         int extraSpaceCount = maxTagLength - sb.length();
         if (extraSpaceCount < 0) {
             maxTagLength = sb.length();
             extraSpaceCount = 0;
         }
         for (int i = 0; i < extraSpaceCount; i++) {
-            sb.append(' ');
+            sb.append(SPACE);
         }
         sb.append('\u21DB');
     }
@@ -726,100 +771,151 @@ final class Format {
         return getFormattedMessage(message, null);
     }
 
-    static String getFormattedMessage(String message, String title) {
-        String[] lines = message.split("\\n");
-        StringBuilder sb = new StringBuilder();
-
-        if (Log.isLogOutlined) {
-            if (title == null) {
-                sb.append(DELIMITER);
-            } else {
-                sb.append(HALF_DELIMITER);
-                sb.append(' ');
-                sb.append(title);
-                sb.append(' ');
-                sb.append(HALF_DELIMITER);
-            }
-            sb.append(NL);
-        }
-
-        for (int i = 0; i < lines.length; i++) {
-            if (Log.isLogOutlined) {
-                sb.append(DELIMITER_START);
-            } else if (i != 0) {
-                sb.append(' ');
-            }
-            sb.append(lines[i]);
-            sb.append(NL);
-        }
-
-        if (Log.isLogOutlined) {
-            sb.append(' ');
-            sb.append(DELIMITER);
-        }
-
-        return sb.toString();
-    }
-
     static String getFormattedThrowable(Throwable throwable) {
         return getFormattedThrowable(null, throwable);
     }
 
-    static String getFormattedThrowable(String message, Throwable throwable) {
+    static String getFormattedMessage(String message, String title) {
+        String[] lines = message.split("\\n");
+        int linesCount = getLinesCount(title, lines);
+        lines = createLines(title, lines, linesCount);
+        if (Log.isAlignNewLines()) {
+            appendAlignmentForLines(lines);
+        }
+
         StringBuilder sb = new StringBuilder();
-        if (Log.isLogOutlined) {
-            sb.append(THROWABLE_DELIMITER);
-            sb.append(NL);
+        if (linesCount > 1 && !Log.isAlignNewLines()) {
+            sb.append(" \n");
         }
-        addFormattedMessageForTrowable(sb, message);
-        addThrowableStartDelimeter(sb);
-        if (!Log.isLogOutlined) {
-            sb.append(' ');
-        }
-        sb.append(throwable.toString());
-        sb.append(NL);
-        if (throwable == null) {
-            addThrowableStartDelimeter(sb);
-            sb.append(THROWABLE_DELIMITER_PREFIX);
-            sb.append("throwable == null");
-            sb.append(NL);
-        } else {
-            StackTraceElement[] st = throwable.getStackTrace();
-            for (int i = 0; i < st.length; i++) {
-                addThrowableStartDelimeter(sb);
-                sb.append(THROWABLE_DELIMITER_PREFIX);
-                sb.append(st[i].toString());
-                if(Log.isLogOutlined) {
-                    sb.append(NL);
-                } else if(i < st.length-1){
-                    sb.append(NL);
-                }
-            }
-        }
-        sb.append(' ');
-        if (Log.isLogOutlined) {
-            sb.append(THROWABLE_DELIMITER);
-        }
+        appendLines(lines, sb);
         return sb.toString();
     }
 
-    static void addFormattedMessageForTrowable(StringBuilder sb, String message) {
+    static String getFormattedThrowable(String message, Throwable throwable) {
+        String[] lines = null;
         if (message != null) {
-            String[] lines = message.split("\\n");
-            for (int i = 0; i < lines.length; i++) {
-                if (i != 0 && !Log.isLogOutlined) {
-                    sb.append(' ');
-                }
-                addThrowableStartDelimeter(sb);
-                sb.append(lines[i]);
-                sb.append(NL);
+            lines = message.split("\\n");
+        }
+        int linesCount = getLinesCount(lines, throwable);
+        lines = createLines(throwable, lines, linesCount);
+
+        if (Log.isAlignNewLines()) {
+            appendAlignmentForLines(lines);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        if (linesCount > 1 && !Log.isAlignNewLines()) {
+            sb.append(" \n");
+        }
+        appendLines(lines, sb);
+
+        return sb.toString();
+    }
+
+    private static int getLinesCount(String title, String[] lines) {
+        int count = (lines == null) ? 0 : lines.length;
+        if (Log.isLogOutlined) {
+            count = count + 2;
+        } else if (title != null) {
+            count++;
+        }
+        return count;
+    }
+
+    private static int getLinesCount(String[] lines, Throwable throwable) {
+        int count = (lines == null) ? 0 : lines.length;
+        if (Log.isLogOutlined) {
+            count = count + 2;
+        }
+        if (throwable != null) {
+            count = count + throwable.getStackTrace().length;
+        } else {
+            count++;
+        }
+        return count;
+    }
+
+    private static String[] createLines(String title, String[] lines, int count) {
+        String[] lns = new String[count];
+        if (Log.isLogOutlined) {
+            if (title == null) {
+                lns[0] = DELIMITER;
+            } else {
+                lns[0] = HALF_DELIMITER + SPACE + title + SPACE + HALF_DELIMITER;
             }
+            lns[lns.length - 1] = DELIMITER;
+            for (int i = 0; i < lines.length; i++) {
+                lns[i + 1] = DELIMITER_START + lines[i];
+            }
+        } else { // Not Boxed
+            int shift = 0;
+            if (title != null) {
+                lns[0] = title;
+                shift = 1;
+            }
+            for (int i = 0; i < lines.length; i++) {
+                lns[i + shift] = lines[i];
+            }
+        }
+
+        return lns;
+    }
+
+    private static String[] createLines(Throwable throwable, String[] lines, int count) {
+        String[] lns = new String[count];
+        int linesCount = (lines == null) ? 0 : lines.length;
+        if (Log.isLogOutlined) {
+            lns[0] = THROWABLE_DELIMITER;
+            lns[lns.length - 1] = THROWABLE_DELIMITER;
+
+
+            for (int i = 0; i < linesCount; i++) {
+                lns[i + 1] = THROWABLE_DELIMITER_START + lines[i];
+            }
+
+            if (throwable == null) {
+                lns[linesCount + 1] = THROWABLE_DELIMITER_START + "throwable == null";
+            } else {
+                StackTraceElement[] stack = throwable.getStackTrace();
+                for (int i = 0; i < stack.length; i++) {
+                    lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + THROWABLE_DELIMITER_PREFIX + stack[i].toString();
+                }
+            }
+        } else { // Not Boxed
+            for (int i = 0; i < linesCount; i++) {
+                lns[i] = lines[i];
+            }
+            if (throwable == null) {
+                lns[0] = "throwable == null";
+            } else {
+                StackTraceElement[] stack = throwable.getStackTrace();
+                for (int i = 0; i < stack.length; i++) {
+                    lns[linesCount + i] = stack[i].toString();
+                }
+            }
+        }
+
+        return lns;
+    }
+
+    private static void appendLines(String[] lines, StringBuilder sb) {
+        for (int i = 0; i < lines.length; i++) {
+            sb.append(lines[i]);
+            sb.append(NL);
         }
     }
 
-    private static void addThrowableStartDelimeter(StringBuilder sb) {
-        if (Log.isLogOutlined) {
-            sb.append(THROWABLE_DELIMITER_START);
+    private static void appendAlignmentForLines(String[] lines) {
+        if (lines == null || lines.length == 0) {
+            return;
+        }
+        int spacesCount = maxTagLength + beforeTagSpacesCount;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < spacesCount; i++) {
+            sb.append(SPACE);
+        }
+        for (int i = 1; i < lines.length; i++) {
+            lines[i] = sb + lines[i];
         }
     }
 
