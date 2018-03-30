@@ -95,7 +95,7 @@ allprojects {
 ```
 add to your dependencies in build.gradle
 ```
-    compile 'ua.at.tsvetkov:taolog:1.4.0@aar'
+    compile 'ua.at.tsvetkov:taolog:1.4.1@aar'
 ```
 
 For use @ToLog annotation please add to build.gradle. 
@@ -123,6 +123,11 @@ For example, to build a multidex project you will need to turn off the InstantRu
 
 Changelog
 ---------
+#### 1.4.1 -- ToLog annotation
+* added Kotlin classes support;
+* added possibility to align to right new lines in log for AndroidStudio 3.1;
+* combined @ToLog results in/out to one output method.
+
 #### 1.4.0 -- ToLog annotation
 * added support @ToLog annotation;
 * added outline log possibility;

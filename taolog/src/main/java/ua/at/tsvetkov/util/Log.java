@@ -50,9 +50,8 @@ import java.util.Map;
 public class Log {
 
     static volatile boolean isDisabled = false;
-    static volatile boolean isLogOutlined = false;
-
-     static volatile boolean isAlignNewLines = false;
+    static volatile boolean isLogOutlined = true;
+    static volatile boolean isAlignNewLines = false;
     private static final String FRAGMENT_STACK = "FRAGMENT STACK [";
     private static volatile Application.ActivityLifecycleCallbacks activityLifecycleCallback = null;
     private static volatile HashMap<String, FragmentManager.FragmentLifecycleCallbacks> fragmentLifecycleCallbacks = new HashMap<>();
@@ -63,6 +62,7 @@ public class Log {
 
     /**
      * Is print a log string in new lines with spaces (as in AndroidStudio before 3.1). False by default
+     *
      * @return
      */
     public static boolean isAlignNewLines() {
@@ -71,6 +71,7 @@ public class Log {
 
     /**
      * Set to print a log string  in new lines with spaces (as in AndroidStudio before 3.1). False by default
+     *
      * @param isArrangeNewLines
      */
     public static void setAlignNewLines(boolean isArrangeNewLines) {
@@ -234,7 +235,8 @@ public class Log {
     }
 
     /**
-     * Create the line boundaries of the log. False by default
+     * Create the line boundaries of the log. True by default
+     *
      * @param isLogOutlined
      */
     public static void setLogOutlined(boolean isLogOutlined) {

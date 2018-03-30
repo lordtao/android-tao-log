@@ -878,7 +878,11 @@ final class Format {
             } else {
                 StackTraceElement[] stack = throwable.getStackTrace();
                 for (int i = 0; i < stack.length; i++) {
-                    lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + THROWABLE_DELIMITER_PREFIX + stack[i].toString();
+                    if(i==0) {
+                        lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + stack[i].toString();
+                    } else {
+                        lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + THROWABLE_DELIMITER_PREFIX + stack[i].toString();
+                    }
                 }
             }
         } else { // Not Boxed
@@ -890,7 +894,11 @@ final class Format {
             } else {
                 StackTraceElement[] stack = throwable.getStackTrace();
                 for (int i = 0; i < stack.length; i++) {
-                    lns[linesCount + i] = stack[i].toString();
+                    if(i==0) {
+                        lns[linesCount + i] = stack[i].toString();
+                    } else {
+                        lns[linesCount + i] = THROWABLE_DELIMITER_PREFIX + stack[i].toString();
+                    }
                 }
             }
         }
