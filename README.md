@@ -1,7 +1,9 @@
 android-tao-log
 ================
 
-Tiny, lightweight, informative and very usefull logger for Android. See in demo app (https://github.com/lordtao/android-tao-log/tree/master/logdemo)
+Tiny, lightweight, informative and very usefull logger for Android.
+You don't need to define TAG. It is automatically generated and include file name, method, line nuber and of cource the link to the code.
+See in demo app (https://github.com/lordtao/android-tao-log/tree/master/logdemo)
 
 Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-log/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-log/_latestVersion)
 

@@ -54,3 +54,5 @@ freeline.py
 freeline/
 freeline_project_description.json
 .idea/markdown-exported-files.xml
+.idea/misc.xml
+.idea/
