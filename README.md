@@ -5,6 +5,7 @@ Tiny, lightweight, informative and very usefull logger for Android.
 You don't need to define TAG. It is automatically generated and include file name, method, line nuber and of cource the link to the code.
 See in demo app (https://github.com/lordtao/android-tao-log/tree/master/logdemo)
 
+[![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-log/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-log/_latestVersion)
 
 Code example:
