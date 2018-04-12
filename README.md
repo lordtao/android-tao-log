@@ -67,8 +67,8 @@ you will got something like:
 The idea is taken from Jake Wharton's [Hugo] (https://github.com/JakeWharton/hugo)
 In addition, I used Archinamon's AspectJ plugin [GradleAspectJ-Android] (https://github.com/Archinamon/android-gradle-aspectj)
 
-Add android-tao-core to your project
-----------------------------
+Add android-tao-log to your project
+-----------------------------------
 Android tao log lib is available on Bintray. Please ensure that you are using the latest versions by [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-log/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-log/_latestVersion)
 
 Gradle dependency for your Android app:
