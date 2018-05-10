@@ -198,18 +198,19 @@ public class Log {
      */
     public static void enableFragmentStackChangesLogger(@NonNull Activity activity) {
         if (!isDisabled) {
+            String tag = activity.getClass().getSimpleName();
             if (activity instanceof AppCompatActivity) {
                 android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks callback = createSupportFragmentLifecycleCallbacks();
                 supportFragmentLifecycleCallbacks.put(activity.toString(), callback);
                 ((AppCompatActivity) activity).getSupportFragmentManager().registerFragmentLifecycleCallbacks(callback, true);
-                Log.i("SupportFragment Lifecycle Logger attached");
+                android.util.Log.i(tag, Format.getFormattedMessage("SupportFragment Lifecycle Logger attached to " + tag));
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 FragmentManager.FragmentLifecycleCallbacks callback = createFragmentLifecycleCallbacks();
                 fragmentLifecycleCallbacks.put(activity.toString(), callback);
                 activity.getFragmentManager().registerFragmentLifecycleCallbacks(callback, true);
-                Log.i("Fragment Lifecycle Logger attached");
+                android.util.Log.i(tag, Format.getFormattedMessage("Fragment Lifecycle Logger attached to " + tag));
             } else {
-                Log.w("Fragment Lifecycle Logger requires API level 26");
+                android.util.Log.w(tag, Format.getFormattedMessage("Fragment Lifecycle Logger requires API level 26"));
             }
         }
     }
@@ -221,6 +222,7 @@ public class Log {
      */
     public static void disableFragmentStackChangesLogger(@NonNull Activity activity) {
         if (isDisabled) {
+            String tag = activity.getClass().getSimpleName();
             if (activity instanceof AppCompatActivity) {
                 android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks callback = supportFragmentLifecycleCallbacks.get(activity.toString());
                 ((AppCompatActivity) activity).getSupportFragmentManager().unregisterFragmentLifecycleCallbacks(callback);
@@ -230,7 +232,7 @@ public class Log {
                 activity.getFragmentManager().unregisterFragmentLifecycleCallbacks(callback);
                 fragmentLifecycleCallbacks.remove(activity.toString());
             }
-            Log.i("Fragment Lifecycle Logger detached");
+            android.util.Log.i(tag, "Fragment Lifecycle Logger detached from " + tag);
         }
     }
 
