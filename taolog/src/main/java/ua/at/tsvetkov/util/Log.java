@@ -52,7 +52,7 @@ public class Log {
     static volatile boolean isDisabled = false;
     static volatile boolean isLogOutlined = true;
     static volatile boolean isAlignNewLines = false;
-    private static final String FRAGMENT_STACK = "FRAGMENT STACK [";
+    private static final String FRAGMENTS_STACK = "Fragments stack [";
     private static volatile Application.ActivityLifecycleCallbacks activityLifecycleCallback = null;
     private static volatile HashMap<String, FragmentManager.FragmentLifecycleCallbacks> fragmentLifecycleCallbacks = new HashMap<>();
     private static volatile HashMap<String, android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks> supportFragmentLifecycleCallbacks = new HashMap<>();
@@ -197,7 +197,7 @@ public class Log {
      * @param activity
      */
     public static void enableFragmentStackChangesLogger(@NonNull Activity activity) {
-        if (isDisabled) {
+        if (!isDisabled) {
             if (activity instanceof AppCompatActivity) {
                 android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks callback = createSupportFragmentLifecycleCallbacks();
                 supportFragmentLifecycleCallbacks.put(activity.toString(), callback);
@@ -783,6 +783,18 @@ public class Log {
     }
 
     /**
+     * Logged String representation of String array. Each item in new line.
+     *
+     * @param array an array
+     */
+    public static void array(String[] array, String title) {
+        if (isDisabled) {
+            return;
+        }
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.array(array), title));
+    }
+
+    /**
      * Logged String representation of array.
      *
      * @param array an array
@@ -875,6 +887,18 @@ public class Log {
      * @param array an array
      */
     public static void array(long[] array) {
+        if (isDisabled) {
+            return;
+        }
+        android.util.Log.i(Format.getTag(), Format.getFormattedMessage(Format.array(array), Format.ARRAY));
+    }
+
+    /**
+     * Logged String representation of array.
+     *
+     * @param array an array
+     */
+    public static void array(String[] array) {
         if (isDisabled) {
             return;
         }
@@ -1049,18 +1073,24 @@ public class Log {
     private static FragmentManager.FragmentLifecycleCallbacks createFragmentLifecycleCallbacks() {
         return new FragmentManager.FragmentLifecycleCallbacks() {
 
+            String parent = "";
+            String info = null;
+
             @Override
             public void onFragmentAttached(FragmentManager fm, Fragment fr, Context context) {
                 super.onFragmentAttached(fm, fr, context);
+                parent = context.getClass().getSimpleName();
                 int backStackCount = fm.getBackStackEntryCount();
-                Format.printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "attached " + fr.getClass().getSimpleName(), backStackCount);
+                info = Format.getFragmentsStackInfo(fm, "attached " + fr.getClass().getSimpleName() + " to ", backStackCount);
+                android.util.Log.i(parent, Format.getFormattedMessage(info,  FRAGMENTS_STACK + backStackCount + "]"));
             }
 
             @Override
             public void onFragmentDetached(FragmentManager fm, Fragment fr) {
                 super.onFragmentDetached(fm, fr);
                 int backStackCount = fm.getBackStackEntryCount();
-                Format.printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "detached " + fr.getClass().getSimpleName(), backStackCount);
+                info = Format.getFragmentsStackInfo(fm, "detached " + fr.getClass().getSimpleName(), backStackCount);
+                android.util.Log.i(parent, Format.getFormattedMessage(info, FRAGMENTS_STACK + backStackCount + "]"));
             }
 
         };
@@ -1068,18 +1098,25 @@ public class Log {
 
     private static android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks createSupportFragmentLifecycleCallbacks() {
         return new android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks() {
+
+            String parent = "";
+            String info = null;
+
             @Override
             public void onFragmentAttached(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment fr, Context context) {
                 super.onFragmentAttached(fm, fr, context);
+                parent = context.getClass().getSimpleName();
                 int backStackCount = fm.getBackStackEntryCount();
-                Format.printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "attached " + fr.getClass().getSimpleName(), backStackCount);
+                info = Format.getFragmentsStackInfo(fm, "attached " + fr.getClass().getSimpleName(), backStackCount);
+                android.util.Log.i(parent, Format.getFormattedMessage(info, FRAGMENTS_STACK + backStackCount + "]"));
             }
 
             @Override
             public void onFragmentDetached(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment fr) {
                 super.onFragmentDetached(fm, fr);
                 int backStackCount = fm.getBackStackEntryCount();
-                Format.printFragmentsStack(fr.getActivity().getLocalClassName(), fm, FRAGMENT_STACK + backStackCount + "]", "detached " + fr.getClass().getSimpleName(), backStackCount);
+                info = Format.getFragmentsStackInfo(fm, "detached " + fr.getClass().getSimpleName(), backStackCount);
+                android.util.Log.i(parent, Format.getFormattedMessage(info, FRAGMENTS_STACK + backStackCount + "]"));
             }
         };
     }

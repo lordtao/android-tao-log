@@ -330,6 +330,29 @@ final class Format {
     }
 
     /**
+     * Return String representation of array.
+     *
+     * @param array an array
+     * @return String representation of array
+     */
+    static String array(String[] array) {
+        if (array == null) {
+            return "null";
+        }
+        List<String> list = Arrays.asList(array);
+        StringBuilder sb = new StringBuilder();
+        int indx = 0;
+        for (String item : list) {
+            sb.append('[');
+            sb.append(indx++);
+            sb.append("] ");
+            sb.append(item);
+            sb.append(NL);
+        }
+        return sb.toString();
+    }
+
+    /**
      * Return String representation of Object. Each field in new line.
      *
      * @param objs a class for representation
@@ -503,42 +526,37 @@ final class Format {
 
     //============================== Fragments ==============================
 
-    static void printFragmentsStack(String className, FragmentManager fm, String title, String operation, int backStackCount) {
-        String[] logs = new String[backStackCount];
+    static String getFragmentsStackInfo(FragmentManager fm, String operation, int backStackCount) {
+        String[] logs = new String[backStackCount + 1];
+        logs[0] = operation;
         for (int i = 0; i < backStackCount; i++) {
             FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(i);
-            logs[i] = "     #" + i + "  " + entry.getName();
+            logs[i + 1] = "   #" + i + "  " + entry.getName();
         }
-        printFragmentsStack(className, title, operation, logs);
+        return getFSString(logs);
     }
 
 
-    static void printFragmentsStack(String className, android.support.v4.app.FragmentManager fm, String title, String operation, int backStackCount) {
-        String[] logs = new String[backStackCount];
+    static String getFragmentsStackInfo(android.support.v4.app.FragmentManager fm, String operation, int backStackCount) {
+        String[] logs = new String[backStackCount + 1];
+        logs[0] = operation;
         for (int i = 0; i < backStackCount; i++) {
             android.support.v4.app.FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(i);
-            logs[i] = "|    #" + i + "  " + entry.getName();
+            logs[i + 1] = "   #" + i + "  " + entry.getName();
         }
-        printFragmentsStack(className, title, operation, logs);
+        return getFSString(logs);
     }
 
-    static void printFragmentsStack(String className, String title, String operation, String[] logs) {
+    static String getFSString(String[] array) {
+        if (array == null) {
+            return "null";
+        }
         StringBuilder sb = new StringBuilder();
-        sb.append("------------------ ");
-        sb.append(title);
-        sb.append(" ------------------\n");
-        sb.append("|                 ");
-        sb.append(operation);
-        sb.append(NL);
-        appendLines(logs, sb);
-        sb.append(" --------------------------------------------------------");
-
-        StringBuilder spSb = new StringBuilder();
-        spSb.append(PREFIX_MAIN_STRING);
-        addStamp(spSb);
-        spSb.append(className);
-        addSpaces(spSb);
-        android.util.Log.v(spSb.toString(), sb.toString());
+        for (int i = 0; i < array.length; i++) {
+            sb.append(array[i]);
+            sb.append(NL);
+        }
+        return sb.toString();
     }
 
     // ============================ Private common methods ==============================
@@ -579,7 +597,6 @@ final class Format {
         }
         Class clazz = obj.getClass();
         String className = clazz.getName();
-//        String classSimpleName = clazz.getSimpleName();
         String parentClassName = Log.class.getName();
 
         final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
@@ -594,8 +611,6 @@ final class Format {
             for (int i = 0; i < traces.length; i++) {
                 if (traces[i].getClassName().startsWith(className)) {
                     sb.append(traces[i].getFileName());
-//                    sb.append(classSimpleName);
-//                    sb.append(JAVA);
                     sb.append(SPACE);
                     break;
                 }
@@ -706,6 +721,7 @@ final class Format {
             }
         }
     }
+
     static void addClassLink(StringBuilder sb, String fileName, int lineNumber) {
         sb.append('(');
         sb.append(fileName);
@@ -715,20 +731,8 @@ final class Format {
         sb.append(SPACE);
     }
 
-
-//    static void addClassLink(StringBuilder sb, String className, int lineNumber) {
-//        sb.append('(');
-//        sb.append(className);
-//        sb.append(JAVA);
-//        sb.append(COLON);
-//        sb.append(lineNumber);
-//        sb.append(')');
-//        sb.append(SPACE);
-//    }
-
     static void addSpaces(StringBuilder sb) {
         if (!Log.isAlignNewLines()) {
-//            sb.append(" \u21B4 ");
             return;
         }
         int extraSpaceCount = maxTagLength - sb.length();
@@ -878,7 +882,7 @@ final class Format {
             } else {
                 StackTraceElement[] stack = throwable.getStackTrace();
                 for (int i = 0; i < stack.length; i++) {
-                    if(i==0) {
+                    if (i == 0) {
                         lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + stack[i].toString();
                     } else {
                         lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + THROWABLE_DELIMITER_PREFIX + stack[i].toString();
@@ -894,7 +898,7 @@ final class Format {
             } else {
                 StackTraceElement[] stack = throwable.getStackTrace();
                 for (int i = 0; i < stack.length; i++) {
-                    if(i==0) {
+                    if (i == 0) {
                         lns[linesCount + i] = stack[i].toString();
                     } else {
                         lns[linesCount + i] = THROWABLE_DELIMITER_PREFIX + stack[i].toString();
