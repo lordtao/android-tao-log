@@ -41,7 +41,7 @@ Simple add to your Application class.
 Log.enableComponentsChangesLogging(this);
 ```
 
-You will receive information about the activation lifecycle calls
+You will receive information about an activity lifecycle calls
 
 ![Image of LogActivity example](log_activity.png)
 
