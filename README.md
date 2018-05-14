@@ -32,7 +32,7 @@ Possibility to outline the log strings (by default). You can also turn off this,
 You'll get in your LogCat the lines like below.
 Clicking on the tag brings you to log into the source code of the class which was caused by the logger:
 
-![Image of LogCat example](log_example.png)
+![Image of LogCat example](img/log_example.png)
 
 Activity lifecicle and fragments stack logger
 ---------------------------------------------
@@ -43,11 +43,11 @@ Log.enableComponentsChangesLogging(this);
 
 You will receive information about an activity lifecycle calls
 
-![Image of LogActivity example](log_activity.png)
+![Image of LogActivity example](img/log_activity.png)
 
 and a changes of the fragments stack
 
-![Image of LogFragments example](log_fragments.png)
+![Image of LogFragments example](img/log_fragments.png)
 
 @ToLog annotatin for constructors and methods.
 --------------------------------------------------------------
@@ -141,6 +141,8 @@ For example, to build a multidex project you will need to turn off the InstantRu
 
 Changelog
 ---------
+#### 1.4.3 -- Activity lifecile and fragments stack logging
+* Activity lifecile and fragments stack logging updates
 #### 1.4.1 -- ToLog annotation
 * added Kotlin classes support;
 * added possibility to align to right new lines in log for AndroidStudio 3.1;
