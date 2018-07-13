@@ -3,10 +3,14 @@ android-tao-log
 
 Tiny, lightweight, informative and very usefull logger for Android.
 You don't need to define TAG. It is automatically generated and include file name, method, line nuber and of cource the link to the code.
-See in demo app (https://github.com/lordtao/android-tao-log/tree/master/logdemo)
+Also contains the LongLog class which allows you to print a long messages into the LogCat without limiting the standard output length to less than ~ 4075.
+See in [demo app](https://github.com/lordtao/android-tao-log/tree/master/logdemo)
 
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-log/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-log/_latestVersion)
+
+Warning! Android Studio 3.1 Logcat prefix not always showing and breaking logger. 
+According to the [Google issue tracker](https://issuetracker.google.com/issues/77305804) it is fixed and is planned for Android Studio 3.2.
 
 Code example:
 
@@ -38,7 +42,7 @@ Activity lifecicle and fragments stack logger
 ---------------------------------------------
 Simple add to your Application class.
 ```
-Log.enableComponentsChangesLogging(this);
+ComponentLog.enableComponentsChangesLogging(this);
 ```
 
 You will receive information about an activity lifecycle calls
@@ -141,8 +145,13 @@ For example, to build a multidex project you will need to turn off the InstantRu
 
 Changelog
 ---------
+#### 1.4.4 -- Activity lifecile and fragments stack logging
+* Activity lifecile and fragments stack logging moved to ComponentLog class.
+* Added LongLog for possibility print to LogCat very long messages.
+
 #### 1.4.3 -- Activity lifecile and fragments stack logging
 * Activity lifecile and fragments stack logging updates
+
 #### 1.4.1 -- ToLog annotation
 * added Kotlin classes support;
 * added possibility to align to right new lines in log for AndroidStudio 3.1;

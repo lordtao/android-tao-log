@@ -2,6 +2,7 @@ package ua.at.tsvetkov.demo;
 
 import android.app.Application;
 
+import ua.at.tsvetkov.util.ComponentLog;
 import ua.at.tsvetkov.util.Log;
 
 /**
@@ -10,15 +11,15 @@ import ua.at.tsvetkov.util.Log;
 
 public class AppTaoLogDemo extends Application {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+   @Override
+   public void onCreate() {
+      super.onCreate();
 
-        Log.setStamp(BuildConfig.GIT_SHA);
-        Log.enableComponentsChangesLogging(this);
-        Log.setLogOutlined(true);
-        Log.setAlignNewLines(false);
+      Log.setStamp(BuildConfig.GIT_SHA);
+      Log.setLogOutlined(true);
+      Log.setAlignNewLines(false);
+      ComponentLog.enableComponentsChangesLogging(this);
 
-    }
+   }
 
 }
