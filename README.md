@@ -53,6 +53,20 @@ and a changes of the fragments stack
 
 ![Image of LogFragments example](img/log_fragments.png)
 
+Log interceptor.
+--------------------------------------------------------------
+Allows use all log information in a custom interceptor. For example intercept and store log in a file.
+```
+public class YourInterceptor extends LogInterceptor {
+
+    @Override
+    public void log(Level level, String tag, String msg, @Nullable Throwable th) {
+      //
+    }
+
+}
+```
+
 @ToLog annotatin for constructors and methods.
 --------------------------------------------------------------
 Experemental!!! AspectJ plugin incompatibility with java 8. Will be fixed soon in 3.3.0 AspectJ plugin
@@ -145,6 +159,9 @@ For example, to build a multidex project you will need to turn off the InstantRu
 
 Changelog
 ---------
+#### 1.4.5 -- Log interceptor
+* Added log interceptor.
+
 #### 1.4.4 -- Activity lifecile and fragments stack logging
 * Activity lifecile and fragments stack logging moved to ComponentLog class.
 * Added LongLog for possibility print to LogCat very long messages.
