@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import ua.at.tsvetkov.annotations.ToLog;
 import ua.at.tsvetkov.util.Log;
 import ua.at.tsvetkov.util.LongLog;
 
@@ -54,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
-      runToLogAnnotationsExamples();
-
       runLogExamples();
 
       runFragmentStackLoggerExample();
@@ -65,23 +62,6 @@ public class MainActivity extends AppCompatActivity {
       Test t = new Test("TTTTTT");
       t.getName();
 
-   }
-
-   private void runToLogAnnotationsExamples() {
-      Foo foo = new Foo(10);
-      foo.getResult(5);
-
-      Boo boo = new Boo(true);
-      boolean isNeed = boo.isNeed();
-
-      AbstactKoo koo = new AbstactKoo(false) {
-
-         @Override
-         public boolean isNeed() {
-            return false;
-         }
-
-      };
    }
 
    private void runLogExamples() {
@@ -392,20 +372,4 @@ public class MainActivity extends AppCompatActivity {
       }).start();
    }
 
-   @ToLog
-   class Foo {
-
-      private int a;
-
-      @ToLog
-      public Foo(int b) {
-         a = b;
-      }
-
-      @ToLog
-      public int getResult(int c) {
-         return a - c;
-      }
-
-   }
 }

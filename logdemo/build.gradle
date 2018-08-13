@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.archinamon.aspectj'
 
 def versionMajor = 1
 def versionMinor = 0
@@ -34,14 +33,6 @@ android {
     lintOptions {
         abortOnError false
     }
-}
-
-aspectj {
-    includeAspectsFromJar 'taolog'
-}
-
-androidExtensions {
-    experimental = true
 }
 
 dependencies {

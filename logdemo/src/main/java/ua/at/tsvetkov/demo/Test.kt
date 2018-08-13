@@ -1,6 +1,5 @@
 package ua.at.tsvetkov.demo
 
-import ua.at.tsvetkov.annotations.ToLog
 import ua.at.tsvetkov.util.Log
 
 /**
@@ -10,7 +9,6 @@ class Test constructor(name: String) {
 
     private val mName = name
 
-    @ToLog
     fun getName(): String {
         Log.v("Name=$mName")
         return mName
