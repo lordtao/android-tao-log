@@ -61,10 +61,16 @@ public class YourInterceptor extends LogInterceptor {
 
     @Override
     public void log(Level level, String tag, String msg, @Nullable Throwable th) {
-      //
+      // Use this data for save the log to file, send to cloud or etc.
     }
 
 }
+```
+
+using:
+
+```
+Log.addInterceptor(YourInterceptorImplementation)
 ```
 
 Add android-tao-log to your project
