@@ -55,7 +55,8 @@ and a changes of the fragments stack
 
 Log interceptor.
 --------------------------------------------------------------
-Allows use all log information in a custom interceptor. For example intercept and store log in a file.
+Allows use all log information in a custom interceptor. 
+See the LogToFileInterceptor which save a log messages to file and you can share the zipped log with help of any external applications, for example by email, google drive and etc.
 ```
 public class YourInterceptor extends LogInterceptor {
 
@@ -109,6 +110,9 @@ add to your dependencies in build.gradle
 
 Changelog
 ---------
+#### 1.4.7 -- added ToFileInterceptor
+* Removed @ToLog annotation.
+
 #### 1.4.6 -- Removed @ToLog annotation
 * Removed @ToLog annotation.
 

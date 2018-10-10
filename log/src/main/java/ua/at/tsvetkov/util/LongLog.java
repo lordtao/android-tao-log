@@ -34,6 +34,21 @@ import java.util.Map;
 
 import ua.at.tsvetkov.util.interceptor.LogInterceptor.Level;
 
+import static java.lang.Thread.currentThread;
+import static ua.at.tsvetkov.util.Format.NL;
+import static ua.at.tsvetkov.util.Format.addMessage;
+import static ua.at.tsvetkov.util.Format.addStackTrace;
+import static ua.at.tsvetkov.util.Format.addThreadInfo;
+import static ua.at.tsvetkov.util.Format.getFormattedMessage;
+import static ua.at.tsvetkov.util.Format.getFormattedThrowable;
+import static ua.at.tsvetkov.util.Format.getTag;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.DEBUG;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.ERROR;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.INFO;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.VERBOSE;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WARNING;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WTF;
+
 /**
  * Shows a long log string in LogCat. The LogCat have the real message size for both binary and non-binary logs is ~4076 bytes.
  * The LongLog the same as the Log class, but can print to LogCat a full message - split to several usual messages.
@@ -61,10 +76,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void v(String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(message), Level.VERBOSE, false);
+        print(getTag(), getFormattedMessage(message), VERBOSE, false);
     }
 
     /**
@@ -73,10 +85,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void d(String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(message), Level.DEBUG, false);
+        print(getTag(), getFormattedMessage(message), DEBUG, false);
     }
 
     /**
@@ -85,10 +94,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void i(String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(message), Level.INFO, false);
+        print(getTag(), getFormattedMessage(message), INFO, false);
     }
 
     /**
@@ -97,10 +103,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void w(String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(message), Level.WARNING, false);
+        print(getTag(), getFormattedMessage(message), WARNING, false);
     }
 
     /**
@@ -109,10 +112,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void e(String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(message), Level.ERROR, false);
+        print(getTag(), getFormattedMessage(message), ERROR, false);
     }
 
     /**
@@ -123,10 +123,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void wtf(String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(message), Level.WTF, false);
+        print(getTag(), getFormattedMessage(message), WTF, false);
     }
 
     // ==========================================================
@@ -138,10 +135,7 @@ public class LongLog extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void v(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedThrowable(message, tr), Level.VERBOSE, true);
+        print(getTag(), getFormattedThrowable(message, tr), VERBOSE, true);
     }
 
     /**
@@ -151,10 +145,7 @@ public class LongLog extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void d(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedThrowable(message, tr), Level.DEBUG, true);
+        print(getTag(), getFormattedThrowable(message, tr), DEBUG, true);
     }
 
     /**
@@ -164,10 +155,7 @@ public class LongLog extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void i(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedThrowable(message, tr), Level.INFO, true);
+        print(getTag(), getFormattedThrowable(message, tr), INFO, true);
     }
 
     /**
@@ -177,10 +165,7 @@ public class LongLog extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void w(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedThrowable(message, tr), Level.WARNING, true);
+        print(getTag(), getFormattedThrowable(message, tr), WARNING, true);
     }
 
     /**
@@ -190,10 +175,7 @@ public class LongLog extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void e(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedThrowable(message, tr), Level.ERROR, true);
+        print(getTag(), getFormattedThrowable(message, tr), ERROR, true);
     }
 
     /**
@@ -206,10 +188,7 @@ public class LongLog extends AbstactLog {
         if (tr instanceof RuntimeException) {
             throw (RuntimeException) tr;
         }
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedThrowable(message, tr), Level.ERROR, true);
+        print(getTag(), getFormattedThrowable(message, tr), ERROR, true);
     }
 
     /**
@@ -219,10 +198,7 @@ public class LongLog extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void wtf(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedThrowable(message, tr), Level.WTF, true);
+        print(getTag(), getFormattedThrowable(message, tr), WTF, true);
     }
 
     // ==========================================================
@@ -236,10 +212,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void v(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedMessage(message), Level.VERBOSE, false);
+        print(getTag(obj), getFormattedMessage(message), VERBOSE, false);
     }
 
     /**
@@ -250,10 +223,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void d(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedMessage(message), Level.DEBUG, false);
+        print(getTag(obj), getFormattedMessage(message), DEBUG, false);
     }
 
     /**
@@ -264,10 +234,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void i(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedMessage(message), Level.INFO, false);
+        print(getTag(obj), getFormattedMessage(message), INFO, false);
     }
 
     /**
@@ -278,10 +245,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void w(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedMessage(message), Level.WARNING, false);
+        print(getTag(obj), getFormattedMessage(message), WARNING, false);
     }
 
     /**
@@ -293,10 +257,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void e(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedMessage(message), Level.ERROR, false);
+        print(getTag(obj), getFormattedMessage(message), ERROR, false);
     }
 
     /**
@@ -308,10 +269,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void wtf(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedMessage(message), Level.WTF, false);
+        print(getTag(obj), getFormattedMessage(message), WTF, false);
     }
 
     // ==========================================================
@@ -326,10 +284,7 @@ public class LongLog extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void v(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedThrowable(message, tr), Level.VERBOSE, true);
+        print(getTag(obj), getFormattedThrowable(message, tr), VERBOSE, true);
     }
 
     /**
@@ -342,10 +297,7 @@ public class LongLog extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void d(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedThrowable(message, tr), Level.DEBUG, true);
+        print(getTag(obj), getFormattedThrowable(message, tr), DEBUG, true);
     }
 
     /**
@@ -358,10 +310,7 @@ public class LongLog extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void i(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedThrowable(message, tr), Level.INFO, true);
+        print(getTag(obj), getFormattedThrowable(message, tr), INFO, true);
     }
 
     /**
@@ -374,10 +323,7 @@ public class LongLog extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void w(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedThrowable(message, tr), Level.WARNING, true);
+        print(getTag(obj), getFormattedThrowable(message, tr), WARNING, true);
     }
 
     /**
@@ -390,10 +336,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void e(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedThrowable(message, tr), Level.ERROR, true);
+        print(getTag(obj), getFormattedThrowable(message, tr), ERROR, true);
     }
 
     /**
@@ -406,10 +349,7 @@ public class LongLog extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void wtf(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(obj), Format.getFormattedThrowable(message, tr), Level.WTF, true);
+        print(getTag(obj), getFormattedThrowable(message, tr), WTF, true);
     }
 
     // =========================== Collections, arrays and objects ===============================
@@ -429,10 +369,7 @@ public class LongLog extends AbstactLog {
      * @param map a Map
      */
     public static void map(Map<?, ?> map, String title) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.map(map), title), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.map(map), title), INFO, false);
     }
 
     /**
@@ -450,10 +387,7 @@ public class LongLog extends AbstactLog {
      * @param list a List
      */
     public static void list(List<?> list, String title) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.list(list), title), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.list(list), title), INFO, false);
     }
 
     /**
@@ -471,10 +405,7 @@ public class LongLog extends AbstactLog {
      * @param array an array
      */
     public static <T> void array(T[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.array(array), title), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
     }
 
     /**
@@ -483,10 +414,7 @@ public class LongLog extends AbstactLog {
      * @param array an array
      */
     public static void array(String[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.array(array), title), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
     }
 
     /**
@@ -504,10 +432,7 @@ public class LongLog extends AbstactLog {
      * @param array an array
      */
     public static void array(int[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.array(array), title), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
     }
 
     /**
@@ -525,10 +450,7 @@ public class LongLog extends AbstactLog {
      * @param array an array
      */
     public static void array(float[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.array(array), title), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
     }
 
     /**
@@ -546,10 +468,7 @@ public class LongLog extends AbstactLog {
      * @param array an array
      */
     public static void array(boolean[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.array(array), title), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
     }
 
     /**
@@ -567,10 +486,7 @@ public class LongLog extends AbstactLog {
      * @param array an array
      */
     public static void array(char[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.array(array), title), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
     }
 
     /**
@@ -588,10 +504,7 @@ public class LongLog extends AbstactLog {
      * @param array an array
      */
     public static void array(double[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.array(array), title), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
     }
 
     /**
@@ -609,10 +522,7 @@ public class LongLog extends AbstactLog {
      * @param array an array
      */
     public static void array(long[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.array(array), title), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
     }
 
     /**
@@ -621,10 +531,7 @@ public class LongLog extends AbstactLog {
      * @param obj a class for representation
      */
     public static void objl(Object obj) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.objl(obj), obj.getClass().getSimpleName()), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.objl(obj), obj.getClass().getSimpleName()), INFO, false);
     }
 
     /**
@@ -633,10 +540,7 @@ public class LongLog extends AbstactLog {
      * @param obj a class for representation
      */
     public static void objn(Object obj) {
-        if (isDisabled) {
-            return;
-        }
-        print(Format.getTag(), Format.getFormattedMessage(Format.objn(obj), obj.getClass().getSimpleName()), Level.INFO, false);
+        print(getTag(), getFormattedMessage(Format.objn(obj), obj.getClass().getSimpleName()), INFO, false);
     }
 
     /**
@@ -683,14 +587,11 @@ public class LongLog extends AbstactLog {
      * Logged the current Thread info
      */
     public static void threadInfo() {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addThreadInfo(sb, Thread.currentThread());
-        sb.append(Format.NL);
+        addThreadInfo(sb, currentThread());
+        sb.append(NL);
 
-        print(Format.getTag(), Format.getFormattedMessage(sb), Level.VERBOSE, false);
+        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
     }
 
     /**
@@ -699,30 +600,24 @@ public class LongLog extends AbstactLog {
      * @param throwable An throwable to log
      */
     public static void threadInfo(Throwable throwable) {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addThreadInfo(sb, Thread.currentThread());
-        sb.append(Format.NL);
-        Format.addStackTrace(sb, throwable);
+        addThreadInfo(sb, currentThread());
+        sb.append(NL);
+        addStackTrace(sb, throwable);
 
-        print(Format.getTag(), Format.getFormattedMessage(sb), Level.VERBOSE, false);
+        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
     }
 
     /**
      * Logged the current Thread info and a message
      */
     public static void threadInfo(@Nullable String message) {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addThreadInfo(sb, Thread.currentThread());
-        sb.append(Format.NL);
-        Format.addMessage(sb, message);
+        addThreadInfo(sb, currentThread());
+        sb.append(NL);
+        addMessage(sb, message);
 
-        print(Format.getTag(), Format.getFormattedMessage(sb), Level.VERBOSE, false);
+        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
     }
 
     /**
@@ -732,16 +627,13 @@ public class LongLog extends AbstactLog {
      * @param throwable An throwable to log
      */
     public static void threadInfo(String message, Throwable throwable) {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addThreadInfo(sb, Thread.currentThread());
-        sb.append(Format.NL);
-        Format.addMessage(sb, message);
-        Format.addStackTrace(sb, throwable);
+        addThreadInfo(sb, currentThread());
+        sb.append(NL);
+        addMessage(sb, message);
+        addStackTrace(sb, throwable);
 
-        print(Format.getTag(), Format.getFormattedMessage(sb), Level.VERBOSE, false);
+        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
     }
 
     /**
@@ -751,15 +643,12 @@ public class LongLog extends AbstactLog {
      * @param throwable An throwable to log
      */
     public static void threadInfo(Thread thread, Throwable throwable) {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addThreadInfo(sb, thread);
-        sb.append(Format.NL);
-        Format.addStackTrace(sb, throwable);
+        addThreadInfo(sb, thread);
+        sb.append(NL);
+        addStackTrace(sb, throwable);
 
-        print(Format.getTag(), Format.getFormattedMessage(sb), Level.VERBOSE, false);
+        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
     }
 
     /**
@@ -775,14 +664,11 @@ public class LongLog extends AbstactLog {
      * @param message a custom message
      */
     public static void stackTrace(String message) {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addMessage(sb, message);
-        Format.addStackTrace(sb, Thread.currentThread());
+        addMessage(sb, message);
+        addStackTrace(sb, currentThread());
 
-        print(Format.getTag(), Format.getFormattedMessage(sb), Level.VERBOSE, false);
+        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
     }
 
     // =========================== Private methods ===============================

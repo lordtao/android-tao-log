@@ -11,6 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.HashMap;
 
+import static android.app.Application.ActivityLifecycleCallbacks;
+import static android.util.Log.v;
+import static ua.at.tsvetkov.util.Format.getActivityMethodInfo;
+import static ua.at.tsvetkov.util.Format.getActivityTag;
+import static ua.at.tsvetkov.util.Log.w;
+
 /**
  * Activity lifecicle and fragments stack logger
  */
@@ -49,65 +55,62 @@ public class ComponentLog {
     */
    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
    private static void enableActivityLifecycleLogger(@NonNull Application application, final boolean isAttachFragmentLogger) {
-      if (application == null) {
-         Log.w("Can't enable Activity auto logger, application == null");
-         return;
-      }
-      if (Log.isDisabled) {
-         return;
-      }
-      if (activityLifecycleCallback == null) {
-         activityLifecycleCallback = new Application.ActivityLifecycleCallbacks() {
+       if (application == null) {
+           w("Can't enable Activity auto logger, application == null");
+           return;
+       }
+       if (activityLifecycleCallback == null) {
+           activityLifecycleCallback = new ActivityLifecycleCallbacks() {
 
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-               printActivityCallMethod(activity);
-               if (isAttachFragmentLogger) {
-                  enableFragmentStackChangesLogger(activity);
+               @Override
+               public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                   printActivityCallMethod(activity);
+                   if (isAttachFragmentLogger) {
+                       enableFragmentStackChangesLogger(activity);
+                   }
                }
-            }
 
-            @Override
-            public void onActivityStarted(Activity activity) {
-               printActivityCallMethod(activity);
-            }
-
-            @Override
-            public void onActivityResumed(Activity activity) {
-               printActivityCallMethod(activity);
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-               printActivityCallMethod(activity);
-            }
-
-            @Override
-            public void onActivityStopped(Activity activity) {
-               printActivityCallMethod(activity);
-            }
-
-            @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-               printActivityCallMethod(activity);
-            }
-
-            @Override
-            public void onActivityDestroyed(Activity activity) {
-               printActivityCallMethod(activity);
-               if (isAttachFragmentLogger) {
-                  disableFragmentStackChangesLogger(activity);
+               @Override
+               public void onActivityStarted(Activity activity) {
+                   printActivityCallMethod(activity);
                }
-            }
 
-            private void printActivityCallMethod(Activity activity) {
-               android.util.Log.v(Format.getActivityTag(activity), Format.getActivityMethodInfo(activity));
-            }
+               @Override
+               public void onActivityResumed(Activity activity) {
+                   printActivityCallMethod(activity);
+               }
 
-         };
-      }
+               @Override
+               public void onActivityPaused(Activity activity) {
+                   printActivityCallMethod(activity);
+               }
 
-      application.registerActivityLifecycleCallbacks(activityLifecycleCallback);
+               @Override
+               public void onActivityStopped(Activity activity) {
+                   printActivityCallMethod(activity);
+               }
+
+               @Override
+               public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+                   printActivityCallMethod(activity);
+               }
+
+               @Override
+               public void onActivityDestroyed(Activity activity) {
+                   printActivityCallMethod(activity);
+                   if (isAttachFragmentLogger) {
+                       disableFragmentStackChangesLogger(activity);
+                   }
+               }
+
+               private void printActivityCallMethod(Activity activity) {
+                   v(getActivityTag(activity), getActivityMethodInfo(activity));
+               }
+
+           };
+       }
+
+       application.registerActivityLifecycleCallbacks(activityLifecycleCallback);
    }
 
    /**
@@ -127,14 +130,11 @@ public class ComponentLog {
     */
    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
    public static void disableActivityLifecycleLogger(@NonNull Application application) {
-      if (Log.isDisabled) {
-         return;
-      }
-      if (application == null) {
-         Log.w("Can't disable Activity auto logger, application=null");
-      } else {
-         application.unregisterActivityLifecycleCallbacks(activityLifecycleCallback);
-      }
+       if (application == null) {
+           w("Can't disable Activity auto logger, application=null");
+       } else {
+           application.unregisterActivityLifecycleCallbacks(activityLifecycleCallback);
+       }
    }
 
    /**
@@ -144,7 +144,7 @@ public class ComponentLog {
     */
    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
    public static void enableFragmentStackChangesLogger(@NonNull Activity activity) {
-      if (!Log.isDisabled) {
+      if (!Log.isDisabled()) {
          String tag = activity.getClass().getSimpleName();
          FragmentManager.FragmentLifecycleCallbacks logger = new FragmentLifecycleLogger();
          supportFragmentLifecycleCallbacks.put(activity.toString(), logger);
@@ -164,7 +164,7 @@ public class ComponentLog {
     */
    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
    public static void disableFragmentStackChangesLogger(@NonNull Activity activity) {
-      if (!Log.isDisabled) {
+      if (!Log.isDisabled()) {
          if (activity instanceof AppCompatActivity) {
             String tag = activity.getClass().getSimpleName();
             FragmentManager.FragmentLifecycleCallbacks logger = supportFragmentLifecycleCallbacks.get(activity.toString());

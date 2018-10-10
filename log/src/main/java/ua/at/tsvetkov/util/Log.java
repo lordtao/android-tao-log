@@ -32,6 +32,22 @@ import java.util.Map;
 
 import ua.at.tsvetkov.util.interceptor.LogInterceptor;
 
+import static java.lang.Thread.currentThread;
+import static ua.at.tsvetkov.util.Format.NL;
+import static ua.at.tsvetkov.util.Format.addMessage;
+import static ua.at.tsvetkov.util.Format.addStackTrace;
+import static ua.at.tsvetkov.util.Format.addThreadInfo;
+import static ua.at.tsvetkov.util.Format.getFormattedMessage;
+import static ua.at.tsvetkov.util.Format.getFormattedThrowable;
+import static ua.at.tsvetkov.util.Format.getTag;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.DEBUG;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.ERROR;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.INFO;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.VERBOSE;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WARNING;
+import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WTF;
+
 /**
  * Extended logger. Allows you to automatically adequately logged class, method and line call in the log. Makes it easy to write logs. For
  * example Log.v("Boo") will in the log some the record: 04-04 08:29:40.336: V > SomeClass: someMethod: 286 Boo
@@ -85,10 +101,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void v(String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.VERBOSE, Format.getTag(), Format.getFormattedMessage(message).toString());
+        logToAll(VERBOSE, getTag(), getFormattedMessage(message).toString());
     }
 
     /**
@@ -97,10 +110,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void d(String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.DEBUG, Format.getTag(), Format.getFormattedMessage(message).toString());
+        logToAll(DEBUG, getTag(), getFormattedMessage(message).toString());
     }
 
     /**
@@ -109,10 +119,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void i(String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(message).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(message).toString());
     }
 
     /**
@@ -121,10 +128,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void w(String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.WARNING, Format.getTag(), Format.getFormattedMessage(message).toString());
+        logToAll(WARNING, getTag(), getFormattedMessage(message).toString());
     }
 
     /**
@@ -133,10 +137,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void e(String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.ERROR, Format.getTag(), Format.getFormattedMessage(message).toString());
+        logToAll(ERROR, getTag(), getFormattedMessage(message).toString());
     }
 
     /**
@@ -147,10 +148,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void wtf(String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.WTF, Format.getTag(), Format.getFormattedMessage(message).toString());
+        logToAll(WTF, getTag(), getFormattedMessage(message).toString());
     }
 
     // ==========================================================
@@ -162,10 +160,7 @@ public class Log extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void v(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.VERBOSE, Format.getTag(), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(VERBOSE, getTag(), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     /**
@@ -175,10 +170,7 @@ public class Log extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void d(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.DEBUG, Format.getTag(), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(DEBUG, getTag(), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     /**
@@ -188,10 +180,7 @@ public class Log extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void i(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(INFO, getTag(), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     /**
@@ -201,10 +190,7 @@ public class Log extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void w(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.WARNING, Format.getTag(), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(WARNING, getTag(), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     /**
@@ -214,10 +200,7 @@ public class Log extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void e(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.ERROR, Format.getTag(), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(ERROR, getTag(), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     /**
@@ -230,10 +213,7 @@ public class Log extends AbstactLog {
         if (tr instanceof RuntimeException) {
             throw (RuntimeException) tr;
         }
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.ERROR, Format.getTag(), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(ERROR, getTag(), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     /**
@@ -243,10 +223,7 @@ public class Log extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void wtf(String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.WTF, Format.getTag(), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(WTF, getTag(), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     // ==========================================================
@@ -257,10 +234,7 @@ public class Log extends AbstactLog {
      * @param tr An throwable to log
      */
     public static void v(Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.VERBOSE, Format.getTag(), Format.getFormattedThrowable(tr).toString(), tr);
+        logToAll(VERBOSE, getTag(), getFormattedThrowable(tr).toString(), tr);
     }
 
     /**
@@ -269,10 +243,7 @@ public class Log extends AbstactLog {
      * @param tr An throwable to log
      */
     public static void d(Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.DEBUG, Format.getTag(), Format.getFormattedThrowable(tr).toString(), tr);
+        logToAll(DEBUG, getTag(), getFormattedThrowable(tr).toString(), tr);
     }
 
     /**
@@ -281,10 +252,7 @@ public class Log extends AbstactLog {
      * @param tr An throwable to log
      */
     public static void i(Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedThrowable(tr).toString(), tr);
+        logToAll(INFO, getTag(), getFormattedThrowable(tr).toString(), tr);
     }
 
     /**
@@ -293,10 +261,7 @@ public class Log extends AbstactLog {
      * @param tr An throwable to log
      */
     public static void w(Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.WARNING, Format.getTag(), Format.getFormattedThrowable(tr).toString(), tr);
+        logToAll(WARNING, getTag(), getFormattedThrowable(tr).toString(), tr);
     }
 
     /**
@@ -305,10 +270,7 @@ public class Log extends AbstactLog {
      * @param tr An throwable to log
      */
     public static void e(Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.ERROR, Format.getTag(), Format.getFormattedThrowable(tr).toString(), tr);
+        logToAll(ERROR, getTag(), getFormattedThrowable(tr).toString(), tr);
     }
 
     /**
@@ -320,10 +282,7 @@ public class Log extends AbstactLog {
         if (tr instanceof RuntimeException) {
             throw (RuntimeException) tr;
         }
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.ERROR, Format.getTag(), Format.getFormattedThrowable(tr).toString(), tr);
+        logToAll(ERROR, getTag(), getFormattedThrowable(tr).toString(), tr);
     }
 
     /**
@@ -332,10 +291,7 @@ public class Log extends AbstactLog {
      * @param tr An throwable to log
      */
     public static void wtf(Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.WTF, Format.getTag(), Format.getFormattedThrowable(tr).toString(), tr);
+        logToAll(WTF, getTag(), getFormattedThrowable(tr).toString(), tr);
     }
 
     // ==========================================================
@@ -349,10 +305,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void v(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.VERBOSE, Format.getTag(obj), Format.getFormattedMessage(message).toString());
+        logToAll(VERBOSE, getTag(obj), getFormattedMessage(message).toString());
     }
 
     /**
@@ -363,10 +316,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void d(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.DEBUG, Format.getTag(obj), Format.getFormattedMessage(message).toString());
+        logToAll(DEBUG, getTag(obj), getFormattedMessage(message).toString());
     }
 
     /**
@@ -377,10 +327,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void i(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(obj), Format.getFormattedMessage(message).toString());
+        logToAll(INFO, getTag(obj), getFormattedMessage(message).toString());
     }
 
     /**
@@ -391,10 +338,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void w(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.WARNING, Format.getTag(obj), Format.getFormattedMessage(message).toString());
+        logToAll(WARNING, getTag(obj), getFormattedMessage(message).toString());
     }
 
     /**
@@ -406,10 +350,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void e(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.ERROR, Format.getTag(obj), Format.getFormattedMessage(message).toString());
+        logToAll(ERROR, getTag(obj), getFormattedMessage(message).toString());
     }
 
     /**
@@ -421,10 +362,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void wtf(Object obj, String message) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.WTF, Format.getTag(obj), Format.getFormattedMessage(message).toString());
+        logToAll(WTF, getTag(obj), getFormattedMessage(message).toString());
     }
 
     // ==========================================================
@@ -439,10 +377,7 @@ public class Log extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void v(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.VERBOSE, Format.getTag(obj), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(VERBOSE, getTag(obj), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     /**
@@ -455,10 +390,7 @@ public class Log extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void d(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.DEBUG, Format.getTag(obj), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(DEBUG, getTag(obj), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     /**
@@ -471,10 +403,7 @@ public class Log extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void i(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(obj), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(INFO, getTag(obj), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     /**
@@ -487,10 +416,7 @@ public class Log extends AbstactLog {
      * @param tr      An throwable to log
      */
     public static void w(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.WARNING, Format.getTag(obj), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(WARNING, getTag(obj), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     /**
@@ -503,10 +429,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void e(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.ERROR, Format.getTag(obj), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(ERROR, getTag(obj), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     /**
@@ -519,10 +442,7 @@ public class Log extends AbstactLog {
      * @param message The message you would like logged.
      */
     public static void wtf(Object obj, String message, Throwable tr) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.WTF, Format.getTag(obj), Format.getFormattedThrowable(message, tr).toString(), tr);
+        logToAll(WTF, getTag(obj), getFormattedThrowable(message, tr).toString(), tr);
     }
 
     // =========================== Collections, arrays and objects ===============================
@@ -543,10 +463,7 @@ public class Log extends AbstactLog {
      * @param title a title string
      */
     public static void map(Map<?, ?> map, String title) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.map(map), title).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.map(map), title).toString());
     }
 
     /**
@@ -565,10 +482,7 @@ public class Log extends AbstactLog {
      * @param title a title string
      */
     public static void list(List<?> list, String title) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.list(list), title).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.list(list), title).toString());
     }
 
     /**
@@ -587,10 +501,7 @@ public class Log extends AbstactLog {
      * @param title a title string
      */
     public static <T> void array(T[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.array(array), title).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.array(array), title).toString());
     }
 
     /**
@@ -609,10 +520,7 @@ public class Log extends AbstactLog {
      * @param title a title string
      */
     public static void array(String[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.array(array), title).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.array(array), title).toString());
     }
 
     /**
@@ -630,10 +538,7 @@ public class Log extends AbstactLog {
      * @param array an array
      */
     public static void array(int[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.array(array), title).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.array(array), title).toString());
     }
 
     /**
@@ -651,10 +556,7 @@ public class Log extends AbstactLog {
      * @param array an array
      */
     public static void array(float[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.array(array), title).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.array(array), title).toString());
     }
 
     /**
@@ -672,10 +574,7 @@ public class Log extends AbstactLog {
      * @param array an array
      */
     public static void array(boolean[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.array(array), title).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.array(array), title).toString());
     }
 
     /**
@@ -693,10 +592,7 @@ public class Log extends AbstactLog {
      * @param array an array
      */
     public static void array(char[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.array(array), title).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.array(array), title).toString());
     }
 
     /**
@@ -714,10 +610,7 @@ public class Log extends AbstactLog {
      * @param array an array
      */
     public static void array(double[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.array(array), title).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.array(array), title).toString());
     }
 
     /**
@@ -735,10 +628,7 @@ public class Log extends AbstactLog {
      * @param array an array
      */
     public static void array(long[] array, String title) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.array(array), title).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.array(array), title).toString());
     }
 
     /**
@@ -747,10 +637,7 @@ public class Log extends AbstactLog {
      * @param obj a class for representation
      */
     public static void objl(Object obj) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.objl(obj), obj.getClass().getSimpleName()).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.objl(obj), obj.getClass().getSimpleName()).toString());
     }
 
     /**
@@ -759,10 +646,7 @@ public class Log extends AbstactLog {
      * @param obj a class for representation
      */
     public static void objn(Object obj) {
-        if (isDisabled) {
-            return;
-        }
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(Format.objl(obj), obj.getClass().getSimpleName()).toString());
+        logToAll(INFO, getTag(), getFormattedMessage(Format.objl(obj), obj.getClass().getSimpleName()).toString());
     }
 
     /**
@@ -810,13 +694,10 @@ public class Log extends AbstactLog {
      * Logged the current Thread info
      */
     public static void threadInfo() {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addThreadInfo(sb, Thread.currentThread());
-        sb.append(Format.NL);
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(sb).toString());
+        addThreadInfo(sb, currentThread());
+        sb.append(NL);
+        logToAll(INFO, getTag(), getFormattedMessage(sb).toString());
     }
 
     /**
@@ -825,28 +706,22 @@ public class Log extends AbstactLog {
      * @param throwable An throwable to log
      */
     public static void threadInfo(Throwable throwable) {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addThreadInfo(sb, Thread.currentThread());
-        sb.append(Format.NL);
-        Format.addStackTrace(sb, throwable);
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(sb).toString());
+        addThreadInfo(sb, currentThread());
+        sb.append(NL);
+        addStackTrace(sb, throwable);
+        logToAll(INFO, getTag(), getFormattedMessage(sb).toString());
     }
 
     /**
      * Logged the current Thread info and a message
      */
     public static void threadInfo(@Nullable String message) {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addThreadInfo(sb, Thread.currentThread());
-        sb.append(Format.NL);
-        Format.addMessage(sb, message);
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(sb).toString());
+        addThreadInfo(sb, currentThread());
+        sb.append(NL);
+        addMessage(sb, message);
+        logToAll(INFO, getTag(), getFormattedMessage(sb).toString());
     }
 
     /**
@@ -856,15 +731,12 @@ public class Log extends AbstactLog {
      * @param throwable An throwable to log
      */
     public static void threadInfo(String message, Throwable throwable) {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addThreadInfo(sb, Thread.currentThread());
-        sb.append(Format.NL);
-        Format.addMessage(sb, message);
-        Format.addStackTrace(sb, throwable);
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(sb.toString()).toString());
+        addThreadInfo(sb, currentThread());
+        sb.append(NL);
+        addMessage(sb, message);
+        addStackTrace(sb, throwable);
+        logToAll(INFO, getTag(), getFormattedMessage(sb.toString()).toString());
     }
 
     /**
@@ -874,14 +746,11 @@ public class Log extends AbstactLog {
      * @param throwable An throwable to log
      */
     public static void threadInfo(Thread thread, Throwable throwable) {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addThreadInfo(sb, thread);
-        sb.append(Format.NL);
-        Format.addStackTrace(sb, throwable);
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(sb.toString()).toString());
+        addThreadInfo(sb, thread);
+        sb.append(NL);
+        addStackTrace(sb, throwable);
+        logToAll(INFO, getTag(), getFormattedMessage(sb.toString()).toString());
     }
 
     /**
@@ -897,13 +766,10 @@ public class Log extends AbstactLog {
      * @param message a custom message
      */
     public static void stackTrace(String message) {
-        if (isDisabled) {
-            return;
-        }
         StringBuilder sb = new StringBuilder();
-        Format.addMessage(sb, message);
-        Format.addStackTrace(sb, Thread.currentThread());
-        logToAll(LogInterceptor.Level.INFO, Format.getTag(), Format.getFormattedMessage(sb.toString()).toString());
+        addMessage(sb, message);
+        addStackTrace(sb, currentThread());
+        logToAll(INFO, getTag(), getFormattedMessage(sb.toString()).toString());
     }
 
 }

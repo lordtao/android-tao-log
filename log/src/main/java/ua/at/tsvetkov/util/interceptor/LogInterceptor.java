@@ -4,7 +4,33 @@ public abstract class LogInterceptor {
 
     private boolean isDisabled = false;
 
-    public enum Level {VERBOSE, INFO, DEBUG, WARNING, ERROR, WTF}
+    public enum Level {
+        VERBOSE, INFO, DEBUG, WARNING, ERROR, WTF;
+
+        public char getShortName() {
+            switch (this){
+                case VERBOSE:{
+                    return 'V';
+                }
+                case INFO:{
+                    return 'I';
+                }
+                case DEBUG:{
+                    return 'D';
+                }
+                case WARNING:{
+                    return 'W';
+                }
+                case ERROR:{
+                    return 'E';
+                }
+                case WTF:{
+                    return 'F';
+                }
+            }
+            return '?';
+        }
+    }
 
     /**
      * Intercepted log
@@ -16,8 +42,12 @@ public abstract class LogInterceptor {
      */
     public abstract void log(Level level, String tag, String msg, Throwable throwable);
 
-    public void setDisabled(boolean isDisabled) {
-        this.isDisabled = isDisabled;
+    public void setDisabled() {
+        this.isDisabled = true;
+    }
+
+    public void setEnabled() {
+        this.isDisabled = false;
     }
 
     public boolean isEnabled() {

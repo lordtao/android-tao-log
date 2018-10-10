@@ -3,6 +3,7 @@ package ua.at.tsvetkov.demo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Random;
 
 import ua.at.tsvetkov.util.Log;
 import ua.at.tsvetkov.util.LongLog;
+import ua.at.tsvetkov.util.interceptor.LogToFileInterceptor;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
+      final LogToFileInterceptor interceptor = new LogToFileInterceptor( this);
+
+      Log.addInterceptor(interceptor);
+
       runLogExamples();
 
       runFragmentStackLoggerExample();
@@ -61,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
 
       Test t = new Test("TTTTTT");
       t.getName();
+
+      findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            interceptor.shareZippedLog(MainActivity.this);
+         }
+      });
 
    }
 

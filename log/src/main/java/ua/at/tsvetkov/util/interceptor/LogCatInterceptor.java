@@ -6,7 +6,7 @@ public class LogCatInterceptor extends LogInterceptor {
 
     @Override
     public void log(Level level, String tag, String msg, @Nullable Throwable th) {
-        switch (level) {
+         switch (level) {
             case VERBOSE: {
                 if (th == null) {
                     android.util.Log.v(tag, msg);

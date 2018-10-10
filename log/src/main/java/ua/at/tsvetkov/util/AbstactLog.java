@@ -9,30 +9,42 @@ class AbstactLog {
 
     static final HashSet<LogInterceptor> interceptors = new HashSet<>();
 
-    static volatile boolean isDisabled = false;
+    private static final LogCatInterceptor logCatInterceptor = new LogCatInterceptor();
 
-    private static final LogCatInterceptor logCatInterceptor= new LogCatInterceptor();
-
-    static  {
+    static {
         interceptors.add(logCatInterceptor);
     }
 
     /**
-     * Is all logs disabled
+     * Is LogCat logs disabled
      *
      * @return is disabled
      */
     public static boolean isDisabled() {
-        return isDisabled;
+        return logCatInterceptor.isDisabled();
     }
 
     /**
-     * Set all logs disabled or enabled
-     *
-     * @param isDisable is disabled
+     * Set LogCat logs disabled
      */
-    public static void setDisabled(boolean isDisable) {
-        isDisabled = isDisable;
+    public static void setDisabled() {
+        logCatInterceptor.setDisabled();
+    }
+
+    /**
+     * Is LogCat logs enabled
+     *
+     * @return is enabled
+     */
+    public static boolean isEnabled() {
+        return logCatInterceptor.isEnabled();
+    }
+
+    /**
+     * Set LogCat logs enabled
+     */
+    public static void setEnabled() {
+        logCatInterceptor.setEnabled();
     }
 
     public static void addInterceptor(LogInterceptor interceptor) {
@@ -53,23 +65,23 @@ class AbstactLog {
         }
     }
 
-    public static void removeLogCatInterceptor(){
+    public static void removeLogCatInterceptor() {
         synchronized (interceptors) {
             interceptors.remove(logCatInterceptor);
         }
     }
 
-    public static void addLogCatInterceptor(){
+    public static void addLogCatInterceptor() {
         synchronized (interceptors) {
             interceptors.add(logCatInterceptor);
         }
     }
 
-    public static HashSet<LogInterceptor> getInterceptors(){
+    public static HashSet<LogInterceptor> getInterceptors() {
         return interceptors;
     }
 
-    static void logToAll(LogInterceptor.Level level, String tag, String message) {
+    protected static void logToAll(LogInterceptor.Level level, String tag, String message) {
         for (LogInterceptor interceptor : interceptors) {
             if (interceptor.isEnabled()) {
                 interceptor.log(level, tag, message, null);
@@ -77,7 +89,7 @@ class AbstactLog {
         }
     }
 
-    static void logToAll(LogInterceptor.Level level, String tag, String message, Throwable throwable) {
+    protected static void logToAll(LogInterceptor.Level level, String tag, String message, Throwable throwable) {
         for (LogInterceptor interceptor : interceptors) {
             if (interceptor.isEnabled()) {
                 interceptor.log(level, tag, message, throwable);
