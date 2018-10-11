@@ -7,10 +7,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -54,7 +50,7 @@ public class LogToFileInterceptor extends LogInterceptor {
     }
 
     @Override
-    public void log(Level level, String tag, String msg, @Nullable Throwable th) {
+    public void log(Level level, String tag, String msg, Throwable th) {
         if (file == null) {
             Log.w(TAG, "Log file is not set");
             return;
@@ -85,7 +81,6 @@ public class LogToFileInterceptor extends LogInterceptor {
         writeAsync(header);
     }
 
-    @NonNull
     public String getLogFileName() {
         return filePath + File.separator + fileName + '.' + extension;
     }
@@ -110,7 +105,6 @@ public class LogToFileInterceptor extends LogInterceptor {
      *
      * @param activity
      */
-    @UiThread
     public void shareZippedLog(final Activity activity) {
         executor.execute(new Runnable() {
 
@@ -146,12 +140,10 @@ public class LogToFileInterceptor extends LogInterceptor {
         });
     }
 
-    @WorkerThread
     public void logToZipFile(ZipListener listener) {
         zip(getLogFileName(), getZipFileName(), listener);
     }
 
-    @NonNull
     private String createHeader() {
         ApplicationInfo appInfo = context.getApplicationInfo();
         String version = "";

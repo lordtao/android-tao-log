@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 def versionMajor = 1
 def versionMinor = 4
-def versionPatch = 7
+def versionPatch = 8
 
 version = "${versionMajor}.${versionMinor}.${versionPatch}"
 
@@ -33,7 +33,6 @@ android {
 final SUPPORT_LIBRARY_VERSION = '27.1.0'
 
 dependencies {
-    implementation "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
     implementation "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
     implementation "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
 }

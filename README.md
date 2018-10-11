@@ -110,8 +110,11 @@ add to your dependencies in build.gradle
 
 Changelog
 ---------
+#### 1.4.8 -- removed annotations
+* removed annotations for backward compatibility
+
 #### 1.4.7 -- added ToFileInterceptor
-* Removed @ToLog annotation.
+* added ToFileInterceptor
 
 #### 1.4.6 -- Removed @ToLog annotation
 * Removed @ToLog annotation.
