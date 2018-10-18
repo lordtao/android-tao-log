@@ -55,7 +55,7 @@ import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WTF;
  *
  * @author A.Tsvetkov 2018 http://tsvetkov.at.ua mailto:al@ukr.net
  */
-public class LongLog extends AbstactLog {
+public class LongLog extends AbstractLog {
 
     /**
      * Default size for message string.

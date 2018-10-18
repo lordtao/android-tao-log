@@ -30,8 +30,6 @@ import android.support.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
-import ua.at.tsvetkov.util.interceptor.LogInterceptor;
-
 import static java.lang.Thread.currentThread;
 import static ua.at.tsvetkov.util.Format.NL;
 import static ua.at.tsvetkov.util.Format.addMessage;
@@ -40,7 +38,6 @@ import static ua.at.tsvetkov.util.Format.addThreadInfo;
 import static ua.at.tsvetkov.util.Format.getFormattedMessage;
 import static ua.at.tsvetkov.util.Format.getFormattedThrowable;
 import static ua.at.tsvetkov.util.Format.getTag;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level;
 import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.DEBUG;
 import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.ERROR;
 import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.INFO;
@@ -54,7 +51,7 @@ import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WTF;
  *
  * @author A.Tsvetkov 2010 http://tsvetkov.at.ua mailto:al@ukr.net
  */
-public class Log extends AbstactLog {
+public class Log extends AbstractLog {
 
     static volatile boolean isLogOutlined = true;
     static volatile boolean isAlignNewLines = false;

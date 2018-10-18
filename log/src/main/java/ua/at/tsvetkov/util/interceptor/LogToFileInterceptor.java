@@ -55,7 +55,7 @@ public class LogToFileInterceptor extends LogInterceptor {
             Log.w(TAG, "Log file is not set");
             return;
         }
-        final String message = new Date().toString() + " " + level + " " + msg;
+        final String message = new Date().toString() + " " + level + " " + tag + ": " + msg;
         writeAsync(message);
     }
 

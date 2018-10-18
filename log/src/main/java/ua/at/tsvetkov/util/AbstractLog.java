@@ -5,7 +5,7 @@ import java.util.HashSet;
 import ua.at.tsvetkov.util.interceptor.LogCatInterceptor;
 import ua.at.tsvetkov.util.interceptor.LogInterceptor;
 
-class AbstactLog {
+class AbstractLog {
 
     static final HashSet<LogInterceptor> interceptors = new HashSet<>();
 
