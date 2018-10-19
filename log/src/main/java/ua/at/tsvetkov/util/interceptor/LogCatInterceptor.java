@@ -1,57 +1,58 @@
 package ua.at.tsvetkov.util.interceptor;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 public class LogCatInterceptor extends LogInterceptor {
 
     @Override
     public void log(Level level, String tag, String msg, @Nullable Throwable th) {
-         switch (level) {
+        switch (level) {
             case VERBOSE: {
                 if (th == null) {
-                    android.util.Log.v(tag, msg);
+                    Log.v(tag, msg);
                 } else {
-                    android.util.Log.v(tag, msg, th);
+                    Log.v(tag, msg, th);
                 }
                 break;
             }
             case INFO: {
                 if (th == null) {
-                    android.util.Log.i(tag, msg);
+                    Log.i(tag, msg);
                 } else {
-                    android.util.Log.i(tag, msg, th);
+                    Log.i(tag, msg, th);
                 }
                 break;
             }
             case DEBUG: {
                 if (th == null) {
-                    android.util.Log.d(tag, msg);
+                    Log.d(tag, msg);
                 } else {
-                    android.util.Log.d(tag, msg, th);
+                    Log.d(tag, msg, th);
                 }
                 break;
             }
             case WARNING: {
                 if (th == null) {
-                    android.util.Log.w(tag, msg);
+                    Log.w(tag, msg);
                 } else {
-                    android.util.Log.w(tag, msg, th);
+                    Log.w(tag, msg, th);
                 }
                 break;
             }
             case ERROR: {
                 if (th == null) {
-                    android.util.Log.e(tag, msg);
+                    Log.e(tag, msg);
                 } else {
-                    android.util.Log.e(tag, msg, th);
+                    Log.e(tag, msg, th);
                 }
                 break;
             }
             case WTF: {
                 if (th == null) {
-                    android.util.Log.wtf(tag, msg);
+                    Log.wtf(tag, msg);
                 } else {
-                    android.util.Log.wtf(tag, msg, th);
+                    Log.wtf(tag, msg, th);
                 }
                 break;
             }

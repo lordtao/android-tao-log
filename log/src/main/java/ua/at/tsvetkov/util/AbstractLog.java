@@ -1,5 +1,6 @@
 package ua.at.tsvetkov.util;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 import ua.at.tsvetkov.util.interceptor.LogCatInterceptor;
@@ -7,12 +8,12 @@ import ua.at.tsvetkov.util.interceptor.LogInterceptor;
 
 class AbstractLog {
 
-    static final HashSet<LogInterceptor> interceptors = new HashSet<>();
+    protected static final HashMap<Integer, LogInterceptor> interceptors = new HashMap<>();
 
-    private static final LogCatInterceptor logCatInterceptor = new LogCatInterceptor();
+    protected static final LogCatInterceptor logCatInterceptor = new LogCatInterceptor();
 
     static {
-        interceptors.add(logCatInterceptor);
+        interceptors.put(logCatInterceptor.hashCode(), logCatInterceptor);
     }
 
     /**
@@ -49,7 +50,7 @@ class AbstractLog {
 
     public static void addInterceptor(LogInterceptor interceptor) {
         synchronized (interceptors) {
-            interceptors.add(interceptor);
+            interceptors.put(interceptor.hashCode(), interceptor);
         }
     }
 
@@ -73,26 +74,48 @@ class AbstractLog {
 
     public static void addLogCatInterceptor() {
         synchronized (interceptors) {
-            interceptors.add(logCatInterceptor);
+            interceptors.put(logCatInterceptor.hashCode(), logCatInterceptor);
         }
     }
 
-    public static HashSet<LogInterceptor> getInterceptors() {
+    public static HashMap<Integer, LogInterceptor> getInterceptors() {
         return interceptors;
     }
 
+    public static LogInterceptor getInterceptor(int id) {
+        synchronized (interceptors) {
+            return interceptors.get(id);
+        }
+    }
+
+    public static boolean hasInterceptor(int id) {
+        synchronized (interceptors) {
+            return interceptors.containsKey(id);
+        }
+    }
+
+    public static boolean hasInterceptor(LogInterceptor interceptor) {
+        synchronized (interceptors) {
+            return interceptors.containsValue(interceptor);
+        }
+    }
+
     protected static void logToAll(LogInterceptor.Level level, String tag, String message) {
-        for (LogInterceptor interceptor : interceptors) {
-            if (interceptor.isEnabled()) {
-                interceptor.log(level, tag, message, null);
+        synchronized (interceptors) {
+            for (LogInterceptor interceptor : interceptors.values()) {
+                if (interceptor.isEnabled()) {
+                    interceptor.log(level, tag, message, null);
+                }
             }
         }
     }
 
     protected static void logToAll(LogInterceptor.Level level, String tag, String message, Throwable throwable) {
-        for (LogInterceptor interceptor : interceptors) {
-            if (interceptor.isEnabled()) {
-                interceptor.log(level, tag, message, throwable);
+        synchronized (interceptors) {
+            for (LogInterceptor interceptor : interceptors.values()) {
+                if (interceptor.isEnabled()) {
+                    interceptor.log(level, tag, message, throwable);
+                }
             }
         }
     }

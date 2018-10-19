@@ -11,6 +11,7 @@ import android.net.Uri;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,15 +27,20 @@ import ua.at.tsvetkov.util.Log;
 
 public class LogToFileInterceptor extends LogInterceptor {
 
-    private static final String TAG = "LogInterceptor";
+    public static final char LOG_START_CHAR = '·';
+
+    private static final String INDEX_FILE_EXT = "ids";
     private static final Executor executor = Executors.newFixedThreadPool(1);
     private static final int BUFFER_SIZE = 8192;
     private final Context context;
+    private final boolean isIndexed;
 
     private String filePath;
     private String fileName;
     private String extension;
     private File file;
+    private File indexFile;
+    private long index;
 
     /**
      * Create the Log Interceptor which save a log messages to file (default dir - context.getCacheDir() file Log.txt).
@@ -43,7 +49,20 @@ public class LogToFileInterceptor extends LogInterceptor {
      * @param context
      */
     public LogToFileInterceptor(Context context) {
+        this(context, false);
+    }
+
+    /**
+     * Create the Log Interceptor which save a log messages to file (default dir - context.getCacheDir() file Log.txt).
+     * You can share the zipped log with help of any external applications. For example by email, google drive and etc.
+     * Add index file with log line numbers
+     *
+     * @param context
+     * @param isIndexed is need to create index file
+     */
+    public LogToFileInterceptor(Context context, boolean isIndexed) {
         this.context = context;
+        this.isIndexed = isIndexed;
         setFileName(context.getCacheDir().getAbsolutePath(),
                 "Log",
                 "txt");
@@ -52,10 +71,10 @@ public class LogToFileInterceptor extends LogInterceptor {
     @Override
     public void log(Level level, String tag, String msg, Throwable th) {
         if (file == null) {
-            Log.w(TAG, "Log file is not set");
+            Log.w(getClass().getName(), "Log file is not set");
             return;
         }
-        final String message = new Date().toString() + " " + level + " " + tag + ": " + msg;
+        final String message = LOG_START_CHAR + new Date().toString() + " " + level + " " + tag + ": " + msg;
         writeAsync(message);
     }
 
@@ -75,8 +94,18 @@ public class LogToFileInterceptor extends LogInterceptor {
         this.extension = extension;
         this.file = new File(getLogFileName());
         this.file.delete();
-
         Log.i("Created new log file " + file.toString());
+
+        index = 0;
+        if (isIndexed) {
+            if (this.indexFile != null) {
+                this.indexFile.delete();
+            }
+            this.indexFile = new File(getIndexFileName());
+            this.indexFile.delete();
+            Log.i("Created new log indexes file " + indexFile.toString());
+        }
+
         String header = createHeader();
         writeAsync(header);
     }
@@ -89,15 +118,28 @@ public class LogToFileInterceptor extends LogInterceptor {
         return context.getExternalCacheDir() + File.separator + fileName + ".zip";
     }
 
+    public String getIndexFileName() {
+        return filePath + File.separator + fileName + '.' + INDEX_FILE_EXT;
+    }
+
     /**
      * Clear current log file
      */
     public void clear() {
         if (file != null) {
             file.delete();
-        } else {
-            Log.w(TAG, "Log file name is not set");
         }
+        if (indexFile != null) {
+            indexFile.delete();
+        }
+    }
+
+    public void startRecord() {
+        setEnabled();
+    }
+
+    public void stopRecord() {
+        setDisabled();
     }
 
     /**
@@ -202,6 +244,9 @@ public class LogToFileInterceptor extends LogInterceptor {
             @Override
             public void run() {
                 writeLog(message);
+                if (isIndexed) {
+                    writeIndex();
+                }
             }
 
         });
@@ -216,16 +261,40 @@ public class LogToFileInterceptor extends LogInterceptor {
             bw.write(message);
             bw.newLine();
             bw.flush();
+            index = file.length();
             return file;
         } catch (IOException e) {
-            Log.e(TAG, "WriteLog", e);
+            Log.e(getClass().getName(), "WriteLog", e);
             return null;
         } finally {
             if (bw != null) {
                 try {
                     bw.close();
                 } catch (IOException e) {
-                    Log.e(TAG, e);
+                    Log.e(getClass().getName(), e);
+                }
+            }
+        }
+    }
+
+    private File writeIndex() {
+        DataOutputStream ds = null;
+        try {
+            file.createNewFile();
+            FileOutputStream os = new FileOutputStream(indexFile, true);
+            ds = new DataOutputStream(os);
+            ds.writeLong(index);
+            ds.flush();
+            return indexFile;
+        } catch (IOException e) {
+            Log.e(getClass().getName(), "WriteIndex", e);
+            return null;
+        } finally {
+            if (ds != null) {
+                try {
+                    ds.close();
+                } catch (IOException e) {
+                    Log.e(getClass().getName(), e);
                 }
             }
         }
