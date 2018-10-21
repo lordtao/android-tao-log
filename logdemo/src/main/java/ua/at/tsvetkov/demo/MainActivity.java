@@ -63,7 +63,13 @@ public class MainActivity extends AppCompatActivity {
 
       runFragmentStackLoggerExample();
 
-      runLongLogExamples();
+      new Thread(new Runnable() {
+         @Override
+         public void run() {
+            runLongLogExamples();
+         }
+      }).start();
+
 
       Test t = new Test("TTTTTT");
       t.getName();
