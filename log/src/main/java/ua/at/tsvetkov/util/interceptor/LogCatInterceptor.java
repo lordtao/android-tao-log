@@ -3,6 +3,8 @@ package ua.at.tsvetkov.util.interceptor;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import ua.at.tsvetkov.util.Level;
+
 public class LogCatInterceptor extends LogInterceptor {
 
     @Override

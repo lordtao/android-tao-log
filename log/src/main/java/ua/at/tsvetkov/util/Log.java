@@ -38,12 +38,12 @@ import static ua.at.tsvetkov.util.Format.addThreadInfo;
 import static ua.at.tsvetkov.util.Format.getFormattedMessage;
 import static ua.at.tsvetkov.util.Format.getFormattedThrowable;
 import static ua.at.tsvetkov.util.Format.getTag;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.DEBUG;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.ERROR;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.INFO;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.VERBOSE;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WARNING;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WTF;
+import static ua.at.tsvetkov.util.Level.DEBUG;
+import static ua.at.tsvetkov.util.Level.ERROR;
+import static ua.at.tsvetkov.util.Level.INFO;
+import static ua.at.tsvetkov.util.Level.VERBOSE;
+import static ua.at.tsvetkov.util.Level.WARNING;
+import static ua.at.tsvetkov.util.Level.WTF;
 
 /**
  * Extended logger. Allows you to automatically adequately logged class, method and line call in the log. Makes it easy to write logs. For

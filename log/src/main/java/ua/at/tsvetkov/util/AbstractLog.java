@@ -100,7 +100,7 @@ class AbstractLog {
         }
     }
 
-    protected static void logToAll(LogInterceptor.Level level, String tag, String message) {
+    protected static void logToAll(Level level, String tag, String message) {
         synchronized (interceptors) {
             for (LogInterceptor interceptor : interceptors.values()) {
                 if (interceptor.isEnabled()) {
@@ -110,7 +110,7 @@ class AbstractLog {
         }
     }
 
-    protected static void logToAll(LogInterceptor.Level level, String tag, String message, Throwable throwable) {
+    protected static void logToAll(Level level, String tag, String message, Throwable throwable) {
         synchronized (interceptors) {
             for (LogInterceptor interceptor : interceptors.values()) {
                 if (interceptor.isEnabled()) {

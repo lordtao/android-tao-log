@@ -32,8 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import ua.at.tsvetkov.util.interceptor.LogInterceptor.Level;
-
 import static java.lang.Thread.currentThread;
 import static ua.at.tsvetkov.util.Format.NL;
 import static ua.at.tsvetkov.util.Format.addMessage;
@@ -42,12 +40,12 @@ import static ua.at.tsvetkov.util.Format.addThreadInfo;
 import static ua.at.tsvetkov.util.Format.getFormattedMessage;
 import static ua.at.tsvetkov.util.Format.getFormattedThrowable;
 import static ua.at.tsvetkov.util.Format.getTag;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.DEBUG;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.ERROR;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.INFO;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.VERBOSE;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WARNING;
-import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WTF;
+import static ua.at.tsvetkov.util.Level.DEBUG;
+import static ua.at.tsvetkov.util.Level.ERROR;
+import static ua.at.tsvetkov.util.Level.INFO;
+import static ua.at.tsvetkov.util.Level.VERBOSE;
+import static ua.at.tsvetkov.util.Level.WARNING;
+import static ua.at.tsvetkov.util.Level.WTF;
 
 /**
  * Shows a long log string in LogCat. The LogCat have the real message size for both binary and non-binary logs is ~4076 bytes.

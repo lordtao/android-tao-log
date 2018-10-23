@@ -1,38 +1,12 @@
 package ua.at.tsvetkov.util.interceptor;
 
+import ua.at.tsvetkov.util.Level;
+
 public abstract class LogInterceptor {
 
     private String tag;
 
     private boolean isDisabled = false;
-
-    public enum Level {
-        VERBOSE, INFO, DEBUG, WARNING, ERROR, WTF;
-
-        public char getShortName() {
-            switch (this) {
-                case VERBOSE: {
-                    return 'V';
-                }
-                case INFO: {
-                    return 'I';
-                }
-                case DEBUG: {
-                    return 'D';
-                }
-                case WARNING: {
-                    return 'W';
-                }
-                case ERROR: {
-                    return 'E';
-                }
-                case WTF: {
-                    return 'F';
-                }
-            }
-            return '?';
-        }
-    }
 
     LogInterceptor() {
         tag = this.getClass().getName();
