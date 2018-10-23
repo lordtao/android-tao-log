@@ -140,19 +140,25 @@ public class LogFragment extends Fragment {
             for (int i = 0; i < 5; i++) { // Skip header
                 reader.readLine();
             }
+            boolean isEndOfMessage = false;
+            String line;
+            int inLogLineNumber = 0;
             while (reader.ready()) {
                 sb.setLength(0);
-                boolean isEndOfMessage = false;
-                String line = null;
+                isEndOfMessage = false;
+                inLogLineNumber = 0;
                 try {
                     while (!isEndOfMessage) {
+                        inLogLineNumber++;
                         line = replaceLongLine(reader.readLine());
                         sb.append(line.replace(" ▪ ", ""));
-                        sb.append('\n');
+                        if(inLogLineNumber > 1) {
+                            sb.append('\n');
+                        }
                         if (line.contains(LogToFileInterceptor.LOG_END_OF_MESSAGE)) {
                             isEndOfMessage = true;
                             int length = sb.length();
-                            sb.delete(length - 2, length);
+                            sb.delete(length - 3, length);
                             logMessages.add(new LogItem(sb.toString()));
                         }
                     }
@@ -175,7 +181,7 @@ public class LogFragment extends Fragment {
     }
 
     private String replaceLongLine(String line) {
-        if(line.contains("=========") || line.contains("··········") || line.contains("---------")){
+        if (line.contains("=========") || line.contains("··········") || line.contains("---------")) {
             return line.substring(0, MAX_DECOR_LENGTH);
         }
         return line;

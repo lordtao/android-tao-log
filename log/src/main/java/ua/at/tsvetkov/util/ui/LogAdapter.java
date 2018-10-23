@@ -60,7 +60,7 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
 
         LogColor color = colorsSet.getColor(logItem.getLevel());
         holder.containerView.setBackgroundColor(color.getBackground());
-        holder.dateTextView.setTextColor(Color.parseColor("#000000"));
+        holder.dateTextView.setTextColor(color.getForeground());
         holder.tagTextView.setTextColor(color.getForeground());
         holder.messageTextView.setTextColor(color.getForeground());
     }

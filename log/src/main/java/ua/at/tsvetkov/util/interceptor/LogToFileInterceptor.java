@@ -36,6 +36,7 @@ public class LogToFileInterceptor extends LogInterceptor {
     private static final String INDEX_FILE_EXT = "ids";
     private static final Executor executor = Executors.newFixedThreadPool(1);
     private static final int BUFFER_SIZE = 8192;
+    private static SimpleDateFormat dateFormat;
     private final Context context;
     private final boolean isIndexed;
 
@@ -70,6 +71,7 @@ public class LogToFileInterceptor extends LogInterceptor {
         setFileName(context.getCacheDir().getAbsolutePath(),
                 "Log",
                 "txt");
+        setDefaultFormat();
     }
 
     @Override
@@ -78,7 +80,7 @@ public class LogToFileInterceptor extends LogInterceptor {
             Log.w(getClass().getName(), "Log file is not set");
             return;
         }
-        final String message = new Date().toString() + " " + LOG_SEPARATOR + level + " " + LOG_SEPARATOR + tag + ": " + LOG_SEPARATOR + msg + LOG_END_OF_MESSAGE + '\n';
+        final String message = getStringDate(new Date()) + " " + LOG_SEPARATOR + level + " " + LOG_SEPARATOR + tag + ": " + LOG_SEPARATOR + msg + LOG_END_OF_MESSAGE + '\n';
         writeAsync(message);
     }
 
@@ -188,6 +190,28 @@ public class LogToFileInterceptor extends LogInterceptor {
 
     public void logToZipFile(ZipListener listener) {
         zip(getLogFileName(), getZipFileName(), listener);
+    }
+
+    public void setDefaultFormat() {
+        this.dateFormat =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
+
+    public void setDateFormat(SimpleDateFormat dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public String getStringDate(Date date) {
+        return dateFormat.format(date);
+    }
+
+    public Date getDate(String dateStr) {
+        Date date = null;
+        try {
+            date = dateFormat.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
     private String createHeader() {
