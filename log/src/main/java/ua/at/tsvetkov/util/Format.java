@@ -83,6 +83,7 @@ final class Format {
    static final String NL = "\n";
    static final String ARRAY = "Array";
    public static final char SPACE = ' ';
+   public static final String AT = "at ";
 
    static volatile int maxTagLength = MAX_TAG_LENGTH;
    static volatile int beforeTagSpacesCount;
@@ -815,7 +816,9 @@ final class Format {
    static StringBuilder getFormattedThrowable(String message, Throwable throwable) {
       String[] lines = null;
       if (message != null) {
-         lines = message.split("\\n");
+         lines = message.concat("\n" + getThrowableMessage(throwable)).split("\\n");
+      } else {
+         lines = getThrowableMessage(throwable).split("\\n");
       }
       int linesCount = getLinesCount(lines, throwable);
       lines = createLines(throwable, lines, linesCount);
@@ -831,6 +834,11 @@ final class Format {
       appendLines(lines, sb);
 
       return sb;
+   }
+
+   @NonNull
+   private static String getThrowableMessage(Throwable throwable) {
+      return throwable.getClass().getName() + ": " + throwable.getMessage();
    }
 
    private static int getLinesCount(String title, String[] lines) {
@@ -900,9 +908,9 @@ final class Format {
             StackTraceElement[] stack = throwable.getStackTrace();
             for (int i = 0; i < stack.length; i++) {
                if (i == 0) {
-                  lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + stack[i].toString();
+                  lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + AT + stack[i].toString();
                } else {
-                  lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + THROWABLE_DELIMITER_PREFIX + stack[i].toString();
+                  lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + THROWABLE_DELIMITER_PREFIX + AT + stack[i].toString();
                }
             }
          }
@@ -965,7 +973,8 @@ final class Format {
    static void addStackTrace(StringBuilder sb, StackTraceElement[] traces) {
       for (int i = 4; i < traces.length; i++) {
          sb.append(THROWABLE_DELIMITER_PREFIX);
-         sb.append(traces[i].toString());
+         sb.append(AT);
+         sb.append( traces[i].toString());
          sb.append('\n');
       }
    }

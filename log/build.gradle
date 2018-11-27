@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 def versionMajor = 1
 def versionMinor = 4
-def versionPatch = 9
+def versionPatch = 10
 
 version = "${versionMajor}.${versionMinor}.${versionPatch}"
 

@@ -110,6 +110,9 @@ add to your dependencies in build.gradle
 
 Changelog
 ---------
+#### 1.4.10 -- Fixed throwable doubles info
+* Fixed throwable doubles info
+
 #### 1.4.8 -- removed annotations
 * removed annotations for backward compatibility
 
