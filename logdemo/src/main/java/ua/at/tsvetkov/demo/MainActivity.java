@@ -177,8 +177,14 @@ public class MainActivity extends AppCompatActivity {
         Log.threadInfo(MSG, ex);
         Log.threadInfo(th, ex);
 
-        Log.stackTrace();
-        Log.stackTrace(MSG);
+      Log.stackTrace();
+      Log.stackTraceV(MSG);
+      Log.stackTraceI(MSG);
+      Log.stackTraceD(MSG);
+      Log.stackTraceW(MSG);
+      Log.stackTraceE(MSG);
+      Log.stackTraceWTF(MSG);
+
 
         RuntimeException rt = new RuntimeException();
         try {
@@ -235,7 +241,8 @@ public class MainActivity extends AppCompatActivity {
         Log.xml(xml);
         Log.xml(xml, 3);
 
-    }
+      ClassA.call(this, "TEST", new Throwable("Great throwable"));
+   }
 
     private void runLongLogExamples() {
         // Code example
@@ -292,8 +299,13 @@ public class MainActivity extends AppCompatActivity {
         LongLog.threadInfo(LONG_MSG, ex);
         LongLog.threadInfo(th, ex);
 
-        LongLog.stackTrace();
-        LongLog.stackTrace(LONG_MSG);
+      LongLog.stackTrace();
+      LongLog.stackTraceV(LONG_MSG);
+      LongLog.stackTraceI(LONG_MSG);
+      LongLog.stackTraceD(LONG_MSG);
+      LongLog.stackTraceW(LONG_MSG);
+      LongLog.stackTraceE(LONG_MSG);
+      LongLog.stackTraceWTF(LONG_MSG);
 
         RuntimeException rt = new RuntimeException();
         try {

@@ -55,692 +55,741 @@ import static ua.at.tsvetkov.util.Level.WTF;
  */
 public class LongLog extends AbstractLog {
 
-    /**
-     * Default size for message string.
-     */
-    public static int MAX_CHUNK = 3800;
-
-    public static int getMaxChunk() {
-        return MAX_CHUNK;
-    }
-
-    public static void setMaxChunk(int maxChunk) {
-        MAX_CHUNK = maxChunk;
-    }
-
-    /**
-     * Send a VERBOSE log message.
-     *
-     * @param message The message you would like logged.
-     */
-    public static void v(String message) {
-        print(getTag(), getFormattedMessage(message), VERBOSE, false);
-    }
-
-    /**
-     * Send a DEBUG log message.
-     *
-     * @param message The message you would like logged.
-     */
-    public static void d(String message) {
-        print(getTag(), getFormattedMessage(message), DEBUG, false);
-    }
-
-    /**
-     * Send a INFO log message.
-     *
-     * @param message The message you would like logged.
-     */
-    public static void i(String message) {
-        print(getTag(), getFormattedMessage(message), INFO, false);
-    }
-
-    /**
-     * Send a WARN log message.
-     *
-     * @param message The message you would like logged.
-     */
-    public static void w(String message) {
-        print(getTag(), getFormattedMessage(message), WARNING, false);
-    }
-
-    /**
-     * Send a ERROR log message.
-     *
-     * @param message The message you would like logged.
-     */
-    public static void e(String message) {
-        print(getTag(), getFormattedMessage(message), ERROR, false);
-    }
-
-    /**
-     * What a Terrible Failure: Report a condition that should never happen. The error will always be logged at level ASSERT with the call
-     * stack. Depending on system configuration, a report may be added to the DropBoxManager and/or the process may be terminated immediately
-     * with an error dialog.
-     *
-     * @param message The message you would like logged.
-     */
-    public static void wtf(String message) {
-        print(getTag(), getFormattedMessage(message), WTF, false);
-    }
-
-    // ==========================================================
-
-    /**
-     * Send a VERBOSE log message and log the throwable.
-     *
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    public static void v(String message, Throwable tr) {
-        print(getTag(), getFormattedThrowable(message, tr), VERBOSE, true);
-    }
-
-    /**
-     * Send a DEBUG log message and log the throwable.
-     *
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    public static void d(String message, Throwable tr) {
-        print(getTag(), getFormattedThrowable(message, tr), DEBUG, true);
-    }
-
-    /**
-     * Send a INFO log message and log the throwable.
-     *
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    public static void i(String message, Throwable tr) {
-        print(getTag(), getFormattedThrowable(message, tr), INFO, true);
-    }
-
-    /**
-     * Send a WARN log message and log the throwable.
-     *
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    public static void w(String message, Throwable tr) {
-        print(getTag(), getFormattedThrowable(message, tr), WARNING, true);
-    }
-
-    /**
-     * Send a ERROR log message and log the throwable.
-     *
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    public static void e(String message, Throwable tr) {
-        print(getTag(), getFormattedThrowable(message, tr), ERROR, true);
-    }
-
-    /**
-     * Send a ERROR log message and log the throwable. RuntimeException is not handled.
-     *
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    public static void rt(String message, Throwable tr) {
-        if (tr instanceof RuntimeException) {
-            throw (RuntimeException) tr;
-        }
-        print(getTag(), getFormattedThrowable(message, tr), ERROR, true);
-    }
-
-    /**
-     * What a Terrible Failure: Report an throwable that should never happen. Similar to wtf(String, Throwable), with a message as well.
-     *
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    public static void wtf(String message, Throwable tr) {
-        print(getTag(), getFormattedThrowable(message, tr), WTF, true);
-    }
-
-    // ==========================================================
-
-    /**
-     * Send a <b>VERBOSE</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string
-     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumberClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    public static void v(Object obj, String message) {
-        print(getTag(obj), getFormattedMessage(message), VERBOSE, false);
-    }
-
-    /**
-     * Send a <b>DEBUG</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    public static void d(Object obj, String message) {
-        print(getTag(obj), getFormattedMessage(message), DEBUG, false);
-    }
-
-    /**
-     * Send a <b>INFO</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    public static void i(Object obj, String message) {
-        print(getTag(obj), getFormattedMessage(message), INFO, false);
-    }
-
-    /**
-     * Send a <b>WARN</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    public static void w(Object obj, String message) {
-        print(getTag(obj), getFormattedMessage(message), WARNING, false);
-    }
-
-    /**
-     * Send a <b>ERROR</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string
-     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    public static void e(Object obj, String message) {
-        print(getTag(obj), getFormattedMessage(message), ERROR, false);
-    }
-
-    /**
-     * Send a <b>What a Terrible Failure: Report a condition that should never happen</b> log message. Using when you extend any Class and
-     * wont to receive full info in LogCat tag. Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    public static void wtf(Object obj, String message) {
-        print(getTag(obj), getFormattedMessage(message), WTF, false);
-    }
-
-    // ==========================================================
-
-    /**
-     * Send a <b>VERBOSE</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    public static void v(Object obj, String message, Throwable tr) {
-        print(getTag(obj), getFormattedThrowable(message, tr), VERBOSE, true);
-    }
-
-    /**
-     * Send a <b>DEBUG</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    public static void d(Object obj, String message, Throwable tr) {
-        print(getTag(obj), getFormattedThrowable(message, tr), DEBUG, true);
-    }
-
-    /**
-     * Send a <b>INFO</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    public static void i(Object obj, String message, Throwable tr) {
-        print(getTag(obj), getFormattedThrowable(message, tr), INFO, true);
-    }
-
-    /**
-     * Send a <b>WARN</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    public static void w(Object obj, String message, Throwable tr) {
-        print(getTag(obj), getFormattedThrowable(message, tr), WARNING, true);
-    }
-
-    /**
-     * Send a <b>ERROR</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param tr      An throwable to log
-     * @param message The message you would like logged.
-     */
-    public static void e(Object obj, String message, Throwable tr) {
-        print(getTag(obj), getFormattedThrowable(message, tr), ERROR, true);
-    }
-
-    /**
-     * Send a <b>What a Terrible Failure: Report a condition that should never happen</b> log message and log the throwable. Using when you
-     * extend any Class and wont to receive full info in LogCat tag. Usually you can use "this" in "objl" parameter. As result you receive tag
-     * string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
-     *
-     * @param obj     main class
-     * @param tr      An throwable to log
-     * @param message The message you would like logged.
-     */
-    public static void wtf(Object obj, String message, Throwable tr) {
-        print(getTag(obj), getFormattedThrowable(message, tr), WTF, true);
-    }
-
-    // =========================== Collections, arrays and objects ===============================
-
-    /**
-     * Logged String representation of map. Each item in new line.
-     *
-     * @param map a Map
-     */
-    public static void map(Map<?, ?> map) {
-        map(map, "Map");
-    }
-
-    /**
-     * Logged String representation of map. Each item in new line.
-     *
-     * @param map a Map
-     */
-    public static void map(Map<?, ?> map, String title) {
-        print(getTag(), getFormattedMessage(Format.map(map), title), INFO, false);
-    }
-
-    /**
-     * Logged String representation of list. Each item in new line.
-     *
-     * @param list a List
-     */
-    public static void list(List<?> list) {
-        list(list, "List");
-    }
-
-    /**
-     * Logged String representation of list. Each item in new line.
-     *
-     * @param list a List
-     */
-    public static void list(List<?> list, String title) {
-        print(getTag(), getFormattedMessage(Format.list(list), title), INFO, false);
-    }
-
-    /**
-     * Logged String representation of Objects array. Each item in new line.
-     *
-     * @param array an array
-     */
-    public static <T> void array(T[] array) {
-        array(array, Format.ARRAY);
-    }
-
-    /**
-     * Logged String representation of Objects array. Each item in new line.
-     *
-     * @param array an array
-     */
-    public static <T> void array(T[] array, String title) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
-    }
-
-    /**
-     * Logged String representation of String array. Each item in new line.
-     *
-     * @param array an array
-     */
-    public static void array(String[] array, String title) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(int[] array) {
-        array(array, Format.ARRAY);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(int[] array, String title) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(float[] array) {
-        array(array, Format.ARRAY);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(float[] array, String title) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(boolean[] array) {
-        array(array, Format.ARRAY);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(boolean[] array, String title) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(char[] array) {
-        array(array, Format.ARRAY);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(char[] array, String title) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(double[] array) {
-        array(array, Format.ARRAY);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(double[] array, String title) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(long[] array) {
-        array(array, Format.ARRAY);
-    }
-
-    /**
-     * Logged String representation of array.
-     *
-     * @param array an array
-     */
-    public static void array(long[] array, String title) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
-    }
-
-    /**
-     * Logged String representation of class.
-     *
-     * @param obj a class for representation
-     */
-    public static void objl(Object obj) {
-        print(getTag(), getFormattedMessage(Format.objl(obj), obj.getClass().getSimpleName()), INFO, false);
-    }
-
-    /**
-     * Logged String representation of Object. Each field in new line.
-     *
-     * @param obj a class for representation
-     */
-    public static void objn(Object obj) {
-        print(getTag(), getFormattedMessage(Format.objn(obj), obj.getClass().getSimpleName()), INFO, false);
-    }
-
-    /**
-     * Logged readable representation of bytes array data like 0F CD AD.... Each countPerLine bytes will print in new line
-     *
-     * @param data         your bytes array data
-     * @param countPerLine count byte per line
-     */
-    public static void hex(byte[] data, int countPerLine) {
-        print(Format.getTag(), Format.getFormattedMessage(Format.hex(data, countPerLine)), Level.INFO, false);
-    }
-
-    /**
-     * Logged readable representation of bytes array data like 0F CD AD....
-     *
-     * @param data your bytes array data
-     */
-    public static void hex(byte[] data) {
-        print(Format.getTag(), Format.getFormattedMessage(Format.hex(data)), Level.INFO, false);
-    }
-
-    /**
-     * Logged readable representation of xml with indentation 2
-     *
-     * @param xmlStr your xml data
-     */
-    public static void xml(String xmlStr) {
-        print(Format.getTag(), Format.getFormattedMessage(Format.xml(xmlStr)), Level.INFO, false);
-    }
-
-    /**
-     * Logged readable representation of xml
-     *
-     * @param xmlStr      your xml data
-     * @param indentation xml identetion
-     */
-    public static void xml(String xmlStr, int indentation) {
-        print(Format.getTag(), Format.getFormattedMessage(Format.xml(xmlStr, indentation)), Level.INFO, false);
-    }
-
-    // =========================== Thread and stack trace ===============================
-
-    /**
-     * Logged the current Thread info
-     */
-    public static void threadInfo() {
-        StringBuilder sb = new StringBuilder();
-        addThreadInfo(sb, currentThread());
-        sb.append(NL);
-
-        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
-    }
-
-    /**
-     * Logged the current Thread info and an throwable
-     *
-     * @param throwable An throwable to log
-     */
-    public static void threadInfo(Throwable throwable) {
-        StringBuilder sb = new StringBuilder();
-        addThreadInfo(sb, currentThread());
-        sb.append(NL);
-        addStackTrace(sb, throwable);
-
-        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
-    }
-
-    /**
-     * Logged the current Thread info and a message
-     */
-    public static void threadInfo(@Nullable String message) {
-        StringBuilder sb = new StringBuilder();
-        addThreadInfo(sb, currentThread());
-        sb.append(NL);
-        addMessage(sb, message);
-
-        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
-    }
-
-    /**
-     * Logged the current Thread info and a message and an throwable
-     *
-     * @param message   The message you would like logged.
-     * @param throwable An throwable to log
-     */
-    public static void threadInfo(String message, Throwable throwable) {
-        StringBuilder sb = new StringBuilder();
-        addThreadInfo(sb, currentThread());
-        sb.append(NL);
-        addMessage(sb, message);
-        addStackTrace(sb, throwable);
-
-        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
-    }
-
-    /**
-     * Logged the current Thread info and a message and an throwable
-     *
-     * @param thread    for Logged info.
-     * @param throwable An throwable to log
-     */
-    public static void threadInfo(Thread thread, Throwable throwable) {
-        StringBuilder sb = new StringBuilder();
-        addThreadInfo(sb, thread);
-        sb.append(NL);
-        addStackTrace(sb, throwable);
-
-        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
-    }
-
-    /**
-     * Logged current stack trace.
-     */
-    public static void stackTrace() {
-        stackTrace("Current stack trace:");
-    }
-
-    /**
-     * Logged current stack trace with a message.
-     *
-     * @param message a custom message
-     */
-    public static void stackTrace(String message) {
-        StringBuilder sb = new StringBuilder();
-        addMessage(sb, message);
-        addStackTrace(sb, currentThread());
-
-        print(getTag(), getFormattedMessage(sb), VERBOSE, false);
-    }
-
-    // =========================== Private methods ===============================
-
-    private static void print(String tag, StringBuilder sb, Level level, boolean isThrowableLog) {
-        ArrayList<SoftReference<CharSequence>> list = split(sb);
-        sb.setLength(0);
-        int size = list.size();
-        String message = null;
-        for (int i = 0; i < size; i++) {
-            CharSequence cs = list.get(i).get();
-            if (cs != null) {
-                message = cs.toString();
-                if (i > 0 && i < size) {
-                    if (isThrowableLog) {
-                        if (!message.startsWith(Format.THROWABLE_DELIMITER_START)) {
-                            message = Format.THROWABLE_DELIMITER_START + message;
-                        }
-                    } else {
-                        if (!message.startsWith(Format.DELIMITER_START)) {
-                            message = Format.DELIMITER_START + message;
-                        }
-                    }
-
-                }
-                String counter1 = "(Long message - part " + (i + 1) + " from " + size + ")";
-                String counter = "(" + (i + 1) + " from " + size + ")\n";
-                if (i == 0) {
-                    if (message.endsWith("\n")) {
-                        message = counter1 + message + "...";
-                    } else {
-                        message = counter1 + message + "\n...";
-                    }
-                } else if (i == size - 1) {
-                    message = counter + "...\n" + message;
-                } else {
-                    if (message.endsWith("\n")) {
-                        message = counter + "...\n" + message + "...";
-                    } else {
-                        message = counter + "...\n" + message + "\n...";
-                    }
-                }
-                logToAll(level, tag, message);
+   /**
+    * Default size for message string.
+    */
+   public static int MAX_CHUNK = 3800;
+
+   public static int getMaxChunk() {
+      return MAX_CHUNK;
+   }
+
+   public static void setMaxChunk(int maxChunk) {
+      MAX_CHUNK = maxChunk;
+   }
+
+   /**
+    * Send a VERBOSE log message.
+    *
+    * @param message The message you would like logged.
+    */
+   public static void v(String message) {
+      print(getTag(), getFormattedMessage(message), VERBOSE, false);
+   }
+
+   /**
+    * Send a DEBUG log message.
+    *
+    * @param message The message you would like logged.
+    */
+   public static void d(String message) {
+      print(getTag(), getFormattedMessage(message), DEBUG, false);
+   }
+
+   /**
+    * Send a INFO log message.
+    *
+    * @param message The message you would like logged.
+    */
+   public static void i(String message) {
+      print(getTag(), getFormattedMessage(message), INFO, false);
+   }
+
+   /**
+    * Send a WARN log message.
+    *
+    * @param message The message you would like logged.
+    */
+   public static void w(String message) {
+      print(getTag(), getFormattedMessage(message), WARNING, false);
+   }
+
+   /**
+    * Send a ERROR log message.
+    *
+    * @param message The message you would like logged.
+    */
+   public static void e(String message) {
+      print(getTag(), getFormattedMessage(message), ERROR, false);
+   }
+
+   /**
+    * What a Terrible Failure: Report a condition that should never happen. The error will always be logged at level ASSERT with the call
+    * stack. Depending on system configuration, a report may be added to the DropBoxManager and/or the process may be terminated immediately
+    * with an error dialog.
+    *
+    * @param message The message you would like logged.
+    */
+   public static void wtf(String message) {
+      print(getTag(), getFormattedMessage(message), WTF, false);
+   }
+
+   // ==========================================================
+
+   /**
+    * Send a VERBOSE log message and log the throwable.
+    *
+    * @param message The message you would like logged.
+    * @param tr      An throwable to log
+    */
+   public static void v(String message, Throwable tr) {
+      print(getTag(), getFormattedThrowable(message, tr), VERBOSE, true);
+   }
+
+   /**
+    * Send a DEBUG log message and log the throwable.
+    *
+    * @param message The message you would like logged.
+    * @param tr      An throwable to log
+    */
+   public static void d(String message, Throwable tr) {
+      print(getTag(), getFormattedThrowable(message, tr), DEBUG, true);
+   }
+
+   /**
+    * Send a INFO log message and log the throwable.
+    *
+    * @param message The message you would like logged.
+    * @param tr      An throwable to log
+    */
+   public static void i(String message, Throwable tr) {
+      print(getTag(), getFormattedThrowable(message, tr), INFO, true);
+   }
+
+   /**
+    * Send a WARN log message and log the throwable.
+    *
+    * @param message The message you would like logged.
+    * @param tr      An throwable to log
+    */
+   public static void w(String message, Throwable tr) {
+      print(getTag(), getFormattedThrowable(message, tr), WARNING, true);
+   }
+
+   /**
+    * Send a ERROR log message and log the throwable.
+    *
+    * @param message The message you would like logged.
+    * @param tr      An throwable to log
+    */
+   public static void e(String message, Throwable tr) {
+      print(getTag(), getFormattedThrowable(message, tr), ERROR, true);
+   }
+
+   /**
+    * Send a ERROR log message and log the throwable. RuntimeException is not handled.
+    *
+    * @param message The message you would like logged.
+    * @param tr      An throwable to log
+    */
+   public static void rt(String message, Throwable tr) {
+      if (tr instanceof RuntimeException) {
+         throw (RuntimeException) tr;
+      }
+      print(getTag(), getFormattedThrowable(message, tr), ERROR, true);
+   }
+
+   /**
+    * What a Terrible Failure: Report an throwable that should never happen. Similar to wtf(String, Throwable), with a message as well.
+    *
+    * @param message The message you would like logged.
+    * @param tr      An throwable to log
+    */
+   public static void wtf(String message, Throwable tr) {
+      print(getTag(), getFormattedThrowable(message, tr), WTF, true);
+   }
+
+   // ==========================================================
+
+   /**
+    * Send a <b>VERBOSE</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
+    * "this" in "objl" parameter. As result you receive tag string
+    * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumberClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param message The message you would like logged.
+    */
+   public static void v(Object obj, String message) {
+      print(getTag(obj), getFormattedMessage(message), VERBOSE, false);
+   }
+
+   /**
+    * Send a <b>DEBUG</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
+    * "this" in "objl" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param message The message you would like logged.
+    */
+   public static void d(Object obj, String message) {
+      print(getTag(obj), getFormattedMessage(message), DEBUG, false);
+   }
+
+   /**
+    * Send a <b>INFO</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
+    * "this" in "objl" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param message The message you would like logged.
+    */
+   public static void i(Object obj, String message) {
+      print(getTag(obj), getFormattedMessage(message), INFO, false);
+   }
+
+   /**
+    * Send a <b>WARN</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
+    * "this" in "objl" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param message The message you would like logged.
+    */
+   public static void w(Object obj, String message) {
+      print(getTag(obj), getFormattedMessage(message), WARNING, false);
+   }
+
+   /**
+    * Send a <b>ERROR</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
+    * "this" in "objl" parameter. As result you receive tag string
+    * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param message The message you would like logged.
+    */
+   public static void e(Object obj, String message) {
+      print(getTag(obj), getFormattedMessage(message), ERROR, false);
+   }
+
+   /**
+    * Send a <b>What a Terrible Failure: Report a condition that should never happen</b> log message. Using when you extend any Class and
+    * wont to receive full info in LogCat tag. Usually you can use "this" in "objl" parameter. As result you receive tag string
+    * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param message The message you would like logged.
+    */
+   public static void wtf(Object obj, String message) {
+      print(getTag(obj), getFormattedMessage(message), WTF, false);
+   }
+
+   // ==========================================================
+
+   /**
+    * Send a <b>VERBOSE</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
+    * Usually you can use "this" in "objl" parameter. As result you receive tag string
+    * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param message The message you would like logged.
+    * @param tr      An throwable to log
+    */
+   public static void v(Object obj, String message, Throwable tr) {
+      print(getTag(obj), getFormattedThrowable(message, tr), VERBOSE, true);
+   }
+
+   /**
+    * Send a <b>DEBUG</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
+    * Usually you can use "this" in "objl" parameter. As result you receive tag string
+    * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param message The message you would like logged.
+    * @param tr      An throwable to log
+    */
+   public static void d(Object obj, String message, Throwable tr) {
+      print(getTag(obj), getFormattedThrowable(message, tr), DEBUG, true);
+   }
+
+   /**
+    * Send a <b>INFO</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
+    * Usually you can use "this" in "objl" parameter. As result you receive tag string
+    * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param message The message you would like logged.
+    * @param tr      An throwable to log
+    */
+   public static void i(Object obj, String message, Throwable tr) {
+      print(getTag(obj), getFormattedThrowable(message, tr), INFO, true);
+   }
+
+   /**
+    * Send a <b>WARN</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
+    * Usually you can use "this" in "objl" parameter. As result you receive tag string
+    * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param message The message you would like logged.
+    * @param tr      An throwable to log
+    */
+   public static void w(Object obj, String message, Throwable tr) {
+      print(getTag(obj), getFormattedThrowable(message, tr), WARNING, true);
+   }
+
+   /**
+    * Send a <b>ERROR</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
+    * Usually you can use "this" in "objl" parameter. As result you receive tag string
+    * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param tr      An throwable to log
+    * @param message The message you would like logged.
+    */
+   public static void e(Object obj, String message, Throwable tr) {
+      print(getTag(obj), getFormattedThrowable(message, tr), ERROR, true);
+   }
+
+   /**
+    * Send a <b>What a Terrible Failure: Report a condition that should never happen</b> log message and log the throwable. Using when you
+    * extend any Class and wont to receive full info in LogCat tag. Usually you can use "this" in "objl" parameter. As result you receive tag
+    * string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    *
+    * @param obj     main class
+    * @param tr      An throwable to log
+    * @param message The message you would like logged.
+    */
+   public static void wtf(Object obj, String message, Throwable tr) {
+      print(getTag(obj), getFormattedThrowable(message, tr), WTF, true);
+   }
+
+   // =========================== Collections, arrays and objects ===============================
+
+   /**
+    * Logged String representation of map. Each item in new line.
+    *
+    * @param map a Map
+    */
+   public static void map(Map<?, ?> map) {
+      map(map, "Map");
+   }
+
+   /**
+    * Logged String representation of map. Each item in new line.
+    *
+    * @param map a Map
+    */
+   public static void map(Map<?, ?> map, String title) {
+      print(getTag(), getFormattedMessage(Format.map(map), title), INFO, false);
+   }
+
+   /**
+    * Logged String representation of list. Each item in new line.
+    *
+    * @param list a List
+    */
+   public static void list(List<?> list) {
+      list(list, "List");
+   }
+
+   /**
+    * Logged String representation of list. Each item in new line.
+    *
+    * @param list a List
+    */
+   public static void list(List<?> list, String title) {
+      print(getTag(), getFormattedMessage(Format.list(list), title), INFO, false);
+   }
+
+   /**
+    * Logged String representation of Objects array. Each item in new line.
+    *
+    * @param array an array
+    */
+   public static <T> void array(T[] array) {
+      array(array, Format.ARRAY);
+   }
+
+   /**
+    * Logged String representation of Objects array. Each item in new line.
+    *
+    * @param array an array
+    */
+   public static <T> void array(T[] array, String title) {
+      print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
+   }
+
+   /**
+    * Logged String representation of String array. Each item in new line.
+    *
+    * @param array an array
+    */
+   public static void array(String[] array, String title) {
+      print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(int[] array) {
+      array(array, Format.ARRAY);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(int[] array, String title) {
+      print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(float[] array) {
+      array(array, Format.ARRAY);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(float[] array, String title) {
+      print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(boolean[] array) {
+      array(array, Format.ARRAY);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(boolean[] array, String title) {
+      print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(char[] array) {
+      array(array, Format.ARRAY);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(char[] array, String title) {
+      print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(double[] array) {
+      array(array, Format.ARRAY);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(double[] array, String title) {
+      print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(long[] array) {
+      array(array, Format.ARRAY);
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(long[] array, String title) {
+      print(getTag(), getFormattedMessage(Format.array(array), title), INFO, false);
+   }
+
+   /**
+    * Logged String representation of class.
+    *
+    * @param obj a class for representation
+    */
+   public static void objl(Object obj) {
+      print(getTag(), getFormattedMessage(Format.objl(obj), obj.getClass().getSimpleName()), INFO, false);
+   }
+
+   /**
+    * Logged String representation of Object. Each field in new line.
+    *
+    * @param obj a class for representation
+    */
+   public static void objn(Object obj) {
+      print(getTag(), getFormattedMessage(Format.objn(obj), obj.getClass().getSimpleName()), INFO, false);
+   }
+
+   /**
+    * Logged readable representation of bytes array data like 0F CD AD.... Each countPerLine bytes will print in new line
+    *
+    * @param data         your bytes array data
+    * @param countPerLine count byte per line
+    */
+   public static void hex(byte[] data, int countPerLine) {
+      print(Format.getTag(), Format.getFormattedMessage(Format.hex(data, countPerLine)), Level.INFO, false);
+   }
+
+   /**
+    * Logged readable representation of bytes array data like 0F CD AD....
+    *
+    * @param data your bytes array data
+    */
+   public static void hex(byte[] data) {
+      print(Format.getTag(), Format.getFormattedMessage(Format.hex(data)), Level.INFO, false);
+   }
+
+   /**
+    * Logged readable representation of xml with indentation 2
+    *
+    * @param xmlStr your xml data
+    */
+   public static void xml(String xmlStr) {
+      print(Format.getTag(), Format.getFormattedMessage(Format.xml(xmlStr)), Level.INFO, false);
+   }
+
+   /**
+    * Logged readable representation of xml
+    *
+    * @param xmlStr      your xml data
+    * @param indentation xml identetion
+    */
+   public static void xml(String xmlStr, int indentation) {
+      print(Format.getTag(), Format.getFormattedMessage(Format.xml(xmlStr, indentation)), Level.INFO, false);
+   }
+
+   // =========================== Thread and stack trace ===============================
+
+   /**
+    * Logged the current Thread info
+    */
+   public static void threadInfo() {
+      StringBuilder sb = new StringBuilder();
+      addThreadInfo(sb, currentThread());
+      sb.append(NL);
+
+      print(getTag(), getFormattedMessage(sb), VERBOSE, false);
+   }
+
+   /**
+    * Logged the current Thread info and an throwable
+    *
+    * @param throwable An throwable to log
+    */
+   public static void threadInfo(Throwable throwable) {
+      StringBuilder sb = new StringBuilder();
+      addThreadInfo(sb, currentThread());
+      sb.append(NL);
+      addStackTrace(sb, throwable);
+
+      print(getTag(), getFormattedMessage(sb), VERBOSE, false);
+   }
+
+   /**
+    * Logged the current Thread info and a message
+    */
+   public static void threadInfo(@Nullable String message) {
+      StringBuilder sb = new StringBuilder();
+      addThreadInfo(sb, currentThread());
+      sb.append(NL);
+      addMessage(sb, message);
+
+      print(getTag(), getFormattedMessage(sb), VERBOSE, false);
+   }
+
+   /**
+    * Logged the current Thread info and a message and an throwable
+    *
+    * @param message   The message you would like logged.
+    * @param throwable An throwable to log
+    */
+   public static void threadInfo(String message, Throwable throwable) {
+      StringBuilder sb = new StringBuilder();
+      addThreadInfo(sb, currentThread());
+      sb.append(NL);
+      addMessage(sb, message);
+      addStackTrace(sb, throwable);
+
+      print(getTag(), getFormattedMessage(sb), VERBOSE, false);
+   }
+
+   /**
+    * Logged the current Thread info and a message and an throwable
+    *
+    * @param thread    for Logged info.
+    * @param throwable An throwable to log
+    */
+   public static void threadInfo(Thread thread, Throwable throwable) {
+      StringBuilder sb = new StringBuilder();
+      addThreadInfo(sb, thread);
+      sb.append(NL);
+      addStackTrace(sb, throwable);
+
+      print(getTag(), getFormattedMessage(sb), VERBOSE, false);
+   }
+
+   /**
+    * Logged current stack trace. Level INFO
+    */
+   public static void stackTrace() {
+      stackTraceI("Current stack trace:");
+   }
+
+   /**
+    * Logged current stack trace with a message. Level VERBOSE
+    *
+    * @param message a custom message
+    */
+   public static void stackTraceV(String message) {
+      stackTrace(VERBOSE, message);
+   }
+
+   /**
+    * Logged current stack trace with a message. Level INFO
+    *
+    * @param message a custom message
+    */
+   public static void stackTraceI(String message) {
+      stackTrace(INFO, message);
+   }
+
+   /**
+    * Logged current stack trace with a message. Level DEBUG
+    *
+    * @param message a custom message
+    */
+   public static void stackTraceD(String message) {
+      stackTrace(DEBUG, message);
+   }
+
+   /**
+    * Logged current stack trace with a message. Level WARNING
+    *
+    * @param message a custom message
+    */
+   public static void stackTraceW(String message) {
+      stackTrace(WARNING, message);
+   }
+
+   /**
+    * Logged current stack trace with a message. Level ERROR
+    *
+    * @param message a custom message
+    */
+   public static void stackTraceE(String message) {
+      stackTrace(ERROR, message);
+   }
+
+   /**
+    * Logged current stack trace with a message. Level WTF
+    *
+    * @param message a custom message
+    */
+   public static void stackTraceWTF(String message) {
+      stackTrace(WTF, message);
+   }
+
+   private static void stackTrace(Level level, String message) {
+      StringBuilder sb = new StringBuilder();
+      addMessage(sb, message);
+      addStackTrace(sb, currentThread());
+
+      print(getTag(), getFormattedMessage(sb), level, false);
+   }
+
+   // =========================== Private methods ===============================
+
+   private static void print(String tag, StringBuilder sb, Level level, boolean isThrowableLog) {
+      ArrayList<SoftReference<CharSequence>> list = split(sb);
+      sb.setLength(0);
+      int size = list.size();
+      String message = null;
+      for (int i = 0; i < size; i++) {
+         CharSequence cs = list.get(i).get();
+         if (cs != null) {
+            message = cs.toString();
+            if (i > 0 && i < size) {
+               if (isThrowableLog) {
+                  if (!message.startsWith(Format.THROWABLE_DELIMITER_START)) {
+                     message = Format.THROWABLE_DELIMITER_START + message;
+                  }
+               } else {
+                  if (!message.startsWith(Format.DELIMITER_START)) {
+                     message = Format.DELIMITER_START + message;
+                  }
+               }
+
             }
-        }
-    }
-
-    private static ArrayList<SoftReference<CharSequence>> split(StringBuilder sb) {
-        ArrayList<SoftReference<CharSequence>> list = new ArrayList<>();
-        int start = 0;
-        int end = MAX_CHUNK;
-        int length = 0;
-        while (true) {
-            if (sb.length() > start + MAX_CHUNK) {
-                length = sb.substring(start, end).lastIndexOf('\n');
-                if (length != -1) {
-                    length++;
-                    CharSequence message = sb.subSequence(start, start + length);
-                    list.add(new SoftReference<>(message));
-                    start = start + length;
-                    end = start + MAX_CHUNK;
-                } else {
-                    CharSequence message = sb.subSequence(start, start + MAX_CHUNK);
-                    list.add(new SoftReference<>(message));
-                    start = start + MAX_CHUNK;
-                    end = start + MAX_CHUNK;
-                }
+            String counter1 = "(Long message - part " + (i + 1) + " from " + size + ")";
+            String counter = "(" + (i + 1) + " from " + size + ")\n";
+            if (i == 0) {
+               if (message.endsWith("\n")) {
+                  message = counter1 + message + "...";
+               } else {
+                  message = counter1 + message + "\n...";
+               }
+            } else if (i == size - 1) {
+               message = counter + "...\n" + message;
             } else {
-                CharSequence message = sb.subSequence(start, sb.length());
-                list.add(new SoftReference<>(message));
-                break;
+               if (message.endsWith("\n")) {
+                  message = counter + "...\n" + message + "...";
+               } else {
+                  message = counter + "...\n" + message + "\n...";
+               }
             }
-        }
-        return list;
-    }
+            logToAll(level, tag, message);
+         }
+      }
+   }
+
+   private static ArrayList<SoftReference<CharSequence>> split(StringBuilder sb) {
+      ArrayList<SoftReference<CharSequence>> list = new ArrayList<>();
+      int start = 0;
+      int end = MAX_CHUNK;
+      int length = 0;
+      while (true) {
+         if (sb.length() > start + MAX_CHUNK) {
+            length = sb.substring(start, end).lastIndexOf('\n');
+            if (length != -1) {
+               length++;
+               CharSequence message = sb.subSequence(start, start + length);
+               list.add(new SoftReference<>(message));
+               start = start + length;
+               end = start + MAX_CHUNK;
+            } else {
+               CharSequence message = sb.subSequence(start, start + MAX_CHUNK);
+               list.add(new SoftReference<>(message));
+               start = start + MAX_CHUNK;
+               end = start + MAX_CHUNK;
+            }
+         } else {
+            CharSequence message = sb.subSequence(start, sb.length());
+            list.add(new SoftReference<>(message));
+            break;
+         }
+      }
+      return list;
+   }
 
 }
