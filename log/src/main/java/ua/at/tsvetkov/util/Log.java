@@ -813,7 +813,7 @@ public class Log extends AbstractLog {
       stackTrace(WTF, message);
    }
 
-   private static void stackTrace(LogInterceptor.Level level, String message) {
+   private static void stackTrace(Level level, String message) {
       StringBuilder sb = new StringBuilder();
       addMessage(sb, message);
       addStackTrace(sb, currentThread());

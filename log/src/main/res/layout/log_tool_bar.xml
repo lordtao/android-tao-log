@@ -12,28 +12,28 @@
     tools:showIn="@layout/fragment_log">
 
     <ImageButton
-        android:id="@+id/buttonClear"
+        android:id="@+id/logToolBarButtonClear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:src="@android:drawable/ic_menu_delete" />
 
     <ImageButton
-        android:id="@+id/buttonSend"
+        android:id="@+id/logToolBarButtonSend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:src="@android:drawable/ic_menu_send" />
 
     <ImageButton
-        android:id="@+id/buttonRecord"
+        android:id="@+id/logToolBarButtonRecord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:src="@android:drawable/ic_media_play" />
 
     <ImageButton
-        android:id="@+id/buttonRefresh"
+        android:id="@+id/logToolBarButtonRefresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"

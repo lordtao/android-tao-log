@@ -30,309 +30,320 @@ import ua.at.tsvetkov.util.Log;
 
 public class LogToFileInterceptor extends LogInterceptor {
 
-    public static final String LOG_SEPARATOR = "\u2063";
-    public static final String LOG_END_OF_MESSAGE = "\u200B";
+   public static final String LOG_SEPARATOR = "\u2063";
+   public static final String LOG_END_OF_MESSAGE = "\u200B";
 
-    private static final String INDEX_FILE_EXT = "ids";
-    private static final Executor executor = Executors.newFixedThreadPool(1);
-    private static final int BUFFER_SIZE = 8192;
-    private static SimpleDateFormat dateFormat;
-    private final Context context;
-    private final boolean isIndexed;
+   private static final String INDEX_FILE_EXT = "ids";
+   private static final Executor executor = Executors.newFixedThreadPool(1);
+   private static final int BUFFER_SIZE = 8192;
+   private static SimpleDateFormat dateFormat;
+   private final Context context;
+   private final boolean isIndexed;
 
-    private String filePath;
-    private String fileName;
-    private String extension;
-    private File file;
-    private File indexFile;
-    private long index;
+   private String filePath;
+   private String fileName;
+   private String extension;
+   private File file;
+   private File indexFile;
+   private long index;
 
-    /**
-     * Create the Log Interceptor which save a log messages to file (default dir - context.getCacheDir() file Log.txt).
-     * You can share the zipped log with help of any external applications. For example by email, google drive and etc.
-     *
-     * @param context
-     */
-    public LogToFileInterceptor(Context context) {
-        this(context, false);
-    }
+   /**
+    * Create the Log Interceptor which save a log messages to file (default dir - context.getCacheDir() file Log.txt).
+    * You can share the zipped log with help of any external applications. For example by email, google drive and etc.
+    *
+    * @param context
+    */
+   public LogToFileInterceptor(Context context) {
+      this(context, false);
+   }
 
-    /**
-     * Create the Log Interceptor which save a log messages to file (default dir - context.getCacheDir() file Log.txt).
-     * You can share the zipped log with help of any external applications. For example by email, google drive and etc.
-     * Add index file with log line numbers
-     *
-     * @param context
-     * @param isIndexed is need to create index file
-     */
-    public LogToFileInterceptor(Context context, boolean isIndexed) {
-        this.context = context;
-        this.isIndexed = isIndexed;
-        setFileName(context.getCacheDir().getAbsolutePath(),
-                "Log",
-                "txt");
-        setDefaultFormat();
-    }
+   /**
+    * Create the Log Interceptor which save a log messages to file (default dir - context.getCacheDir() file Log.txt).
+    * You can share the zipped log with help of any external applications. For example by email, google drive and etc.
+    * Add index file with log line numbers
+    *
+    * @param context
+    * @param isIndexed is need to create index file
+    */
+   public LogToFileInterceptor(Context context, boolean isIndexed) {
+      this.context = context;
+      this.isIndexed = isIndexed;
+      setFileName(context.getCacheDir().getAbsolutePath(),
+              "Log",
+              "txt");
+      setDefaultFormat();
+   }
 
-    @Override
-    public void log(Level level, String tag, String msg, Throwable th) {
-        if (file == null) {
-            Log.w(getClass().getName(), "Log file is not set");
-            return;
-        }
-        final String message = getStringDate(new Date()) + " " + LOG_SEPARATOR + level + " " + LOG_SEPARATOR + tag + ": " + LOG_SEPARATOR + msg + LOG_END_OF_MESSAGE + '\n';
-        writeAsync(message);
-    }
+   @Override
+   public void log(Level level, String tag, String msg, Throwable th) {
+      if (file == null) {
+         Log.w(getClass().getName(), "Log file is not set");
+         return;
+      }
+      final String message = getStringDate(new Date()) + " " + LOG_SEPARATOR + level + " " + LOG_SEPARATOR + tag + ": " + LOG_SEPARATOR + msg + LOG_END_OF_MESSAGE + '\n';
+      writeAsync(message);
+   }
 
-    /**
-     * Set log file which replace the defaults
-     *
-     * @param filePath
-     * @param fileName
-     * @param extension
-     */
-    public void setFileName(String filePath, String fileName, String extension) {
-        if (this.file != null) {
-            this.file.delete();
-        }
-        this.filePath = filePath;
-        this.fileName = fileName;
-        this.extension = extension;
-        this.file = new File(getLogFileName());
-        this.file.delete();
-        Log.i("Created new log file " + file.toString());
+   /**
+    * Set log file which replace the defaults
+    *
+    * @param filePath
+    * @param fileName
+    * @param extension
+    */
+   public void setFileName(String filePath, String fileName, String extension) {
+      if (this.file != null) {
+         this.file.delete();
+      }
+      this.filePath = filePath;
+      this.fileName = fileName;
+      this.extension = extension;
+      this.file = new File(getLogFileName());
+      this.file.delete();
+      Log.i("Created new log file " + file.toString());
 
-        index = 0;
-        if (isIndexed) {
-            if (this.indexFile != null) {
-                this.indexFile.delete();
-            }
-            this.indexFile = new File(getIndexFileName());
+      index = 0;
+      if (isIndexed) {
+         if (this.indexFile != null) {
             this.indexFile.delete();
-            Log.i("Created new log indexes file " + indexFile.toString());
-        }
+         }
+         this.indexFile = new File(getIndexFileName());
+         this.indexFile.delete();
+         Log.i("Created new log indexes file " + indexFile.toString());
+      }
 
-        String header = createHeader();
-        writeAsync(header);
-    }
+      String header = createHeader();
+      writeAsync(header);
+   }
 
-    public String getLogFileName() {
-        return filePath + File.separator + fileName + '.' + extension;
-    }
+   public String getLogFileName() {
+      return filePath + File.separator + fileName + '.' + extension;
+   }
 
-    public String getZipFileName() {
-        return context.getExternalCacheDir() + File.separator + fileName + ".zip";
-    }
+   public String getZipFileName() {
+      return context.getExternalCacheDir() + File.separator + fileName + ".zip";
+   }
 
-    public String getIndexFileName() {
-        return filePath + File.separator + fileName + '.' + INDEX_FILE_EXT;
-    }
+   public String getIndexFileName() {
+      return filePath + File.separator + fileName + '.' + INDEX_FILE_EXT;
+   }
 
-    /**
-     * Clear current log file
-     */
-    public void clear() {
-        if (file != null) {
-            file.delete();
-        }
-        if (indexFile != null) {
-            indexFile.delete();
-        }
-    }
+   /**
+    * Clear current log file
+    */
+   public void clear() {
+      if (file != null) {
+         file.delete();
+      }
+      if (indexFile != null) {
+         indexFile.delete();
+      }
+   }
 
-    public void startRecord() {
-        setEnabled();
-    }
+   public void startRecord() {
+      setEnabled();
+   }
 
-    public void stopRecord() {
-        setDisabled();
-    }
+   public void stopRecord() {
+      setDisabled();
+   }
 
-    /**
-     * Zip the current log file and send it by email
-     *
-     * @param activity
-     */
-    public void shareZippedLog(final Activity activity) {
-        executor.execute(new Runnable() {
+   /**
+    * Zip the current log file and send it by email
+    *
+    * @param activity
+    */
+   public void shareZippedLog(final Activity activity) {
+      executor.execute(new Runnable() {
 
-            @Override
-            public void run() {
-                logToZipFile(new ZipListener() {
-                    @Override
-                    public void onZipCreated(final String zipFileName) {
-                        activity.runOnUiThread(new Runnable() {
+         @Override
+         public void run() {
+            logToZipFile(new ZipListener() {
+               @Override
+               public void onZipCreated(final String zipFileName) {
+                  activity.runOnUiThread(new Runnable() {
 
-                            @Override
-                            public void run() {
-                                File file = new File(zipFileName);
-                                Uri uri = Uri.fromFile(file);
-                                Intent intent = new Intent(Intent.ACTION_SEND);
-                                intent.setType("*/*");
-                                intent.putExtra(Intent.EXTRA_STREAM, uri);
-                                intent.putExtra(Intent.EXTRA_SUBJECT, "Zipped log");
-                                activity.startActivity(Intent.createChooser(intent, "Share zipped log file"));
-                            }
+                     @Override
+                     public void run() {
+                        File file = new File(zipFileName);
+                        if (file.exists()) {
+                           Uri uri = Uri.fromFile(file);
+                           Intent intent = new Intent(Intent.ACTION_SEND);
+                           intent.setType("*/*");
+                           intent.putExtra(Intent.EXTRA_STREAM, uri);
+                           intent.putExtra(Intent.EXTRA_SUBJECT, "Zipped log");
+                           activity.startActivity(Intent.createChooser(intent, "Share zipped log file"));
+                        }
+                     }
 
-                        });
-                    }
+                  });
+               }
 
-                    @Override
-                    public void onZipError(String zipFileName, Exception e) {
-                        Log.e("Can't create " + zipFileName, e);
-                    }
-                });
+               @Override
+               public void onZipError(String zipFileName, Exception e) {
+                  Log.e("Can't create " + zipFileName, e);
+               }
+            });
 
-            }
+         }
 
-        });
-    }
+      });
+   }
 
-    public void logToZipFile(ZipListener listener) {
-        zip(getLogFileName(), getZipFileName(), listener);
-    }
+   public void logToZipFile(ZipListener listener) {
+      zip(getLogFileName(), getZipFileName(), listener);
+   }
 
-    public void setDefaultFormat() {
-        this.dateFormat =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    }
+   public void setDefaultFormat() {
+      this.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+   }
 
-    public void setDateFormat(SimpleDateFormat dateFormat) {
-        this.dateFormat = dateFormat;
-    }
+   public void setDateFormat(SimpleDateFormat dateFormat) {
+      this.dateFormat = dateFormat;
+   }
 
-    public String getStringDate(Date date) {
-        return dateFormat.format(date);
-    }
+   public String getStringDate(Date date) {
+      return dateFormat.format(date);
+   }
 
-    public Date getDate(String dateStr) {
-        Date date = null;
-        try {
-            date = dateFormat.parse(dateStr);
-        } catch (ParseException e) {
+   public Date getDate(String dateStr) {
+      Date date = null;
+      try {
+         date = dateFormat.parse(dateStr);
+      } catch (ParseException e) {
+         e.printStackTrace();
+      }
+      return date;
+   }
+
+   private String createHeader() {
+      ApplicationInfo appInfo = context.getApplicationInfo();
+      String version = "";
+      int verCode = 0;
+      try {
+         PackageInfo pInfo = context.getPackageManager().getPackageInfo(appInfo.packageName, 0);
+         version = pInfo.versionName;
+         verCode = pInfo.versionCode;
+      } catch (PackageManager.NameNotFoundException e) {
+         Log.e(e);
+      }
+      return "Application name: " + appInfo.name + "\n" +
+              "Package: " + appInfo.packageName + "\n" +
+              "Version: " + version + "\n" +
+              "Version code: " + verCode + "\n" +
+              "===========================================================\n"
+              ;
+   }
+
+   private void zip(String logFileName, String zipFileName, ZipListener listener) {
+      if (!file.exists()) {
+         try {
+            file.createNewFile();
+         } catch (IOException e) {
             e.printStackTrace();
-        }
-        return date;
-    }
+         }
+         android.util.Log.w("LogToFileInterceptor", "The Log file is empty");
+      }
 
-    private String createHeader() {
-        ApplicationInfo appInfo = context.getApplicationInfo();
-        String version = "";
-        int verCode = 0;
-        try {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(appInfo.packageName, 0);
-            version = pInfo.versionName;
-            verCode = pInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(e);
-        }
-        return "Application name: " + appInfo.name + "\n" +
-                "Package: " + appInfo.packageName + "\n" +
-                "Version: " + version + "\n" +
-                "Version code: " + verCode + "\n" +
-                "===========================================================\n"
-                ;
-    }
-
-    private void zip(String file, String zipFileName, ZipListener listener) {
-        BufferedInputStream origin = null;
-        ZipOutputStream out = null;
-        try {
-            out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFileName)));
-            byte data[] = new byte[BUFFER_SIZE];
-            FileInputStream fi = new FileInputStream(file);
-            origin = new BufferedInputStream(fi, BUFFER_SIZE);
-            try {
-                ZipEntry entry = new ZipEntry(fileName + '.' + extension);
-                out.putNextEntry(entry);
-                int count;
-                while ((count = origin.read(data, 0, BUFFER_SIZE)) != -1) {
-                    out.write(data, 0, count);
-                }
-            } catch (Exception e) {
-                listener.onZipError(zipFileName, e);
-            } finally {
-                origin.close();
+      BufferedInputStream origin = null;
+      ZipOutputStream out = null;
+      try {
+         out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFileName)));
+         byte data[] = new byte[BUFFER_SIZE];
+         FileInputStream fi = new FileInputStream(logFileName);
+         origin = new BufferedInputStream(fi, BUFFER_SIZE);
+         try {
+            ZipEntry entry = new ZipEntry(fileName + '.' + extension);
+            out.putNextEntry(entry);
+            int count;
+            while ((count = origin.read(data, 0, BUFFER_SIZE)) != -1) {
+               out.write(data, 0, count);
             }
-        } catch (Exception e) {
+         } catch (Exception e) {
             listener.onZipError(zipFileName, e);
-        } finally {
+         } finally {
+            origin.close();
+         }
+      } catch (Exception e) {
+         listener.onZipError(zipFileName, e);
+      } finally {
+         try {
+            out.close();
+            Log.i(logFileName + " zipped to " + zipFileName);
+            listener.onZipCreated(zipFileName);
+         } catch (IOException e) {
+            listener.onZipError(zipFileName, e);
+         }
+      }
+   }
+
+   private void writeAsync(final String message) {
+      executor.execute(new Runnable() {
+
+         @Override
+         public void run() {
+            writeLog(message);
+            if (isIndexed) {
+               writeIndex();
+            }
+         }
+
+      });
+   }
+
+   private File writeLog(String message) {
+      BufferedWriter bw = null;
+      try {
+         file.createNewFile();
+         FileWriter fileWriter = new FileWriter(file, true);
+         bw = new BufferedWriter(fileWriter);
+         bw.write(message);
+         bw.flush();
+         index = message.length() * 2;
+         return file;
+      } catch (IOException e) {
+         Log.e(getClass().getName(), "WriteLog", e);
+         return null;
+      } finally {
+         if (bw != null) {
             try {
-                out.close();
-                Log.i(file + " zipped to " + zipFileName);
-                listener.onZipCreated(zipFileName);
+               bw.close();
             } catch (IOException e) {
-                listener.onZipError(zipFileName, e);
+               Log.e(getClass().getName(), e);
             }
-        }
-    }
+         }
+      }
+   }
 
-    private void writeAsync(final String message) {
-        executor.execute(new Runnable() {
-
-            @Override
-            public void run() {
-                writeLog(message);
-                if (isIndexed) {
-                    writeIndex();
-                }
+   private File writeIndex() {
+      DataOutputStream ds = null;
+      try {
+         file.createNewFile();
+         FileOutputStream os = new FileOutputStream(indexFile, true);
+         ds = new DataOutputStream(os);
+         ds.writeLong(index);
+         ds.flush();
+         return indexFile;
+      } catch (IOException e) {
+         Log.e(getClass().getName(), "WriteIndex", e);
+         return null;
+      } finally {
+         if (ds != null) {
+            try {
+               ds.close();
+            } catch (IOException e) {
+               Log.e(getClass().getName(), e);
             }
+         }
+      }
+   }
 
-        });
-    }
+   public interface ZipListener {
 
-    private File writeLog(String message) {
-        BufferedWriter bw = null;
-        try {
-            file.createNewFile();
-            FileWriter fileWriter = new FileWriter(file, true);
-            bw = new BufferedWriter(fileWriter);
-            bw.write(message);
-            bw.flush();
-            index = message.length() * 2;
-            return file;
-        } catch (IOException e) {
-            Log.e(getClass().getName(), "WriteLog", e);
-            return null;
-        } finally {
-            if (bw != null) {
-                try {
-                    bw.close();
-                } catch (IOException e) {
-                    Log.e(getClass().getName(), e);
-                }
-            }
-        }
-    }
+      public void onZipCreated(String zipFileName);
 
-    private File writeIndex() {
-        DataOutputStream ds = null;
-        try {
-            file.createNewFile();
-            FileOutputStream os = new FileOutputStream(indexFile, true);
-            ds = new DataOutputStream(os);
-            ds.writeLong(index);
-            ds.flush();
-            return indexFile;
-        } catch (IOException e) {
-            Log.e(getClass().getName(), "WriteIndex", e);
-            return null;
-        } finally {
-            if (ds != null) {
-                try {
-                    ds.close();
-                } catch (IOException e) {
-                    Log.e(getClass().getName(), e);
-                }
-            }
-        }
-    }
+      public void onZipError(String zipFileName, Exception e);
 
-    public interface ZipListener {
-
-        public void onZipCreated(String zipFileName);
-
-        public void onZipError(String zipFileName, Exception e);
-
-    }
+   }
 
 }

@@ -4,57 +4,59 @@ import ua.at.tsvetkov.util.Level;
 
 public abstract class LogInterceptor {
 
-    private String tag;
+   private String tag;
 
-    private boolean isDisabled = false;
+   private boolean isDisabled = false;
 
-    LogInterceptor() {
-        tag = this.getClass().getName();
-    }
+   LogInterceptor() {
+      tag = this.getClass().getName();
+   }
 
-    public String getTag() {
-        return tag;
-    }
+   public String getTag() {
+      return tag;
+   }
 
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
+   public void setTag(String tag) {
+      this.tag = tag;
+   }
 
-    /**
-     * Intercepted log
-     *
-     * @param level     {@link Level} of logging.
-     * @param tag       formatted tag.
-     * @param msg       formatted message. If a Throwable is present, then included formatted throwable String.
-     * @param throwable if it is present. For any yours usage.
-     */
-    public abstract void log(Level level, String tag, String msg, Throwable throwable);
+   /**
+    * Intercepted log
+    *
+    * @param level     {@link Level} of logging.
+    * @param tag       formatted tag.
+    * @param msg       formatted message. If a Throwable is present, then included formatted throwable String.
+    * @param throwable if it is present. For any yours usage.
+    */
+   public abstract void log(Level level, String tag, String msg, Throwable throwable);
 
-    public void setDisabled() {
-        this.isDisabled = true;
-    }
+   public void setDisabled() {
+      this.isDisabled = true;
+      android.util.Log.i(tag, "Log disabled");
+   }
 
-    public void setEnabled() {
-        this.isDisabled = false;
-    }
+   public void setEnabled() {
+      this.isDisabled = false;
+      android.util.Log.i(tag, "Log enabled");
+   }
 
-    public boolean isEnabled() {
-        return !isDisabled;
-    }
+   public boolean isEnabled() {
+      return !isDisabled;
+   }
 
-    public int getId() {
-        return hashCode();
-    }
+   public int getId() {
+      return hashCode();
+   }
 
-    public boolean isDisabled() {
-        return isDisabled;
-    }
+   public boolean isDisabled() {
+      return isDisabled;
+   }
 
-    @Override
-    public String toString() {
-        return this.getClass().getName() + " {" +
-                "isDisabled=" + isDisabled +
-                '}';
-    }
+   @Override
+   public String toString() {
+      return tag + " {" +
+              "isDisabled=" + isDisabled +
+              '}';
+   }
 
 }
