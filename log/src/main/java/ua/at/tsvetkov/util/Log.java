@@ -91,7 +91,7 @@ public class Log extends AbstractLog {
     * @param stamp
     */
    public static void setStamp(String stamp) {
-      Format.stamp = stamp;
+      Format.setStamp(stamp);
    }
 
    /**
@@ -695,7 +695,7 @@ public class Log extends AbstractLog {
    public static void threadInfo() {
       StringBuilder sb = new StringBuilder();
       addThreadInfo(sb, currentThread());
-      sb.append(NL);
+      sb.append(Format.NL);
       logToAll(INFO, getTag(), getFormattedMessage(sb).toString());
    }
 
@@ -707,7 +707,7 @@ public class Log extends AbstractLog {
    public static void threadInfo(Throwable throwable) {
       StringBuilder sb = new StringBuilder();
       addThreadInfo(sb, currentThread());
-      sb.append(NL);
+      sb.append(Format.NL);
       addStackTrace(sb, throwable);
       logToAll(INFO, getTag(), getFormattedMessage(sb).toString());
    }
@@ -718,7 +718,7 @@ public class Log extends AbstractLog {
    public static void threadInfo(@Nullable String message) {
       StringBuilder sb = new StringBuilder();
       addThreadInfo(sb, currentThread());
-      sb.append(NL);
+      sb.append(Format.NL);
       addMessage(sb, message);
       logToAll(INFO, getTag(), getFormattedMessage(sb).toString());
    }
@@ -732,7 +732,7 @@ public class Log extends AbstractLog {
    public static void threadInfo(String message, Throwable throwable) {
       StringBuilder sb = new StringBuilder();
       addThreadInfo(sb, currentThread());
-      sb.append(NL);
+      sb.append(Format.NL);
       addMessage(sb, message);
       addStackTrace(sb, throwable);
       logToAll(INFO, getTag(), getFormattedMessage(sb.toString()).toString());
@@ -747,7 +747,7 @@ public class Log extends AbstractLog {
    public static void threadInfo(Thread thread, Throwable throwable) {
       StringBuilder sb = new StringBuilder();
       addThreadInfo(sb, thread);
-      sb.append(NL);
+      sb.append(Format.NL);
       addStackTrace(sb, throwable);
       logToAll(INFO, getTag(), getFormattedMessage(sb.toString()).toString());
    }

@@ -36,7 +36,6 @@ import ua.at.tsvetkov.util.interceptor.LogInterceptor;
 import ua.at.tsvetkov.util.interceptor.LogInterceptor.Level;
 
 import static java.lang.Thread.currentThread;
-import static ua.at.tsvetkov.util.Format.NL;
 import static ua.at.tsvetkov.util.Format.addMessage;
 import static ua.at.tsvetkov.util.Format.addStackTrace;
 import static ua.at.tsvetkov.util.Format.addThreadInfo;
@@ -590,7 +589,7 @@ public class LongLog extends AbstractLog {
    public static void threadInfo() {
       StringBuilder sb = new StringBuilder();
       addThreadInfo(sb, currentThread());
-      sb.append(NL);
+      sb.append(Format.NL);
 
       print(getTag(), getFormattedMessage(sb), VERBOSE, false);
    }
@@ -603,7 +602,7 @@ public class LongLog extends AbstractLog {
    public static void threadInfo(Throwable throwable) {
       StringBuilder sb = new StringBuilder();
       addThreadInfo(sb, currentThread());
-      sb.append(NL);
+      sb.append(Format.NL);
       addStackTrace(sb, throwable);
 
       print(getTag(), getFormattedMessage(sb), VERBOSE, false);
@@ -615,7 +614,7 @@ public class LongLog extends AbstractLog {
    public static void threadInfo(@Nullable String message) {
       StringBuilder sb = new StringBuilder();
       addThreadInfo(sb, currentThread());
-      sb.append(NL);
+      sb.append(Format.NL);
       addMessage(sb, message);
 
       print(getTag(), getFormattedMessage(sb), VERBOSE, false);
@@ -630,7 +629,7 @@ public class LongLog extends AbstractLog {
    public static void threadInfo(String message, Throwable throwable) {
       StringBuilder sb = new StringBuilder();
       addThreadInfo(sb, currentThread());
-      sb.append(NL);
+      sb.append(Format.NL);
       addMessage(sb, message);
       addStackTrace(sb, throwable);
 
@@ -646,7 +645,7 @@ public class LongLog extends AbstractLog {
    public static void threadInfo(Thread thread, Throwable throwable) {
       StringBuilder sb = new StringBuilder();
       addThreadInfo(sb, thread);
-      sb.append(NL);
+      sb.append(Format.NL);
       addStackTrace(sb, throwable);
 
       print(getTag(), getFormattedMessage(sb), VERBOSE, false);

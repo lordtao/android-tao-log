@@ -14,7 +14,7 @@ class FragmentLifecycleLogger extends FragmentManager.FragmentLifecycleCallbacks
       super.onFragmentAttached(fm, fr, context);
       parent = context.getClass().getSimpleName();
       int backStackCount = fm.getBackStackEntryCount();
-      info = Format.getFragmentsStackInfo(fm, "attached " + fr.getClass().getSimpleName(), backStackCount);
+      info = Format.INSTANCE.getFragmentsStackInfo(fm, "attached " + fr.getClass().getSimpleName(), backStackCount);
       android.util.Log.i(parent, Format.getFormattedMessage(info, "Fragments stack [" + backStackCount + "]").toString());
    }
 
@@ -22,7 +22,7 @@ class FragmentLifecycleLogger extends FragmentManager.FragmentLifecycleCallbacks
    public void onFragmentDetached(FragmentManager fm, Fragment fr) {
       super.onFragmentDetached(fm, fr);
       int backStackCount = fm.getBackStackEntryCount();
-      info = Format.getFragmentsStackInfo(fm, "detached " + fr.getClass().getSimpleName(), backStackCount);
+      info = Format.INSTANCE.getFragmentsStackInfo(fm, "detached " + fr.getClass().getSimpleName(), backStackCount);
       android.util.Log.i(parent, Format.getFormattedMessage(info, "Fragments stack [" + backStackCount + "]").toString());
    }
 
