@@ -24,8 +24,8 @@
 package ua.at.tsvetkov.util
 
 import android.app.Activity
-import android.app.FragmentManager
 import android.text.TextUtils
+import androidx.fragment.app.FragmentManager
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import java.io.ByteArrayInputStream
@@ -516,27 +516,20 @@ internal object Format {
             transformer.transform(DOMSource(document), StreamResult(stringWriter))
             return StringBuilder(stringWriter.toString())
         } catch (e: Exception) {
-            return StringBuilder(e.message)
+            if (!e.message.isNullOrEmpty()) {
+                return StringBuilder(e.message!!)
+            } else {
+                return StringBuilder()
+            }
         }
 
     }
 
     //============================== Fragments ==============================
 
+
     @JvmStatic
     fun getFragmentsStackInfo(fm: FragmentManager, operation: String, backStackCount: Int): String {
-        val logs = arrayOfNulls<String>(backStackCount + 1)
-        logs[0] = operation
-        for (i in 0 until backStackCount) {
-            val entry = fm.getBackStackEntryAt(i)
-            logs[i + 1] = "   #" + i + "  " + entry.name
-        }
-        return getFSString(logs)
-    }
-
-
-    @JvmStatic
-    fun getFragmentsStackInfo(fm: android.support.v4.app.FragmentManager, operation: String, backStackCount: Int): String {
         val logs = arrayOfNulls<String>(backStackCount + 1)
         logs[0] = operation
         for (i in 0 until backStackCount) {
@@ -705,13 +698,11 @@ internal object Format {
             try {
                 if (found) {
                     if (!traces[i].className.startsWith(className)) {
-                        val clazz = Class.forName(traces[i].className)
                         var notZeroLineNumberOffset = 0
                         var lineNumber = 0
                         while (lineNumber == 0) {
                             lineNumber = traces[i + notZeroLineNumberOffset++].lineNumber
                         }
-                        //                        addClassLink(sb, getClassName(clazz), lineNumber);
                         addClassLink(sb, traces[i].fileName, lineNumber)
                         sb.append(traces[i].methodName)
                         break
@@ -791,14 +782,13 @@ internal object Format {
     @JvmStatic
     @JvmOverloads
     fun getFormattedMessage(stringBuilder: StringBuilder?, message: String? = null, title: String? = null): StringBuilder {
-        var lines: Array<String>
-        if (stringBuilder != null) {
+        var lines = if (stringBuilder != null) {
             if (message != null) {
                 stringBuilder.append(message)
             }
-            lines = Pattern.compile("\\n").split(stringBuilder)
+            Pattern.compile("\\n").split(stringBuilder)
         } else {
-            lines = message!!.split("\\n".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+            message!!.split("\\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         }
         val linesCount = getLinesCount(title, lines)
         lines = createLines(title, lines, linesCount)
@@ -816,12 +806,12 @@ internal object Format {
 
     @JvmStatic
     fun getFormattedThrowable(message: String?, throwable: Throwable): StringBuilder {
-        var lines: Array<String>? = null
-        if (message != null) {
-            lines = (message + ("\n" + getThrowableMessage(throwable))).split("\\n".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+        var lines = if (!message.isNullOrEmpty()) {
+            (message + ("\n" + getThrowableMessage(throwable))).split("\\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         } else {
-            lines = getThrowableMessage(throwable).split("\\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            getThrowableMessage(throwable).split("\\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         }
+
         val linesCount = getLinesCount(lines, throwable)
         lines = createLines(throwable, lines, linesCount)
 
@@ -844,7 +834,7 @@ internal object Format {
 
     private fun getLinesCount(title: String?, lines: Array<String>?): Int {
         var count = lines?.size ?: 0
-        if (Log.isLogOutlined) {
+        if (Log.isLogOutlined()) {
             count += 2
         } else if (title != null) {
             count++
@@ -854,7 +844,7 @@ internal object Format {
 
     private fun getLinesCount(lines: Array<String>?, throwable: Throwable?): Int {
         var count = lines?.size ?: 0
-        if (Log.isLogOutlined) {
+        if (Log.isLogOutlined()) {
             count += 2
         }
         if (throwable != null) {
@@ -866,9 +856,9 @@ internal object Format {
     }
 
     private fun createLines(title: String?, lines: Array<String>, count: Int): Array<String> {
-        val lns = Array<String>(count) { "" }
+        val lns = Array(count) { "" }
 
-        if (Log.isLogOutlined) {
+        if (Log.isLogOutlined()) {
             if (title == null) {
                 lns[0] = DELIMITER
             } else {
@@ -894,11 +884,11 @@ internal object Format {
 
     private fun createLines(throwable: Throwable?, lines: Array<String>?, count: Int): Array<String> {
 
-        val lns = Array<String>(count) { "" }
+        val lns = Array(count) { "" }
 
         val linesCount = lines?.size ?: 0
 
-        if (Log.isLogOutlined) {
+        if (Log.isLogOutlined()) {
             lns[0] = THROWABLE_DELIMITER
             lns[lns.size - 1] = THROWABLE_DELIMITER
 
@@ -1018,7 +1008,7 @@ internal object Format {
     fun addMessage(sb: StringBuilder, message: String?) {
         if (!message.isNullOrEmpty()) {
             sb.append(message)
-            sb.append(Format.NL)
+            sb.append(NL)
         }
     }
 

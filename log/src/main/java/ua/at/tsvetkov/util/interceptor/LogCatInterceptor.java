@@ -1,6 +1,6 @@
 package ua.at.tsvetkov.util.interceptor;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 public class LogCatInterceptor extends LogInterceptor {

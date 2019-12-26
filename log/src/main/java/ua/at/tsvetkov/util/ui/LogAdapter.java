@@ -1,6 +1,7 @@
 package ua.at.tsvetkov.util.ui;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,16 +30,15 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
       mDataset = myDataset;
    }
 
+   @NonNull
    @Override
-   public LogViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+   public LogViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
       View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_log, parent, false);
-
-      LogViewHolder logViewHolder = new LogViewHolder(view);
-      return logViewHolder;
+      return new LogViewHolder(view);
    }
 
    @Override
-   public void onBindViewHolder(LogViewHolder holder, int position) {
+   public void onBindViewHolder(@NonNull LogViewHolder holder, int position) {
       holder.dateTextView.setText(mDataset[position]);
    }
 

@@ -1,5 +1,4 @@
-/**
- * ****************************************************************************
+/******************************************************************************
  * Copyright (c) 2010 Alexandr Tsvetkov.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -21,11 +20,10 @@
  * permission from author.
  * 4. This code can be modified without any special permission from author IF AND OFormat.NLY IF
  * this license agreement will remain unchanged.
- * ****************************************************************************
- */
+ * *****************************************************************************/
 package ua.at.tsvetkov.util;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +31,6 @@ import java.util.Map;
 import ua.at.tsvetkov.util.interceptor.LogInterceptor;
 
 import static java.lang.Thread.currentThread;
-import static ua.at.tsvetkov.util.Format.NL;
 import static ua.at.tsvetkov.util.Format.addMessage;
 import static ua.at.tsvetkov.util.Format.addStackTrace;
 import static ua.at.tsvetkov.util.Format.addThreadInfo;
@@ -51,12 +48,12 @@ import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WTF;
  * Extended logger. Allows you to automatically adequately logged class, method and line call in the log. Makes it easy to write logs. For
  * example Log.v("Boo") will in the log some the record: 04-04 08:29:40.336: V > SomeClass: someMethod: 286 Boo
  *
- * @author A.Tsvetkov 2010 http://tsvetkov.at.ua mailto:al@ukr.net
+ * @author A.Tsvetkov 2010 http://tsvetkov.at.ua mailto:tsvetkov2010@gmail.com
  */
 public class Log extends AbstractLog {
 
-   static volatile boolean isLogOutlined = true;
-   static volatile boolean isAlignNewLines = false;
+   private static volatile boolean isLogOutlined = true;
+   private static volatile boolean isAlignNewLines = false;
 
    /**
     * Is print a log string in new lines with spaces (as in AndroidStudio before 3.1). False by default
@@ -85,6 +82,12 @@ public class Log extends AbstractLog {
       Log.isLogOutlined = isLogOutlined;
    }
 
+   /**
+    * Is log have the line boundaries.
+    */
+   public static boolean isLogOutlined() {
+      return Log.isLogOutlined;
+   }
    /**
     * Set stamp for mark log. You can add a stamp which are awesome for binding the commits/build time to your logs among other things.
     *

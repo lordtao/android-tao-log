@@ -25,7 +25,7 @@
  */
 package ua.at.tsvetkov.util;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ import static ua.at.tsvetkov.util.interceptor.LogInterceptor.Level.WTF;
  * Shows a long log string in LogCat. The LogCat have the real message size for both binary and non-binary logs is ~4076 bytes.
  * The LongLog the same as the Log class, but can print to LogCat a full message - split to several usual messages.
  *
- * @author A.Tsvetkov 2018 http://tsvetkov.at.ua mailto:al@ukr.net
+ * @author A.Tsvetkov 2018 http://tsvetkov.at.ua mailto:tsvetkov2010@gmail.com
  */
 public class LongLog extends AbstractLog {
 
