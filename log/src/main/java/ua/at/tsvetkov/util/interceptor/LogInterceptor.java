@@ -34,7 +34,7 @@ public abstract class LogInterceptor {
         }
     }
 
-    LogInterceptor() {
+    public LogInterceptor() {
         tag = this.getClass().getName();
     }
 
@@ -78,7 +78,7 @@ public abstract class LogInterceptor {
 
     @Override
     public String toString() {
-        return this.getClass().getName() + " {" +
+        return tag + " {" +
                 "isDisabled=" + isDisabled +
                 '}';
     }
