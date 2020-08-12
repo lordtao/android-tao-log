@@ -1,1 +1,2 @@
-include ':logdemo', ':log'
+include ':demokotlin'
+include ':demo', ':lib'

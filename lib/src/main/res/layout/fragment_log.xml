@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentLogContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DEF4DF"
+    android:orientation="vertical"
+    tools:context=".ui.LogFragment">
+
+
+    <!--    <FrameLayout-->
+    <!--        android:id="@+id/fragmentLogTopToolBar"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="56dp"-->
+    <!--        android:layout_margin="8dp" />-->
+
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--        android:id="@+id/fragmentLogMessagesRecycleView"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:layout_marginBottom="8dp"-->
+    <!--        android:layout_weight="1"-->
+    <!--        tools:listitem="@layout/item_log_card">-->
+
+    <!--    </androidx.recyclerview.widget.RecyclerView>-->
+
+    <!--    <FrameLayout-->
+    <!--        android:id="@+id/fragmentLogBottomToolBar"-->
+    <!--        android:layout_height="56dp"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_margin="8dp" />-->
+
+</LinearLayout>
