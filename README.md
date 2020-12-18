@@ -1,20 +1,24 @@
 android-tao-log
 ================
 
-Tiny, lightweight, informative and very usefull logger for Android.
-You don't need to define TAG. It is automatically generated and include file name, method, line nuber and of cource the link to the code.
+Tiny, lightweight, informative and very useful logger for Android.
+You don't need to define TAG. It is automatically generated and include file name, method, line number and of of course the link to the code.
 Also contains the LongLog class which allows you to print a long messages into the LogCat without limiting the standard output length to less than ~ 4075.
-See in [demo app](https://github.com/lordtao/android-tao-log/tree/master/logdemo)
 
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-log/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-log/_latestVersion)
 
-Warning! Android Studio 3.1 Logcat prefix not always showing and breaking logger. 
-According to the [Google issue tracker](https://issuetracker.google.com/issues/77305804) it is fixed and is planned for Android Studio 3.2.
+**Just try the Java and Kotlin Demo apps**
 
-Code example:
+**A lot of useful methods for you.**
 
-```java
+![Image of LogDemo](img/log_demo.png)
+
+Simple code example
+--------------------
+You can see more examples in demo applications.
+
+```
    Log.v("Verbose");
    Log.d("Debug");
    Log.i("Info");
@@ -24,11 +28,6 @@ Code example:
    } catch (Exception e) {
        Log.e("Some exception", e);
    }
-   try{
-       int i = 10/0;
-   } catch (Exception e) {
-       Log.rt("RuntimeException is not handled by Log.rt()", e);
-   }
 ```
 
 Possibility to outline the log strings (by default). You can also turn off this, just call Log.setLogOutlined(false);
@@ -37,6 +36,12 @@ You'll get in your LogCat the lines like below.
 Clicking on the tag brings you to log into the source code of the class which was caused by the logger:
 
 ![Image of LogCat example](img/log_example.png)
+
+Long data logger
+----------------
+Sometimes there is a need to display a log of big data. Usual a loggers truncate it. Use LongLog. It will output all data page by page without loss.
+
+![Image of LogLong example](img/log_long.png)
 
 Activity lifecicle and fragments stack logger
 ---------------------------------------------
@@ -54,7 +59,7 @@ and a changes of the fragments stack
 ![Image of LogFragments example](img/log_fragments.png)
 
 Log interceptor.
---------------------------------------------------------------
+-----------------
 Allows use all log information in a custom interceptor. 
 See the LogToFileInterceptor which save a log messages to file and you can share the zipped log with help of any external applications, for example by email, google drive and etc.
 ```
@@ -74,6 +79,32 @@ using:
 Log.addInterceptor(YourInterceptorImplementation)
 ```
 
+It is also possible to choose ready-made
+LogToFileInterceptor and LogToMemoryCacheInterceptor
+
+Log fragment
+------------
+Allows to use the simple library snippet to display the application log, record, share, filter
+```
+val logFragment = LogFragment()
+supportFragmentManager.beginTransaction().add(R.id.frameContent, logFragment).commit()
+```
+
+![Image of LogFragment example](img/log_fragment.png)
+
+Zip and share you log
+---------------------
+Simple usage - Init at start logging
+```
+LogToFileInterceptor.init(context)
+```
+Prepare and run zipper
+```
+logZipper = LogZipper(LogToFileInterceptor.getSharedInstance(context))
+logZipper.shareZip(activity)
+```
+![Image of Log Share example](img/log_share.png)
+
 Add android-tao-log to your project
 -----------------------------------
 Android tao log lib is available on Bintray. Please ensure that you are using the latest versions by [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-log/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-log/_latestVersion)
@@ -82,18 +113,6 @@ Gradle dependency for your Android app:
 
 add to general build.gradle
 ```
-buildscript {
-    repositories {
-        jcenter()
-        maven {
-            url  "http://dl.bintray.com/lordtao/maven"
-        }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-    }
-}
-
 allprojects {
     repositories {
         jcenter()
@@ -105,11 +124,20 @@ allprojects {
 ```
 add to your dependencies in build.gradle
 ```
-    compile 'ua.at.tsvetkov:taolog:1.4.6@aar'
+implementation 'ua.at.tsvetkov:taolog:2.0.0'
 ```
 
 Changelog
 ---------
+
+#### 2.0.0 -- Migration to Kotlin. LogFragment
+* Migration to Kotlin
+* Refactoring
+* Fixed LogToFileInterceptor
+* Added LogToMemoryCacheInterceptor
+* Added LogFragment
+* Added Log Zipper / Sharing
+
 #### 1.4.10 -- Fixed throwable doubles info
 * Fixed throwable doubles info
 

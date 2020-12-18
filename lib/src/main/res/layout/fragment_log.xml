@@ -4,32 +4,82 @@
     android:id="@+id/fragmentLogContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DEF4DF"
     android:orientation="vertical"
-    tools:context=".ui.LogFragment">
+    android:background="@color/log_fragment_background"
+    tools:context=".logger.ui.LogFragment">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <!--    <FrameLayout-->
-    <!--        android:id="@+id/fragmentLogTopToolBar"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="56dp"-->
-    <!--        android:layout_margin="8dp" />-->
+        <ImageButton
+            android:id="@+id/logToolBarButtonClear"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_delete" />
 
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/fragmentLogMessagesRecycleView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        android:layout_marginTop="8dp"-->
-    <!--        android:layout_marginBottom="8dp"-->
-    <!--        android:layout_weight="1"-->
-    <!--        tools:listitem="@layout/item_log_card">-->
+        <ImageButton
+            android:id="@+id/logToolBarButtonRecord"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/presence_online" />
 
-    <!--    </androidx.recyclerview.widget.RecyclerView>-->
+        <ImageButton
+            android:id="@+id/logToolBarButtonShare"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_share" />
 
-    <!--    <FrameLayout-->
-    <!--        android:id="@+id/fragmentLogBottomToolBar"-->
-    <!--        android:layout_height="56dp"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_margin="8dp" />-->
+        <ImageButton
+            android:id="@+id/logToolBarButtonScroll"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_sort_by_size" />
+
+        <Spinner
+            android:id="@+id/logToolBarLevelSpinner"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragmentLogMessagesRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:listitem="@layout/item_log_card" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/logToolBarButtonSearch"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_search" />
+
+        <EditText
+            android:id="@+id/logToolBarTextSearch"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="@string/Search_hint"
+            android:lines="1"
+            android:maxLines="1"
+            tools:text="@string/Search_hint">
+
+        </EditText>
+
+        <ImageButton
+            android:id="@+id/logToolBarButtonSearchClear"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+    </LinearLayout>
 
 </LinearLayout>

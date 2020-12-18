@@ -1,53 +1,363 @@
 package ua.at.tsvetkov.demokotlin
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.Menu
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
+import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import com.google.android.material.navigation.NavigationView
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
+import ua.at.tsvetkov.util.logger.Log
+import ua.at.tsvetkov.util.logger.LogLong
+import ua.at.tsvetkov.util.logger.interceptor.Level
+import ua.at.tsvetkov.util.logger.ui.LogFragment
+import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    private val testObject = TestObject("A Test Object")
+    private lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var logFragment: LogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
+
         setSupportActionBar(toolbar)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        toggle = ActionBarDrawerToggle(
+                this,
+                drawer_layout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        )
+        drawer_layout.addDrawerListener(toggle)
+        toggle.syncState()
+        nav_view.setNavigationItemSelectedListener(this)
+        logFragment = LogFragment()
+        supportFragmentManager.beginTransaction().add(R.id.frameContent, logFragment).commit()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
+    override fun onBackPressed() {
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+        }
+        runScope(item)
         return true
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    private fun runScope(item: MenuItem) {
+        when (item.itemId) {
+            R.id.nav_log_quick -> runLogQuick()
+            R.id.nav_log_common -> runLogCommons()
+            R.id.nav_log_thread -> runLogThread()
+            R.id.nav_log_arrays -> runLogArrays()
+            R.id.nav_log_xml_hex -> runLogXmlHex()
+            R.id.nav_log_objects -> runLogClassAndObjects()
+            R.id.nav_log_long_common -> runLogLongCommons()
+            R.id.nav_log_long_thread -> runLogLongThread()
+            R.id.nav_log_long_arrays -> runLogLongArrays()
+            R.id.nav_log_long_xml_hex -> runLongLogXmlHex()
+        }
+        logFragment.scrollDown()
+    }
+
+    private fun runLogQuick() {
+        Log.v(Level.VERBOSE.name)
+        Log.d(Level.DEBUG.name)
+        Log.i(Level.INFO.name)
+        Log.w(Level.WARNING.name)
+        Log.e(Level.ERROR.name)
+        Log.wtf(Level.WTF.name)
+    }
+
+    private fun runLogCommons() {
+        try {
+            val i = 10 / 0
+        } catch (e: Exception) {
+            Log.e("Exception", e)
+        }
+        val ex = Exception("Log Exception")
+        Log.v(ex)
+        Log.v(MSG)
+        Log.v(this, MSG)
+        Log.v(MSG, ex)
+        Log.v(this, MSG, ex)
+        Log.d(ex)
+        Log.d(MSG)
+        Log.d(this, MSG)
+        Log.d(MSG, ex)
+        Log.d(this, MSG, ex)
+        Log.i(ex)
+        Log.i(MSG)
+        Log.i(this, MSG)
+        Log.i(MSG, ex)
+        Log.i(this, MSG, ex)
+        Log.w(ex)
+        Log.w(MSG)
+        Log.w(this, MSG)
+        Log.w(MSG, ex)
+        Log.w(this, MSG, ex)
+        Log.e(ex)
+        Log.e(MSG)
+        Log.e(this, MSG)
+        Log.e(MSG, ex)
+        Log.e(this, MSG, ex)
+        Log.wtf(ex)
+        Log.wtf(MSG)
+        Log.wtf(this, MSG)
+        Log.wtf(MSG, ex)
+        Log.wtf(this, MSG, ex)
+        val rt = RuntimeException()
+        try {
+            Log.rt(rt)
+        } catch (e: RuntimeException) {
+            Log.v("Intercepted", e)
+        }
+        try {
+            Log.rt(MSG, rt)
+        } catch (e: RuntimeException) {
+            Log.v("Intercepted", e)
+        }
+    }
+
+    private fun runLogThread() {
+        val th = Thread("Test Thread")
+        th.start()
+        val ex = Exception("Thread Exception")
+        Log.threadInfo()
+        Log.threadInfo(MSG)
+        Log.threadInfo(ex)
+        Log.threadInfo(MSG, ex)
+        Log.threadInfo(th, ex)
+        Log.stackTrace()
+        Log.stackTraceV(MSG)
+        Log.stackTraceI(MSG)
+        Log.stackTraceD(MSG)
+        Log.stackTraceW(MSG)
+        Log.stackTraceE(MSG)
+        Log.stackTraceWTF(MSG)
+    }
+
+    private fun runLogArrays() {
+        val ints = intArrayOf(472834, 4235, 657, -1728, 0)
+        Log.array(ints)
+        val doubles = doubleArrayOf(472834.0, 4235.0, 657.0, -1728.0, 0.0)
+        Log.array(doubles)
+        val longs = longArrayOf(472834, 4235, 657, -1728, 0)
+        Log.array(longs)
+        val floats = floatArrayOf(645.0f, 235f, 57f, -128f, 0f)
+        Log.array(floats)
+        val bools = booleanArrayOf(true, false, true)
+        Log.array(bools)
+        val chars = charArrayOf('c', 'h', 'a', 'r', 's')
+        Log.array(chars)
+        val objects = arrayOf("String object", Any(), 'a', Any(), 's')
+        Log.array(objects)
+        val map: MutableMap<Int?, String?> = HashMap()
+        map[1] = "First"
+        map[2] = "Second"
+        map[3] = "Third"
+        Log.map(map)
+        val list = ArrayList<String?>()
+        list.add("First")
+        list.add("Second")
+        list.add("Third")
+        Log.list(list)
+    }
+
+    private fun runLogXmlHex() {
+        val data = byteArrayOf(5, 65, 23, 34, 32, 12, 45, 35, 66, 120, 100, 93, 31, 111)
+        Log.hex(data)
+        Log.hex(data, 5)
+        val xml = """
+            <note>
+            <to>Alex</to>
+            <from>July</from>
+            <heading>Reminder</heading>
+            <body>Don't forget me this weekend!</body>
+            </note>
+            """.trimIndent()
+        Log.xml(xml)
+        Log.xml(xml, 3)
+    }
+
+    private fun runLogClassAndObjects() {
+        Log.classInfo(testObject)
+        Log.objectInfo(testObject)
+    }
+
+    private fun runLogLongCommons() {
+        val ex = Exception()
+        LogLong.v(LONG_MSG)
+        LogLong.v(this, LONG_MSG)
+        LogLong.v(LONG_MSG, ex)
+        LogLong.v(this, LONG_MSG, ex)
+        LogLong.d(LONG_MSG)
+        LogLong.d(this, LONG_MSG)
+        LogLong.d(LONG_MSG, ex)
+        LogLong.d(this, LONG_MSG, ex)
+        LogLong.i(LONG_MSG)
+        LogLong.i(this, LONG_MSG)
+        LogLong.i(LONG_MSG, ex)
+        LogLong.i(this, LONG_MSG, ex)
+        LogLong.w(LONG_MSG)
+        LogLong.w(this, LONG_MSG)
+        LogLong.w(LONG_MSG, ex)
+        LogLong.w(this, LONG_MSG, ex)
+        LogLong.e(LONG_MSG)
+        LogLong.e(this, LONG_MSG)
+        LogLong.e(LONG_MSG, ex)
+        LogLong.e(this, LONG_MSG, ex)
+        LogLong.wtf(LONG_MSG)
+        LogLong.wtf(this, LONG_MSG)
+        LogLong.wtf(LONG_MSG, ex)
+        LogLong.wtf(this, LONG_MSG, ex)
+        val rt = RuntimeException()
+        try {
+            LogLong.rt(LONG_MSG, rt)
+        } catch (e: RuntimeException) {
+            LogLong.v("Intercepted", e)
+        }
+    }
+
+    private fun runLogLongThread() {
+        val ex = Exception()
+        val th = Thread(LONG_MSG)
+        th.start()
+        LogLong.threadInfo()
+        LogLong.threadInfo(LONG_MSG)
+        LogLong.threadInfo(ex)
+        LogLong.threadInfo(LONG_MSG, ex)
+        LogLong.threadInfo(th, ex)
+        LogLong.stackTrace()
+        LogLong.stackTraceV(LONG_MSG)
+        LogLong.stackTraceI(LONG_MSG)
+        LogLong.stackTraceD(LONG_MSG)
+        LogLong.stackTraceW(LONG_MSG)
+        LogLong.stackTraceE(LONG_MSG)
+        LogLong.stackTraceWTF(LONG_MSG)
+    }
+
+    private fun runLogLongArrays() {
+        val random = Random()
+        val ints = IntArray(5000)
+        for (i in ints.indices) {
+            ints[i] = random.nextInt()
+        }
+        LogLong.array(ints)
+        val doubles = DoubleArray(5000)
+        for (i in doubles.indices) {
+            doubles[i] = random.nextDouble()
+        }
+        LogLong.array(doubles)
+        val longs = LongArray(5000)
+        for (i in longs.indices) {
+            longs[i] = random.nextLong()
+        }
+        LogLong.array(longs)
+        val floats = FloatArray(5000)
+        for (i in floats.indices) {
+            floats[i] = random.nextFloat()
+        }
+        LogLong.array(floats)
+        val bools = BooleanArray(5000)
+        for (i in bools.indices) {
+            bools[i] = random.nextBoolean()
+        }
+        LogLong.array(bools)
+        val chars = CharArray(5000)
+        for (i in chars.indices) {
+            chars[i] = random.nextInt(30).toChar()
+        }
+        LogLong.array(chars)
+        val objects = arrayOf<Any>(100)
+        for (i in objects.indices) {
+            objects[i] = Any()
+        }
+        LogLong.array(objects)
+        val map: MutableMap<Int, String> = HashMap()
+        for (i in 0..499) {
+            map[i] = SHORT_MSG
+        }
+        LogLong.map(map)
+        val list = ArrayList<String>()
+        for (i in 0..499) {
+            list.add(SHORT_MSG)
+        }
+        LogLong.list(list)
+    }
+
+    private fun runLongLogXmlHex() {
+        val random = Random()
+        val data = ByteArray(5000)
+        for (i in data.indices) {
+            data[i] = random.nextInt(60).toByte()
+        }
+        LogLong.hex(data)
+        LogLong.hex(data, 20)
+        val sb = StringBuilder("<note>\n")
+        for (i in 0..499) {
+            sb
+                    .append("<to")
+                    .append(i)
+                    .append(">Tove")
+                    .append(i)
+                    .append("</to")
+                    .append(i)
+                    .append(">\n")
+        }
+        sb.append("</note>")
+        val xml = sb.toString()
+        LogLong.xml(xml)
+        LogLong.xml(xml, 3)
+    }
+
+    companion object {
+        private const val MSG = "TEST MESSAGE\nLINE 1\nLINE 2\nLINE 3"
+        private const val SHORT_MSG = "TEST MESSAGE"
+        private const val LONG_MSG = "TEST MESSAGE\nLINE 1\nLINE 2\nLINE 3" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 1" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 2" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 3" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 4" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 5" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 6" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 7" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 8" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 9" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 10" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 11" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 12" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 13" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 14" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 15" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 16" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 17" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 18" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 19" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 20" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 21" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 22" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 23" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 24" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 25" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 26" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 27" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 28" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 29" +
+                "\n a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message a message 30"
     }
 }
