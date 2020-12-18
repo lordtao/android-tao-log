@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">android-tao-log-demokotlin</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Tao Logger Kotlin Demo</string>
+    <string name="nav_header_subtitle">https://github.com/lordtao/android-tao-log</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="menu_group_log">Log methods</string>
+    <string name="menu_group_long_log">Long data log methods</string>
+
+    <string name="action_log_short">Quick log show</string>
+    <string name="action_log_common">Log.v … Log.wtf, Log.rt </string>
+    <string name="action_log_thread">Threads and stack trace</string>
+    <string name="action_log_arrays">Arrays, list, map, set</string>
+    <string name="action_log_xml_hex">XML, HEX</string>
+    <string name="action_log_objects">Class and object info</string>
+    <string name="action_log_long_common">Long data. Log.v … Log.wtf, Log.rt </string>
+    <string name="action_log_long_thread">Long data. Threads and stack trace</string>
+    <string name="action_log_long_arrays">Long data. Arrays, list, map, set</string>
+    <string name="action_log_long_xml_hex">Long data. XML, HEX</string>
+
+</resources>

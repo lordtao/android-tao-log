@@ -1,0 +1,57 @@
+ext {
+    buildToolsVersion = '30.0.0'
+    minSdkVersion = 14
+    targetSdkVersion = 30
+    compileSdkVersion = 30
+    versionMajor = 2
+    versionMinor = 0
+    versionPatch = 0
+    versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+    versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
+    gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+
+    LIB_DESCRIPTION = 'Tiny, lightweight and informative logger for Android.'
+    GROUP_ID = 'ua.at.tsvetkov'
+    ARTIFACT_ID = 'taolog'
+    PROJECT_NAME = 'android-tao-log'
+    LICENSE = 'GPL 3.0'
+    LICENSE_URL = 'https://www.gnu.org/licenses/gpl-3.0.html'
+    GIT_USER = 'lordtao'
+    SITE_URL = 'https://github.com/lordtao/android-tao-log'
+    ISSUE_URL = 'https://github.com/lordtao/android-tao-log/issues'
+    GIT_URL = 'https://github.com/lordtao/android-tao-log.git'
+    AUTHOR = "Alexandr Tsvetkov"
+}
+buildscript {
+    ext.kotlin_version = '1.4.21'
+    ext.dokka_version = '1.4.0-rc'
+
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
+    }
+
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+    tasks.withType(Javadoc) {
+        enabled = false
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
