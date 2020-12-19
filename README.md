@@ -8,9 +8,7 @@ Also contains the LongLog class which allows you to print a long messages into t
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-log/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-log/_latestVersion)
 
-**Just try the Java and Kotlin Demo apps**
-
-**A lot of useful methods for you.**
+**Just try the Java or Kotlin Demo apps**
 
 ![Image of LogDemo](img/log_demo.png)
 
