@@ -122,7 +122,7 @@ allprojects {
 ```
 add to your dependencies in build.gradle
 ```
-implementation(group: 'android-tao-log', name: 'lib', version: '2.0.0', ext: 'aar', classifier: '')
+implementation 'android-tao-log:lib:2.0.0'
 ```
 
 Changelog
