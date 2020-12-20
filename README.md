@@ -109,14 +109,11 @@ Android tao log lib is available on Bintray. Please ensure that you are using th
 
 Gradle dependency for your Android app:
 
-add to general build.gradle
+Included in jcenter
 ```
 allprojects {
     repositories {
         jcenter()
-        maven {
-            url  "http://dl.bintray.com/lordtao/maven"
-        }
     }
 }
 ```
