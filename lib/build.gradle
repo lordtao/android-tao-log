@@ -14,7 +14,6 @@ android {
         targetSdkVersion rootProject.targetSdkVersion
         versionName rootProject.versionName
         versionCode rootProject.versionCode
-//        setProperty("archivesBaseName", "taolog-$version")
     }
 
     buildTypes {
@@ -64,10 +63,18 @@ dokkaHtml {
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
-def gitUser = "lordtao"
-def gitProject = "android-tao-log"
-def siteUrl = 'https://github.com/${gitUser}/${gitProject}'
-def gitUrl = 'https://github.com/${gitUser}/${gitProject}.git'
+def AUTHOR = "Alexandr Tsvetkov"
+def LIB_DESCRIPTION = 'Tiny, lightweight and informative logger for Android.'
+def GROUP_ID = 'ua.at.tsvetkov'
+def ARTIFACT_ID = 'taolog'
+def LICENSE = 'GPL 3.0'
+def LICENSE_URL = 'https://www.gnu.org/licenses/gpl-3.0.html'
+def GIT_USER = 'lordtao'
+def GIT_PROJECT_NAME = 'android-tao-log'
+def GIT_SITE_URL = 'https://github.com/lordtao/android-tao-log'
+def GIT_ISSUE_URL = 'https://github.com/lordtao/android-tao-log/issues'
+def GIT_URL = 'https://github.com/lordtao/android-tao-log.git'
+def EMAIL = 'tsvetkov2010@gmail.com'
 
 // Hide properties from ext users
 Properties properties = new Properties()
@@ -79,9 +86,9 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = gitProject
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
+        name = GIT_PROJECT_NAME
+        websiteUrl = GIT_SITE_URL
+        vcsUrl = GIT_URL
         licenses = [LICENSE]
         publish = true
     }
@@ -93,7 +100,8 @@ install {
             project {
                 packaging 'aar'
                 name LIB_DESCRIPTION
-                url siteUrl
+                url GIT_SITE_URL
+
                 licenses {
                     license {
                         name LICENSE
@@ -102,15 +110,15 @@ install {
                 }
                 developers {
                     developer {
-                        id gitUser
-                        name 'Alexandr Tsvetkov'
-                        email 'tsvetkov2010@gmail.com'
+                        id GIT_USER
+                        name AUTHOR
+                        email EMAIL
                     }
                 }
                 scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
+                    connection GIT_URL
+                    developerConnection GIT_URL
+                    url GIT_SITE_URL
                 }
             }
         }
