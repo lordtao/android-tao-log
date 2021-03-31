@@ -774,7 +774,7 @@ internal object Format {
     }
 
     @JvmStatic
-    fun getFormattedMessage(message: String): StringBuilder {
+    fun getFormattedMessage(message: String?): StringBuilder {
         return getFormattedMessage(null, message, null)
     }
 

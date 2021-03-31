@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import ua.at.tsvetkov.util.logger.utils.Format
 import ua.at.tsvetkov.util.logger.utils.Format.getActivityMethodInfo
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedMessage
 import ua.at.tsvetkov.util.logger.utils.FragmentLifecycleLogger
@@ -31,6 +32,11 @@ object LogComponents {
     @JvmStatic
     fun enableComponentsChangesLogging(application: Application) {
         enableActivityLifecycleLogger(application, true)
+    }
+
+    @JvmStatic
+    fun printListNotDestroyedActivities() {
+        Log.i(Format.list(listOf(supportFragmentLifecycleCallbacks.keys)))
     }
 
     /**
@@ -129,9 +135,9 @@ object LogComponents {
             supportFragmentLifecycleCallbacks[activity.toString()] = logger
             if (activity is AppCompatActivity) {
                 activity.supportFragmentManager.registerFragmentLifecycleCallbacks(logger, true)
-                android.util.Log.i(tag, getFormattedMessage("Fragment Lifecycle Logger attached to $tag").toString())
+                Log.i(getFormattedMessage("Fragment Lifecycle Logger attached to $tag").toString())
             } else {
-                android.util.Log.w(tag, "Can't attach FragmentLifecycleLogger to Activity, work only with AppCompatActivity")
+                Log.w("Can't attach FragmentLifecycleLogger to Activity, work only with AppCompatActivity")
             }
         }
     }
@@ -149,7 +155,7 @@ object LogComponents {
                 val logger = supportFragmentLifecycleCallbacks[activity.toString()]
                 activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(logger!!)
                 supportFragmentLifecycleCallbacks.remove(activity.toString())
-                android.util.Log.i(tag, "Fragment Lifecycle Logger detached from $tag")
+                Log.i(getFormattedMessage("Fragment Lifecycle Logger detached from $tag").toString())
             }
         }
     }

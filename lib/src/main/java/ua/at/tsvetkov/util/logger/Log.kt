@@ -80,7 +80,7 @@ object Log {
      */
     @JvmStatic
     fun v(message: String?) {
-        logToAll(Level.VERBOSE, getTag(), getFormattedMessage(message!!).toString())
+        logToAll(Level.VERBOSE, getTag(), getFormattedMessage(message).toString())
     }
 
     /**
@@ -90,7 +90,7 @@ object Log {
      */
     @JvmStatic
     fun d(message: String?) {
-        logToAll(Level.DEBUG, getTag(), getFormattedMessage(message!!).toString())
+        logToAll(Level.DEBUG, getTag(), getFormattedMessage(message).toString())
     }
 
     /**
@@ -100,7 +100,7 @@ object Log {
      */
     @JvmStatic
     fun i(message: String?) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(message!!).toString())
+        logToAll(Level.INFO, getTag(), getFormattedMessage(message).toString())
     }
 
     /**
@@ -110,7 +110,7 @@ object Log {
      */
     @JvmStatic
     fun w(message: String?) {
-        logToAll(Level.WARNING, getTag(), getFormattedMessage(message!!).toString())
+        logToAll(Level.WARNING, getTag(), getFormattedMessage(message).toString())
     }
 
     /**
@@ -120,7 +120,7 @@ object Log {
      */
     @JvmStatic
     fun e(message: String?) {
-        logToAll(Level.ERROR, getTag(), getFormattedMessage(message!!).toString())
+        logToAll(Level.ERROR, getTag(), getFormattedMessage(message).toString())
     }
 
     /**
@@ -132,7 +132,7 @@ object Log {
      */
     @JvmStatic
     fun wtf(message: String?) {
-        logToAll(Level.WTF, getTag(), getFormattedMessage(message!!).toString())
+        logToAll(Level.WTF, getTag(), getFormattedMessage(message).toString())
     }
     // ==========================================================
     /**
@@ -142,8 +142,8 @@ object Log {
      * @param tr      An throwable to log
      */
     @JvmStatic
-    fun v(message: String?, tr: Throwable?) {
-        logToAll(Level.VERBOSE, getTag(), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun v(message: String?, tr: Throwable) {
+        logToAll(Level.VERBOSE, getTag(), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     /**
@@ -153,8 +153,8 @@ object Log {
      * @param tr      An throwable to log
      */
     @JvmStatic
-    fun d(message: String?, tr: Throwable?) {
-        logToAll(Level.DEBUG, getTag(), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun d(message: String?, tr: Throwable) {
+        logToAll(Level.DEBUG, getTag(), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     /**
@@ -164,8 +164,8 @@ object Log {
      * @param tr      An throwable to log
      */
     @JvmStatic
-    fun i(message: String?, tr: Throwable?) {
-        logToAll(Level.INFO, getTag(), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun i(message: String?, tr: Throwable) {
+        logToAll(Level.INFO, getTag(), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     /**
@@ -175,8 +175,8 @@ object Log {
      * @param tr      An throwable to log
      */
     @JvmStatic
-    fun w(message: String?, tr: Throwable?) {
-        logToAll(Level.WARNING, getTag(), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun w(message: String?, tr: Throwable) {
+        logToAll(Level.WARNING, getTag(), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     /**
@@ -186,8 +186,8 @@ object Log {
      * @param tr      An throwable to log
      */
     @JvmStatic
-    fun e(message: String?, tr: Throwable?) {
-        logToAll(Level.ERROR, getTag(), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun e(message: String?, tr: Throwable) {
+        logToAll(Level.ERROR, getTag(), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     /**
@@ -197,11 +197,11 @@ object Log {
      * @param tr      An throwable to log
      */
     @JvmStatic
-    fun rt(message: String?, tr: Throwable?) {
+    fun rt(message: String?, tr: Throwable) {
         if (tr is RuntimeException) {
-            throw (tr as RuntimeException?)!!
+            throw RuntimeException(tr)
         }
-        logToAll(Level.ERROR, getTag(), getFormattedThrowable(message, tr!!).toString(), tr)
+        logToAll(Level.ERROR, getTag(), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     /**
@@ -211,8 +211,8 @@ object Log {
      * @param tr      An throwable to log
      */
     @JvmStatic
-    fun wtf(message: String?, tr: Throwable?) {
-        logToAll(Level.WTF, getTag(), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun wtf(message: String?, tr: Throwable) {
+        logToAll(Level.WTF, getTag(), getFormattedThrowable(message, tr).toString(), tr)
     }
     // ==========================================================
     /**
@@ -221,8 +221,8 @@ object Log {
      * @param tr An throwable to log
      */
     @JvmStatic
-    fun v(tr: Throwable?) {
-        logToAll(Level.VERBOSE, getTag(), getFormattedThrowable(tr!!).toString(), tr)
+    fun v(tr: Throwable) {
+        logToAll(Level.VERBOSE, getTag(), getFormattedThrowable(tr).toString(), tr)
     }
 
     /**
@@ -231,8 +231,8 @@ object Log {
      * @param tr An throwable to log
      */
     @JvmStatic
-    fun d(tr: Throwable?) {
-        logToAll(Level.DEBUG, getTag(), getFormattedThrowable(tr!!).toString(), tr)
+    fun d(tr: Throwable) {
+        logToAll(Level.DEBUG, getTag(), getFormattedThrowable(tr).toString(), tr)
     }
 
     /**
@@ -241,8 +241,8 @@ object Log {
      * @param tr An throwable to log
      */
     @JvmStatic
-    fun i(tr: Throwable?) {
-        logToAll(Level.INFO, getTag(), getFormattedThrowable(tr!!).toString(), tr)
+    fun i(tr: Throwable) {
+        logToAll(Level.INFO, getTag(), getFormattedThrowable(tr).toString(), tr)
     }
 
     /**
@@ -251,8 +251,8 @@ object Log {
      * @param tr An throwable to log
      */
     @JvmStatic
-    fun w(tr: Throwable?) {
-        logToAll(Level.WARNING, getTag(), getFormattedThrowable(tr!!).toString(), tr)
+    fun w(tr: Throwable) {
+        logToAll(Level.WARNING, getTag(), getFormattedThrowable(tr).toString(), tr)
     }
 
     /**
@@ -261,8 +261,8 @@ object Log {
      * @param tr An throwable to log
      */
     @JvmStatic
-    fun e(tr: Throwable?) {
-        logToAll(Level.ERROR, getTag(), getFormattedThrowable(tr!!).toString(), tr)
+    fun e(tr: Throwable) {
+        logToAll(Level.ERROR, getTag(), getFormattedThrowable(tr).toString(), tr)
     }
 
     /**
@@ -271,11 +271,11 @@ object Log {
      * @param tr An throwable to log
      */
     @JvmStatic
-    fun rt(tr: Throwable?) {
+    fun rt(tr: Throwable) {
         if (tr is RuntimeException) {
-            throw (tr as RuntimeException?)!!
+            throw RuntimeException(tr)
         }
-        logToAll(Level.ERROR, getTag(), getFormattedThrowable(tr!!).toString(), tr)
+        logToAll(Level.ERROR, getTag(), getFormattedThrowable(tr).toString(), tr)
     }
 
     /**
@@ -284,8 +284,8 @@ object Log {
      * @param tr An throwable to log
      */
     @JvmStatic
-    fun wtf(tr: Throwable?) {
-        logToAll(Level.WTF, getTag(), getFormattedThrowable(tr!!).toString(), tr)
+    fun wtf(tr: Throwable) {
+        logToAll(Level.WTF, getTag(), getFormattedThrowable(tr).toString(), tr)
     }
     // ==========================================================
     /**
@@ -298,7 +298,7 @@ object Log {
      */
     @JvmStatic
     fun v(obj: Any?, message: String?) {
-        logToAll(Level.VERBOSE, getTag(obj), getFormattedMessage(message!!).toString())
+        logToAll(Level.VERBOSE, getTag(obj), getFormattedMessage(message).toString())
     }
 
     /**
@@ -310,7 +310,7 @@ object Log {
      */
     @JvmStatic
     fun d(obj: Any?, message: String?) {
-        logToAll(Level.DEBUG, getTag(obj), getFormattedMessage(message!!).toString())
+        logToAll(Level.DEBUG, getTag(obj), getFormattedMessage(message).toString())
     }
 
     /**
@@ -322,7 +322,7 @@ object Log {
      */
     @JvmStatic
     fun i(obj: Any?, message: String?) {
-        logToAll(Level.INFO, getTag(obj), getFormattedMessage(message!!).toString())
+        logToAll(Level.INFO, getTag(obj), getFormattedMessage(message).toString())
     }
 
     /**
@@ -334,7 +334,7 @@ object Log {
      */
     @JvmStatic
     fun w(obj: Any?, message: String?) {
-        logToAll(Level.WARNING, getTag(obj), getFormattedMessage(message!!).toString())
+        logToAll(Level.WARNING, getTag(obj), getFormattedMessage(message).toString())
     }
 
     /**
@@ -347,7 +347,7 @@ object Log {
      */
     @JvmStatic
     fun e(obj: Any?, message: String?) {
-        logToAll(Level.ERROR, getTag(obj), getFormattedMessage(message!!).toString())
+        logToAll(Level.ERROR, getTag(obj), getFormattedMessage(message).toString())
     }
 
     /**
@@ -360,7 +360,7 @@ object Log {
      */
     @JvmStatic
     fun wtf(obj: Any?, message: String?) {
-        logToAll(Level.WTF, getTag(obj), getFormattedMessage(message!!).toString())
+        logToAll(Level.WTF, getTag(obj), getFormattedMessage(message).toString())
     }
     // ==========================================================
     /**
@@ -373,8 +373,8 @@ object Log {
      * @param tr      An throwable to log
      */
     @JvmStatic
-    fun v(obj: Any?, message: String?, tr: Throwable?) {
-        logToAll(Level.VERBOSE, getTag(obj), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun v(obj: Any?, message: String?, tr: Throwable) {
+        logToAll(Level.VERBOSE, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     /**
@@ -387,8 +387,8 @@ object Log {
      * @param tr      An throwable to log
      */
     @JvmStatic
-    fun d(obj: Any?, message: String?, tr: Throwable?) {
-        logToAll(Level.DEBUG, getTag(obj), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun d(obj: Any?, message: String?, tr: Throwable) {
+        logToAll(Level.DEBUG, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     /**
@@ -401,8 +401,8 @@ object Log {
      * @param tr      An throwable to log
      */
     @JvmStatic
-    fun i(obj: Any?, message: String?, tr: Throwable?) {
-        logToAll(Level.INFO, getTag(obj), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun i(obj: Any?, message: String?, tr: Throwable) {
+        logToAll(Level.INFO, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     /**
@@ -415,8 +415,8 @@ object Log {
      * @param tr      An throwable to log
      */
     @JvmStatic
-    fun w(obj: Any?, message: String?, tr: Throwable?) {
-        logToAll(Level.WARNING, getTag(obj), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun w(obj: Any?, message: String?, tr: Throwable) {
+        logToAll(Level.WARNING, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     /**
@@ -429,8 +429,8 @@ object Log {
      * @param message The message you would like logged.
      */
     @JvmStatic
-    fun e(obj: Any?, message: String?, tr: Throwable?) {
-        logToAll(Level.ERROR, getTag(obj), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun e(obj: Any?, message: String?, tr: Throwable) {
+        logToAll(Level.ERROR, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     /**
@@ -443,8 +443,8 @@ object Log {
      * @param message The message you would like logged.
      */
     @JvmStatic
-    fun wtf(obj: Any?, message: String?, tr: Throwable?) {
-        logToAll(Level.WTF, getTag(obj), getFormattedThrowable(message, tr!!).toString(), tr)
+    fun wtf(obj: Any?, message: String?, tr: Throwable) {
+        logToAll(Level.WTF, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
     }
 
     // =========================== Collections, arrays and objects ===============================
@@ -458,7 +458,7 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun map(map: Map<*, *>?, title: String? = "Map") {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.map(map), title!!).toString())
+        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.map(map), title).toString())
     }
 
     /**
@@ -470,7 +470,7 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun list(list: List<*>?, title: String? = "List") {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.list(list), title!!).toString())
+        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.list(list), title).toString())
     }
 
     /**
@@ -514,7 +514,7 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: IntArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title!!).toString())
+        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
     }
 
     /**
@@ -525,7 +525,7 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: FloatArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title!!).toString())
+        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
     }
 
     /**
@@ -536,7 +536,7 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: BooleanArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title!!).toString())
+        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
     }
 
     /**
@@ -547,7 +547,7 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: CharArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title!!).toString())
+        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
     }
 
     /**
@@ -558,7 +558,7 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: DoubleArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title!!).toString())
+        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
     }
 
     /**
@@ -569,7 +569,7 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: LongArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title!!).toString())
+        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
     }
 
     /**
@@ -651,11 +651,11 @@ object Log {
      * @param throwable An throwable to log
      */
     @JvmStatic
-    fun threadInfo(throwable: Throwable?) {
+    fun threadInfo(throwable: Throwable) {
         val sb = StringBuilder()
         addThreadInfo(sb, Thread.currentThread())
         sb.append(Format.NL)
-        addStackTrace(sb, throwable!!)
+        addStackTrace(sb, throwable)
         logToAll(Level.INFO, getTag(), getFormattedMessage(sb).toString())
     }
 
@@ -678,12 +678,12 @@ object Log {
      * @param throwable An throwable to log
      */
     @JvmStatic
-    fun threadInfo(message: String?, throwable: Throwable?) {
+    fun threadInfo(message: String?, throwable: Throwable) {
         val sb = StringBuilder()
         addThreadInfo(sb, Thread.currentThread())
         sb.append(Format.NL)
         addMessage(sb, message)
-        addStackTrace(sb, throwable!!)
+        addStackTrace(sb, throwable)
         logToAll(Level.INFO, getTag(), getFormattedMessage(sb.toString()).toString())
     }
 
@@ -694,11 +694,11 @@ object Log {
      * @param throwable An throwable to log
      */
     @JvmStatic
-    fun threadInfo(thread: Thread?, throwable: Throwable?) {
+    fun threadInfo(thread: Thread?, throwable: Throwable) {
         val sb = StringBuilder()
         addThreadInfo(sb, thread)
         sb.append(Format.NL)
-        addStackTrace(sb, throwable!!)
+        addStackTrace(sb, throwable)
         logToAll(Level.INFO, getTag(), getFormattedMessage(sb.toString()).toString())
     }
 
