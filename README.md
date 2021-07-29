@@ -5,8 +5,7 @@ Tiny, lightweight, informative and very useful logger for Android.
 You don't need to define TAG. It is automatically generated and include file name, method, line number and of of course the link to the code.
 Also contains the LongLog class which allows you to print a long messages into the LogCat without limiting the standard output length to less than ~ 4075.
 
-[![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
-Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-log/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-log/_latestVersion)
+Download latest release v2.0.1 : [ ![Download](https://github.com/lordtao/android-tao-log/releases/tag/v2.1.0) ](https://github.com/lordtao/android-tao-log/releases/tag/v2.1.0)
 
 **Just try the Java or Kotlin Demo apps**
 
@@ -105,25 +104,21 @@ logZipper.shareZip(activity)
 
 Add android-tao-log to your project
 -----------------------------------
-Android tao log lib is available on Bintray. Please ensure that you are using the latest versions by [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-log/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-log/_latestVersion)
+Android tao log lib is available for direct download (unfortunately Bintray has been deprecated ).  
+Please ensure that you are using the latest versions [ ![Download](https://github.com/lordtao/android-tao-log/releases) ](https://github.com/lordtao/android-tao-log/releases)
 
-Gradle dependency for your Android app:
+Put downloaded taolog-*.aar file in to the 'lib' directory in your app module and add Gradle dependency:
 
-Included in jcenter
 ```
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
-```
-add to your dependencies in build.gradle
-```
-implementation 'ua.at.tsvetkov:taolog:2.0.0'
+implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
+implementation files('libs/taolog-*.aar')
 ```
 
 Changelog
 ---------
+
+#### 2.0.1 -- Fixes
+* Refactoring
 
 #### 2.0.0 -- Migration to Kotlin. LogFragment
 * Migration to Kotlin
