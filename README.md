@@ -5,9 +5,10 @@ Tiny, lightweight, informative and very useful logger for Android.
 You don't need to define TAG. It is automatically generated and include file name, method, line number and of of course the link to the code.
 Also contains the LongLog class which allows you to print a long messages into the LogCat without limiting the standard output length to less than ~ 4075.
 
-Download latest release v2.0.1 : [Download](https://github.com/lordtao/android-tao-log/releases/tag/v2.0.1)
+[Download the latest release v2.0.1](https://github.com/lordtao/android-tao-log/releases/tag/v2.0.1)
 
-**Just try the Java or Kotlin Demo apps**
+**Just try the Java or Kotlin**
+[Demo apps](https://github.com/lordtao/android-tao-log/releases/tag/v2.0.1)
 
 ![Image of LogDemo](img/log_demo.png)
 
