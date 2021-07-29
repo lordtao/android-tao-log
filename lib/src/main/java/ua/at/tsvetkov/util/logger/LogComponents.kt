@@ -95,7 +95,7 @@ object LogComponents {
                 }
 
                 private fun printActivityCallMethod(activity: Activity) {
-                    android.util.Log.v(">>>", getActivityMethodInfo(activity))
+                    android.util.Log.v(" ACTIVITY >>> ", getActivityMethodInfo(activity))
                 }
             }
         }
@@ -135,9 +135,8 @@ object LogComponents {
             supportFragmentLifecycleCallbacks[activity.toString()] = logger
             if (activity is AppCompatActivity) {
                 activity.supportFragmentManager.registerFragmentLifecycleCallbacks(logger, true)
-                Log.i(getFormattedMessage("Fragment Lifecycle Logger attached to $tag").toString())
             } else {
-                Log.w("Can't attach FragmentLifecycleLogger to Activity, work only with AppCompatActivity")
+                Log.w("Can't attach Fragment Logger to Activity, work only with AppCompatActivity")
             }
         }
     }

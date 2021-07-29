@@ -60,7 +60,6 @@ internal object Format {
     const val ID = "|Id:"
     const val THREAD_NAME = "Thread Name:"
     const val HALF_LINE = "---------------------"
-    const val ACTIVITY_MESSAGE = " Activity: "
     const val ACTIVITY_CLASS = "android.app.Activity"
     const val DELIMITER_START = "· "
     const val DELIMITER = "············································································"
@@ -665,27 +664,16 @@ internal object Format {
         val traces = Thread.currentThread().stackTrace
 
         val sb = StringBuilder()
-        sb.append(' ')
-        sb.append(NL)
-        sb.append(HALF_LINE)
-        sb.append(ACTIVITY_MESSAGE)
 
         var trace = findStackTraceElement(traces, className)
 
-        var isOverride = false
-        if (trace != null) {
-            isOverride = true
-        } else {
+        if (trace == null) {
             trace = findStackTraceElement(traces, ACTIVITY_CLASS)
         }
 
+        sb.append(HALF_LINE)
         sb.append(SPACE)
         sb.append(classSimpleName)
-
-        if (isOverride) {
-            sb.append(" (method overridden)")
-        }
-
         sb.append(" -> ")
         sb.append(trace!!.methodName)
         sb.append(SPACE)
