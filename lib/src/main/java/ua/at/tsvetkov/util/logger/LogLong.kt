@@ -29,17 +29,16 @@
  */
 package ua.at.tsvetkov.util.logger
 
+import ua.at.tsvetkov.util.logger.Log.logToAll
+import ua.at.tsvetkov.util.logger.interceptor.Level
+import ua.at.tsvetkov.util.logger.utils.Format
 import ua.at.tsvetkov.util.logger.utils.Format.addMessage
 import ua.at.tsvetkov.util.logger.utils.Format.addStackTrace
 import ua.at.tsvetkov.util.logger.utils.Format.addThreadInfo
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedMessage
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedThrowable
 import ua.at.tsvetkov.util.logger.utils.Format.getTag
-import ua.at.tsvetkov.util.logger.Log.logToAll
-import ua.at.tsvetkov.util.logger.utils.Format
-import ua.at.tsvetkov.util.logger.interceptor.Level
 import java.lang.ref.SoftReference
-import java.util.*
 
 /**
  * Shows a long log string in LogCat. The LogCat have the real message size for both binary and non-binary logs is ~4076 bytes.
@@ -379,6 +378,50 @@ object LogLong {
     @JvmStatic
     fun list(list: List<*>?, title: String? = "List") {
         print(getTag(), getFormattedMessage(Format.list(list), title), Level.INFO, false)
+    }
+
+    /**
+     * Logged String representation of list. Each item in new line.
+     *
+     * @param list a List
+     */
+    @JvmOverloads
+    @JvmStatic
+    fun listD(list: List<*>?, title: String? = "List") {
+        print(getTag(), getFormattedMessage(Format.list(list), title), Level.DEBUG, false)
+    }
+
+    /**
+     * Logged String representation of list. Each item in new line.
+     *
+     * @param list a List
+     */
+    @JvmOverloads
+    @JvmStatic
+    fun listV(list: List<*>?, title: String? = "List") {
+        print(getTag(), getFormattedMessage(Format.list(list), title), Level.VERBOSE, false)
+    }
+
+    /**
+     * Logged String representation of list. Each item in new line.
+     *
+     * @param list a List
+     */
+    @JvmOverloads
+    @JvmStatic
+    fun listW(list: List<*>?, title: String? = "List") {
+        print(getTag(), getFormattedMessage(Format.list(list), title), Level.WARNING, false)
+    }
+
+    /**
+     * Logged String representation of list. Each item in new line.
+     *
+     * @param list a List
+     */
+    @JvmOverloads
+    @JvmStatic
+    fun listE(list: List<*>?, title: String? = "List") {
+        print(getTag(), getFormattedMessage(Format.list(list), title), Level.ERROR, false)
     }
 
     /**

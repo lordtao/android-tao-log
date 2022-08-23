@@ -37,7 +37,6 @@ import ua.at.tsvetkov.util.logger.utils.Format.addThreadInfo
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedMessage
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedThrowable
 import ua.at.tsvetkov.util.logger.utils.Format.getTag
-import java.util.*
 
 /**
  * Extended logger. Allows you to automatically adequately logged class, method and line call in the log. Makes it easy to write logs. For
@@ -471,6 +470,54 @@ object Log {
     @JvmStatic
     fun list(list: List<*>?, title: String? = "List") {
         logToAll(Level.INFO, getTag(), getFormattedMessage(Format.list(list), title).toString())
+    }
+
+    /**
+     * Logged String representation of list. Each item in new line.
+     *
+     * @param list  a List
+     * @param title a title string
+     */
+    @JvmOverloads
+    @JvmStatic
+    fun listD(list: List<*>?, title: String? = "List") {
+        logToAll(Level.DEBUG, getTag(), getFormattedMessage(Format.list(list), title).toString())
+    }
+
+    /**
+     * Logged String representation of list. Each item in new line.
+     *
+     * @param list  a List
+     * @param title a title string
+     */
+    @JvmOverloads
+    @JvmStatic
+    fun listV(list: List<*>?, title: String? = "List") {
+        logToAll(Level.VERBOSE, getTag(), getFormattedMessage(Format.list(list), title).toString())
+    }
+
+    /**
+     * Logged String representation of list. Each item in new line.
+     *
+     * @param list  a List
+     * @param title a title string
+     */
+    @JvmOverloads
+    @JvmStatic
+    fun listW(list: List<*>?, title: String? = "List") {
+        logToAll(Level.WARNING, getTag(), getFormattedMessage(Format.list(list), title).toString())
+    }
+
+    /**
+     * Logged String representation of list. Each item in new line.
+     *
+     * @param list  a List
+     * @param title a title string
+     */
+    @JvmOverloads
+    @JvmStatic
+    fun listE(list: List<*>?, title: String? = "List") {
+        logToAll(Level.ERROR, getTag(), getFormattedMessage(Format.list(list), title).toString())
     }
 
     /**
