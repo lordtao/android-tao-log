@@ -16,7 +16,6 @@ public class AppTaoLogDemo extends Application {
       super.onCreate();
 
       if (BuildConfig.DEBUG){
-         Log.setStamp(BuildConfig.GIT_SHA);
          LogComponents.enableComponentsChangesLogging(this);
       } else {
          Log.setDisabled();

@@ -23,7 +23,6 @@
  * *****************************************************************************/
 package ua.at.tsvetkov.util.logger.utils
 
-import android.app.Activity
 import android.text.TextUtils
 import androidx.fragment.app.FragmentManager
 import org.w3c.dom.NodeList
@@ -41,13 +40,14 @@ import javax.xml.transform.stream.StreamResult
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
 
-
 /**
  * Prepare formatted string from different objects for visual printing in [Log] class
  *
  * @author A.Tsvetkov 2010 http://tsvetkov.at.ua mailto:tsvetkov2010@gmail.com
  */
 internal object Format {
+
+    private val LOG_CLASS_NAME = Log::class.java.name
 
     const val MAX_TAG_LENGTH = 65
     const val MAGIC_SPACES_COUNT = 34
@@ -77,10 +77,6 @@ internal object Format {
 
     @Volatile
     var beforeTagSpacesCount: Int = 0
-
-    @JvmStatic
-    @Volatile
-    var stamp: String? = null
 
     init {
         beforeTagSpacesCount = getPackageNameLength() + MAGIC_SPACES_COUNT
@@ -313,21 +309,20 @@ internal object Format {
      * @return String representation of array
      */
     @JvmStatic
-    fun array(array: LongArray?): String {
-        if (array == null) {
-            return "null"
-        }
+    fun array(array: LongArray?): StringBuilder {
         val sb = StringBuilder()
-        sb.append('[')
-        for (i in array.indices) {
-            sb.append(array[i])
-            if (i < array.size - 1) {
-                sb.append(',')
-            } else {
-                sb.append(']')
+        if (array != null) {
+            sb.append('[')
+            for (i in array.indices) {
+                sb.append(array[i])
+                if (i < array.size - 1) {
+                    sb.append(',')
+                } else {
+                    sb.append(']')
+                }
             }
         }
-        return sb.toString()
+        return sb
     }
 
     /**
@@ -388,7 +383,6 @@ internal object Format {
                 sb.append(e.message)
                 sb.append(field.name)
             }
-
         }
         return sb.toString()
     }
@@ -424,7 +418,6 @@ internal object Format {
                 sb.append(sb.append(e.message))
                 sb.append(fields[i].name)
             }
-
         }
         sb.append("]")
         return sb.toString()
@@ -490,15 +483,17 @@ internal object Format {
         try {
             // Turn xml string into a document
             val document = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder()
-                    .parse(InputSource(ByteArrayInputStream(xmlStr!!.toByteArray(charset("utf-8")))))
+                .newDocumentBuilder()
+                .parse(InputSource(ByteArrayInputStream(xmlStr!!.toByteArray(charset("utf-8")))))
 
             // Remove whitespaces outside tags
             document.normalize()
             val xPath = XPathFactory.newInstance().newXPath()
-            val nodeList = xPath.evaluate("//text()[normalize-space()='']",
-                    document,
-                    XPathConstants.NODESET) as NodeList
+            val nodeList = xPath.evaluate(
+                "//text()[normalize-space()='']",
+                document,
+                XPathConstants.NODESET
+            ) as NodeList
 
             for (i in 0 until nodeList.length) {
                 val node = nodeList.item(i)
@@ -525,11 +520,9 @@ internal object Format {
                 StringBuilder()
             }
         }
-
     }
 
-    //============================== Fragments ==============================
-
+    // ============================== Fragments ==============================
 
     @JvmStatic
     fun getFragmentsStackInfo(fm: FragmentManager, operation: String, backStackCount: Int): String {
@@ -569,176 +562,26 @@ internal object Format {
         }
     }
 
-    private fun fillTag(className: String, traces: Array<StackTraceElement>, sb: StringBuilder) {
-        sb.append(PREFIX_MAIN_STRING)
-        addStamp(sb)
-        addLocation(className, traces, sb)
-        addSpaces(sb)
-    }
-
-    @JvmStatic
-    fun getTag(): String {
-        val className = Log::class.java.name
-        val traces = Thread.currentThread().stackTrace
-        val sb = StringBuilder()
-
-        fillTag(className, traces, sb)
-
-        return sb.toString()
-    }
-
-    @JvmStatic
-    fun getTag(obj: Any?): String {
-        if (obj == null) {
-            return "null"
-        }
-        val clazz = obj.javaClass
-        val className = clazz.name
-        val parentClassName = Log::class.java.name
-
-        val traces = Thread.currentThread().stackTrace
-
-        val sb = StringBuilder()
-        sb.append(PREFIX_MAIN_STRING)
-        addStamp(sb)
-
-        val sbPrefixLength = sb.length
-
-        if (!clazz.isAnonymousClass) {
-            for (i in traces.indices) {
-                if (traces[i].className.startsWith(className)) {
-                    sb.append(traces[i].fileName)
-                    sb.append(SPACE)
-                    break
-                }
-            }
-        } else {
-            sb.append("(Anonymous Class) ")
-        }
-        if (sb.length > sbPrefixLength) {
-            sb.append('<')
-            sb.append('-')
-            sb.append(SPACE)
-        }
-        addLocation(parentClassName, traces, sb)
-        addSpaces(sb)
-
-        return sb.toString()
-    }
-
-    @JvmStatic
-    fun getActivityTag(activity: Activity): String {
-        val className = activity.javaClass.canonicalName!!
-        val classSimpleName = activity.javaClass.simpleName
-
-        val traces = Thread.currentThread().stackTrace
-
-        val sb = StringBuilder()
-        sb.append(PREFIX_MAIN_STRING)
-        addStamp(sb)
-
-        var trace = findStackTraceElement(traces, className)
-
-        if (trace != null) {
-            addClassLink(sb, classSimpleName, trace.lineNumber)
-        } else {
-            addClassLink(sb, classSimpleName, 0)
-            trace = findStackTraceElement(traces, ACTIVITY_CLASS)
-        }
-
-        sb.append(trace!!.methodName)
-
-        addSpaces(sb)
-
-        return sb.toString()
-    }
-
-    @JvmStatic
-    fun getStampTag() = addStamp(StringBuilder()).toString()
-
-    @JvmStatic
-    fun getActivityMethodInfo(activity: Activity): String {
-        val className = activity.javaClass.canonicalName!!
-        val classSimpleName = activity.javaClass.simpleName
-
-        val traces = Thread.currentThread().stackTrace
-
-        val sb = StringBuilder()
-
-        var trace = findStackTraceElement(traces, className)
-
-        if (trace == null) {
-            trace = findStackTraceElement(traces, ACTIVITY_CLASS)
-        }
-
-        sb.append(HALF_LINE)
-        sb.append(SPACE)
-        sb.append(classSimpleName)
-        sb.append(" -> ")
-        sb.append(trace!!.methodName)
-        sb.append(SPACE)
-        sb.append(HALF_LINE)
-
-        return sb.toString()
-    }
-
-    private fun addStamp(sb: StringBuilder) {
-        if (!stamp.isNullOrEmpty()) {
-            sb.append(stamp)
-            sb.append(SPACE)
-        }
-    }
-
-    private fun addLocation(className: String, traces: Array<StackTraceElement>, sb: StringBuilder) {
+    fun getLocationContainer(): LocationContainer {
         var found = false
+        val traces = Thread.currentThread().stackTrace.toMutableList()
         for (i in traces.indices) {
             try {
                 if (found) {
-                    if (!traces[i].className.startsWith(className)) {
-                        var notZeroLineNumberOffset = 0
-                        var lineNumber = 0
-                        while (lineNumber == 0) {
-                            lineNumber = traces[i + notZeroLineNumberOffset++].lineNumber
-                        }
-                        addClassLink(sb, traces[i].fileName, lineNumber)
-                        sb.append(traces[i].methodName)
-                        break
+                    if (!traces[i].className.startsWith(LOG_CLASS_NAME)) {
+                        return LocationContainer(traces.drop(i))
                     }
-                } else if (traces[i].className.startsWith(className)) {
+                } else if (traces[i].className.startsWith(LOG_CLASS_NAME)) {
                     found = true
                 }
             } catch (e: ClassNotFoundException) {
                 android.util.Log.e("LOG", e.toString())
             }
-
         }
+        return LocationContainer(traces)
     }
 
-    private fun addClassLink(sb: StringBuilder, fileName: String, lineNumber: Int) {
-        sb.append('(')
-        sb.append(fileName)
-        sb.append(COLON)
-        sb.append(lineNumber)
-        sb.append(')')
-        sb.append(SPACE)
-    }
-
-    private fun addSpaces(sb: StringBuilder) {
-        if (!Log.isAlignNewLines) {
-            return
-        }
-        var extraSpaceCount = maxTagLength - sb.length
-        if (extraSpaceCount < 0) {
-            maxTagLength = sb.length
-            extraSpaceCount = 0
-        }
-        for (i in 0 until extraSpaceCount) {
-            sb.append(SPACE)
-        }
-        sb.append('\u21DB')
-    }
-
-    private fun getClassName(clazz: Class<*>?): String {
+    fun getClassName(clazz: Class<*>?): String {
         return if (clazz != null) {
             if (!TextUtils.isEmpty(clazz.simpleName)) {
                 if (clazz.name.contains("$")) {
@@ -750,7 +593,7 @@ internal object Format {
         } else ""
     }
 
-    private fun findStackTraceElement(traces: Array<StackTraceElement>, startsFrom: String): StackTraceElement? {
+    fun findStackTraceElement(traces: Array<StackTraceElement>, startsFrom: String): StackTraceElement? {
         var trace: StackTraceElement? = null
         for (i in traces.indices) {
             if (traces[i].className.startsWith(startsFrom)) {
@@ -762,23 +605,28 @@ internal object Format {
     }
 
     @JvmStatic
-    fun getFormattedMessage(message: String?): StringBuilder {
-        return getFormattedMessage(null, message, null)
+    fun getFormattedMessage(data: LocationContainer, message: String?): StringBuilder {
+        return getFormattedMessage(data, null, message, null)
     }
 
     @JvmStatic
-    fun getFormattedMessage(message: String, title: String?): StringBuilder {
-        return getFormattedMessage(null, message, title)
+    fun getFormattedMessage(data: LocationContainer, message: String, title: String?): StringBuilder {
+        return getFormattedMessage(data, null, message, title)
     }
 
     @JvmStatic
-    fun getFormattedThrowable(throwable: Throwable): StringBuilder {
-        return getFormattedThrowable(null, throwable)
+    fun getFormattedThrowable(data: LocationContainer, throwable: Throwable): StringBuilder {
+        return getFormattedThrowable(data, null, throwable)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun getFormattedMessage(stringBuilder: StringBuilder?, message: String? = null, title: String? = null): StringBuilder {
+    fun getFormattedMessage(
+        data: LocationContainer,
+        stringBuilder: StringBuilder?,
+        message: String? = null,
+        title: String? = null
+    ): StringBuilder {
         var lines = if (stringBuilder != null) {
             if (message != null) {
                 stringBuilder.append(message)
@@ -789,22 +637,21 @@ internal object Format {
         }
         val linesCount = getLinesCount(title, lines)
         lines = createLines(title, lines, linesCount)
-        if (Log.isAlignNewLines) {
-            appendAlignmentForLines(lines)
-        }
 
         val sb = StringBuilder()
-        if (linesCount > 1 && !Log.isAlignNewLines) {
-            sb.append(" \n")
-        }
+        sb.append(data.getLink())
+        sb.append("::")
+        data.appendMethodName(sb)
+        sb.append('\n')
         appendLines(lines, sb)
         return sb
     }
 
     @JvmStatic
-    fun getFormattedThrowable(message: String?, throwable: Throwable): StringBuilder {
+    fun getFormattedThrowable(data: LocationContainer, message: String?, throwable: Throwable): StringBuilder {
         var lines = if (!message.isNullOrEmpty()) {
-            (message + ("\n" + getThrowableMessage(throwable))).split("\\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            (message + ("\n" + getThrowableMessage(throwable))).split("\\n".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray()
         } else {
             getThrowableMessage(throwable).split("\\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         }
@@ -812,14 +659,11 @@ internal object Format {
         val linesCount = getLinesCount(lines, throwable)
         lines = createLines(throwable, lines, linesCount)
 
-        if (Log.isAlignNewLines) {
-            appendAlignmentForLines(lines)
-        }
-
         val sb = StringBuilder()
-        if (linesCount > 1 && !Log.isAlignNewLines) {
-            sb.append(" \n")
-        }
+        sb.append(data.getLink())
+        sb.append("::")
+        data.appendMethodName(sb)
+        sb.append('\n')
         appendLines(lines, sb)
 
         return sb
@@ -893,7 +737,6 @@ internal object Format {
     }
 
     private fun createLines(throwable: Throwable?, lines: Array<String>?, count: Int): Array<String> {
-
         val lns = Array(count) { "" }
 
         val linesCount = lines?.size ?: 0
@@ -914,7 +757,8 @@ internal object Format {
                     if (i == 0) {
                         lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + AT + stack[i].toString()
                     } else {
-                        lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + THROWABLE_DELIMITER_PREFIX + AT + stack[i].toString()
+                        lns[linesCount + 1 + i] =
+                            THROWABLE_DELIMITER_START + THROWABLE_DELIMITER_PREFIX + AT + stack[i].toString()
                     }
                 }
             }
@@ -946,22 +790,7 @@ internal object Format {
         }
     }
 
-    private fun appendAlignmentForLines(lines: Array<String>?) {
-        if (lines == null || lines.isEmpty()) {
-            return
-        }
-        val spacesCount = maxTagLength + beforeTagSpacesCount
-        val sb = StringBuilder()
-        for (i in 0 until spacesCount) {
-            sb.append(SPACE)
-        }
-        for (i in 1 until lines.size) {
-            lines[i] = sb.toString() + lines[i]
-        }
-    }
-
-    //==================== Stack trace ======================
-
+    // ==================== Stack trace ======================
 
     @JvmStatic
     fun addStackTrace(sb: StringBuilder, throwable: Throwable) {
@@ -1023,5 +852,92 @@ internal object Format {
         }
     }
 
-}
+    data class LocationContainer(val traces: List<StackTraceElement>) {
 
+        val tag: String
+        private val className: String
+        private val methodName: String
+        private val lineNumber: Int
+        var stackTraceNumber: Int = 0
+
+        init {
+            if (traces.isEmpty()) {
+                tag = "<no-tag>"
+                className = UNDEFINED
+                methodName = UNDEFINED
+                lineNumber = 0
+            } else {
+                var notZeroLineNumberOffset = 0
+                var number = 0
+                while (number == 0) {
+                    number = traces[notZeroLineNumberOffset++].lineNumber
+                }
+                className = traces[0].fileName
+                methodName = traces[0].methodName
+                tag = className.substringBeforeLast('.')
+                lineNumber = number
+            }
+        }
+
+        fun isKotlin() = className.endsWith(".kt", true)
+
+        fun addLinkTo(sb: StringBuilder) {
+            sb.append('(')
+            sb.append(className)
+            sb.append(COLON)
+            sb.append(lineNumber)
+            sb.append(')')
+        }
+
+        fun appendLink(sb: StringBuilder) {
+            sb.append(getLink())
+        }
+
+        fun getLink(stackTraceDepth: Int = stackTraceNumber): String {
+            val sb = StringBuilder()
+            when (stackTraceDepth) {
+                0 -> {
+                    sb.append('(')
+                    sb.append(className)
+                    sb.append(COLON)
+                    sb.append(lineNumber)
+                    sb.append(')')
+                }
+                in traces.indices -> {
+                    var notZeroLineNumberOffset = 0
+                    var number = 0
+                    while (number == 0) {
+                        number = traces[stackTraceDepth + notZeroLineNumberOffset++].lineNumber
+                    }
+                    sb.append('(')
+                    sb.append(traces[stackTraceDepth].fileName)
+                    sb.append(COLON)
+                    sb.append(number)
+                    sb.append(')')
+                }
+                else -> {
+                    sb.append("No stacktrace ")
+                    sb.append(stackTraceDepth)
+                }
+            }
+            return sb.toString()
+        }
+
+        fun getMethodName(): String {
+            return if (stackTraceNumber == 0) {
+                methodName
+            } else {
+                traces[stackTraceNumber].methodName
+            }
+        }
+
+        fun appendMethodName(sb: StringBuilder) {
+            sb.append(getMethodName())
+            sb.append("()")
+        }
+
+        companion object {
+            const val UNDEFINED = "Undefined"
+        }
+    }
+}

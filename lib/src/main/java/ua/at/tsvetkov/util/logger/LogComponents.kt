@@ -9,7 +9,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import ua.at.tsvetkov.util.logger.utils.Format
-import ua.at.tsvetkov.util.logger.utils.Format.getActivityMethodInfo
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedMessage
 import ua.at.tsvetkov.util.logger.utils.FragmentLifecycleLogger
 import java.util.*
@@ -95,11 +94,36 @@ object LogComponents {
                 }
 
                 private fun printActivityCallMethod(activity: Activity) {
-                    android.util.Log.v(" ACTIVITY >>> ", getActivityMethodInfo(activity))
+                    android.util.Log.v("ACTIVITY >>> ", getActivityMethodInfo(activity))
                 }
             }
         }
         application.registerActivityLifecycleCallbacks(activityLifecycleCallback)
+    }
+
+    private fun getActivityMethodInfo(activity: Activity): String {
+        val className = activity.javaClass.canonicalName!!
+        val classSimpleName = activity.javaClass.simpleName
+
+        val traces = Thread.currentThread().stackTrace
+
+        val sb = StringBuilder()
+
+        var trace = Format.findStackTraceElement(traces, className)
+
+        if (trace == null) {
+            trace = Format.findStackTraceElement(traces, Format.ACTIVITY_CLASS)
+        }
+
+        sb.append(Format.HALF_LINE)
+        sb.append(Format.SPACE)
+        sb.append(classSimpleName)
+        sb.append(" -> ")
+        sb.append(trace!!.methodName)
+        sb.append(Format.SPACE)
+        sb.append(Format.HALF_LINE)
+
+        return sb.toString()
     }
 
     /**
@@ -154,7 +178,8 @@ object LogComponents {
                 val logger = supportFragmentLifecycleCallbacks[activity.toString()]
                 activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(logger!!)
                 supportFragmentLifecycleCallbacks.remove(activity.toString())
-                Log.i(getFormattedMessage("Fragment Lifecycle Logger detached from $tag").toString())
+                val data = Format.getLocationContainer()
+                Log.i(getFormattedMessage(data, "Fragment Lifecycle Logger detached from $tag").toString())
             }
         }
     }

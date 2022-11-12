@@ -15,15 +15,19 @@ internal class FragmentLifecycleLogger : FragmentManager.FragmentLifecycleCallba
         super.onFragmentAttached(fm, fr, context)
         parent = context.javaClass.simpleName
         val backStackCount = fm.backStackEntryCount
-        val info = getFragmentsStackInfo(fm, "FRAGMENT attached " + fr.javaClass.simpleName, backStackCount)
-        Log.v(parent, getFormattedMessage(info, "Fragments stack [$backStackCount]").toString())
+        val info = getFragmentsStackInfo(fm, fr.javaClass.simpleName, backStackCount)
+        val data = Format.getLocationContainer()
+        data.stackTraceNumber = 3
+        Log.v(parent, getFormattedMessage(data, info, "Fragments stack [$backStackCount]").toString())
     }
 
     override fun onFragmentDetached(fm: FragmentManager, fr: Fragment) {
         super.onFragmentDetached(fm, fr)
         val backStackCount = fm.backStackEntryCount
-        val info = getFragmentsStackInfo(fm, "FRAGMENT detached " + fr.javaClass.simpleName, backStackCount)
-        Log.v(parent, getFormattedMessage(info, "Fragments stack [$backStackCount]").toString())
+        val info = getFragmentsStackInfo(fm, fr.javaClass.simpleName, backStackCount)
+        val data = Format.getLocationContainer()
+        data.stackTraceNumber = 3
+        Log.v(parent, getFormattedMessage(data, info, "Fragments stack [$backStackCount]").toString())
     }
 
 }

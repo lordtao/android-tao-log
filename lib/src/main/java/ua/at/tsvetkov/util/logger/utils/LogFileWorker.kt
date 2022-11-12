@@ -18,7 +18,7 @@ class LogFileWorker
 @JvmOverloads
 constructor(val fileName: String, val maxLogs: Int = MAX_LOGS_IN_FILE) {
 
-    val executor: Executor = Executors.newFixedThreadPool(1)
+    private val executor: Executor = Executors.newFixedThreadPool(1)
     private var enabled = true
     private var logsCount = 0
     private var file: File? = File(fileName)
@@ -29,7 +29,7 @@ constructor(val fileName: String, val maxLogs: Int = MAX_LOGS_IN_FILE) {
 
     init {
         clear()
-        Log.i(javaClass.name, "Started logging to the file $file")
+        Log.i(TAG, "Started logging to the file $file")
     }
 
     /**
@@ -78,14 +78,14 @@ constructor(val fileName: String, val maxLogs: Int = MAX_LOGS_IN_FILE) {
         }
         if (fileWriter == null) {
             fileWriter = BufferedWriter(FileWriter(file, true))
-            Log.i("START LOG FILE >>>>", "START WRITING TO ${file?.name}")
+            Log.i(TAG, "Start writing to ${file?.name}")
         }
         fileWriter?.let {
             try {
                 it.write(message)
                 logsCount++
             } catch (e: Exception) {
-                Log.e(javaClass.name, "Write Log", e)
+                Log.e(TAG, "Write Log", e)
             }
         }
     }
@@ -104,9 +104,9 @@ constructor(val fileName: String, val maxLogs: Int = MAX_LOGS_IN_FILE) {
             try {
                 it.flush()
                 it.close()
-                Log.i("CLOSE LOG FILE <$logsCount>>>>", "STOP WRITING TO ${file?.name}")
+                Log.i(TAG, "Stop writing to ${file?.name}, <$logsCount> records")
             } catch (e: Exception) {
-                Log.e(javaClass.name, "Restrict Logs", e)
+                Log.e(TAG, "Restrict Logs", e)
             }
             fileWriter = null
         }
@@ -114,6 +114,6 @@ constructor(val fileName: String, val maxLogs: Int = MAX_LOGS_IN_FILE) {
 
     companion object {
         const val MAX_LOGS_IN_FILE = 10000
+        const val TAG = "LogFileWorker"
     }
-
 }

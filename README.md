@@ -2,13 +2,14 @@ android-tao-log
 ================
 
 Tiny, lightweight, informative and very useful logger for Android.
+New LogCat adaptation for Android Studio Dolphin | 2021.3.1 Patch 1 and higher
 You don't need to define TAG. It is automatically generated and include file name, method, line number and of of course the link to the code.
 Also contains the LongLog class which allows you to print a long messages into the LogCat without limiting the standard output length to less than ~ 4075.
 
-[Download the latest release v2.0.2](https://github.com/lordtao/android-tao-log/releases/tag/v2.0.2)
+[Download the latest release v2.1.1](https://github.com/lordtao/android-tao-log/releases/tag/v2.1.0)
 
 **Just try the Java or Kotlin**
-[Demo apps](https://github.com/lordtao/android-tao-log/releases/tag/v2.0.2)
+[Demo apps](https://github.com/lordtao/android-tao-log/releases/tag/v2.1.0)
 
 ![Image of LogDemo](img/log_demo.png)
 
@@ -34,6 +35,13 @@ You'll get in your LogCat the lines like below.
 Clicking on the tag brings you to log into the source code of the class which was caused by the logger:
 
 ![Image of LogCat example](img/log_example.png)
+
+Easy objects formatting
+
+![Image of LogCat example](img/log_hex_xml.png)
+
+Arrays
+![Image of LogCat example](img/log_arrays.png)
 
 Long data logger
 ----------------
@@ -117,6 +125,9 @@ implementation files('libs/taolog-*.aar')
 
 Changelog
 ---------
+
+#### 2.1.0 -- New LogCat adaptation
+* New LogCat adaptation for Android Studio Dolphin | 2021.3.1 Patch 1 and higher
 
 #### 2.0.2 -- Minor update
 * Added listW, listE, listV, listE methods

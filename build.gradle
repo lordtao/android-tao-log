@@ -4,8 +4,8 @@ ext {
     targetSdkVersion = 30
     compileSdkVersion = 30
     versionMajor = 2
-    versionMinor = 0
-    versionPatch = 2
+    versionMinor = 1
+    versionPatch = 0
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
     versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
     gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()

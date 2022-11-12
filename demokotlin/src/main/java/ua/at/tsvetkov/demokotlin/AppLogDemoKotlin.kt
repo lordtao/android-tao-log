@@ -12,13 +12,10 @@ class AppLogDemoKotlin : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        if (BuildConfig.DEBUG){
-            Log.setStamp(BuildConfig.GIT_SHA)
+        if (BuildConfig.DEBUG) {
             LogComponents.enableComponentsChangesLogging(this)
         } else {
             Log.setDisabled()
         }
-
     }
-
 }

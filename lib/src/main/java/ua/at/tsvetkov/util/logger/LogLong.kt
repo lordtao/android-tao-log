@@ -37,7 +37,6 @@ import ua.at.tsvetkov.util.logger.utils.Format.addStackTrace
 import ua.at.tsvetkov.util.logger.utils.Format.addThreadInfo
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedMessage
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedThrowable
-import ua.at.tsvetkov.util.logger.utils.Format.getTag
 import java.lang.ref.SoftReference
 
 /**
@@ -60,7 +59,8 @@ object LogLong {
      */
     @JvmStatic
     fun v(message: String?) {
-        print(getTag(), getFormattedMessage(message!!), Level.VERBOSE, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, message!!), Level.VERBOSE, false)
     }
 
     /**
@@ -70,7 +70,8 @@ object LogLong {
      */
     @JvmStatic
     fun d(message: String?) {
-        print(getTag(), getFormattedMessage(message!!), Level.DEBUG, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, message!!), Level.DEBUG, false)
     }
 
     /**
@@ -80,7 +81,8 @@ object LogLong {
      */
     @JvmStatic
     fun i(message: String?) {
-        print(getTag(), getFormattedMessage(message!!), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, message!!), Level.INFO, false)
     }
 
     /**
@@ -90,7 +92,8 @@ object LogLong {
      */
     @JvmStatic
     fun w(message: String?) {
-        print(getTag(), getFormattedMessage(message!!), Level.WARNING, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, message!!), Level.WARNING, false)
     }
 
     /**
@@ -100,7 +103,8 @@ object LogLong {
      */
     @JvmStatic
     fun e(message: String?) {
-        print(getTag(), getFormattedMessage(message!!), Level.ERROR, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, message!!), Level.ERROR, false)
     }
 
     /**
@@ -112,8 +116,10 @@ object LogLong {
      */
     @JvmStatic
     fun wtf(message: String?) {
-        print(getTag(), getFormattedMessage(message!!), Level.WTF, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, message!!), Level.WTF, false)
     }
+
     // ==========================================================
     /**
      * Send a VERBOSE log message and log the throwable.
@@ -123,7 +129,8 @@ object LogLong {
      */
     @JvmStatic
     fun v(message: String?, tr: Throwable?) {
-        print(getTag(), getFormattedThrowable(message, tr!!), Level.VERBOSE, true)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedThrowable(data, message, tr!!), Level.VERBOSE, true)
     }
 
     /**
@@ -134,7 +141,8 @@ object LogLong {
      */
     @JvmStatic
     fun d(message: String?, tr: Throwable?) {
-        print(getTag(), getFormattedThrowable(message, tr!!), Level.DEBUG, true)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedThrowable(data, message, tr!!), Level.DEBUG, true)
     }
 
     /**
@@ -145,7 +153,8 @@ object LogLong {
      */
     @JvmStatic
     fun i(message: String?, tr: Throwable?) {
-        print(getTag(), getFormattedThrowable(message, tr!!), Level.INFO, true)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedThrowable(data, message, tr!!), Level.INFO, true)
     }
 
     /**
@@ -156,7 +165,8 @@ object LogLong {
      */
     @JvmStatic
     fun w(message: String?, tr: Throwable?) {
-        print(getTag(), getFormattedThrowable(message, tr!!), Level.WARNING, true)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedThrowable(data, message, tr!!), Level.WARNING, true)
     }
 
     /**
@@ -167,7 +177,8 @@ object LogLong {
      */
     @JvmStatic
     fun e(message: String?, tr: Throwable?) {
-        print(getTag(), getFormattedThrowable(message, tr!!), Level.ERROR, true)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedThrowable(data, message, tr!!), Level.ERROR, true)
     }
 
     /**
@@ -181,7 +192,8 @@ object LogLong {
         if (tr is RuntimeException) {
             throw (tr as RuntimeException?)!!
         }
-        print(getTag(), getFormattedThrowable(message, tr!!), Level.ERROR, true)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedThrowable(data, message, tr!!), Level.ERROR, true)
     }
 
     /**
@@ -192,168 +204,8 @@ object LogLong {
      */
     @JvmStatic
     fun wtf(message: String?, tr: Throwable?) {
-        print(getTag(), getFormattedThrowable(message, tr!!), Level.WTF, true)
-    }
-
-    // ==========================================================
-
-    /**
-     * Send a **VERBOSE** log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumberClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun v(obj: Any?, message: String?) {
-        print(getTag(obj), getFormattedMessage(message!!), Level.VERBOSE, false)
-    }
-
-    /**
-     * Send a **DEBUG** log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun d(obj: Any?, message: String?) {
-        print(getTag(obj), getFormattedMessage(message!!), Level.DEBUG, false)
-    }
-
-    /**
-     * Send a **INFO** log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun i(obj: Any?, message: String?) {
-        print(getTag(obj), getFormattedMessage(message!!), Level.INFO, false)
-    }
-
-    /**
-     * Send a **WARN** log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun w(obj: Any?, message: String?) {
-        print(getTag(obj), getFormattedMessage(message!!), Level.WARNING, false)
-    }
-
-    /**
-     * Send a **ERROR** log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun e(obj: Any?, message: String?) {
-        print(getTag(obj), getFormattedMessage(message!!), Level.ERROR, false)
-    }
-
-    /**
-     * Send a **What a Terrible Failure: Report a condition that should never happen** log message. Using when you extend any Class and
-     * wont to receive full info in LogCat tag. Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun wtf(obj: Any?, message: String?) {
-        print(getTag(obj), getFormattedMessage(message!!), Level.WTF, false)
-    }
-    // ==========================================================
-    /**
-     * Send a **VERBOSE** log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    @JvmStatic
-    fun v(obj: Any?, message: String?, tr: Throwable?) {
-        print(getTag(obj), getFormattedThrowable(message, tr!!), Level.VERBOSE, true)
-    }
-
-    /**
-     * Send a **DEBUG** log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    @JvmStatic
-    fun d(obj: Any?, message: String?, tr: Throwable?) {
-        print(getTag(obj), getFormattedThrowable(message, tr!!), Level.DEBUG, true)
-    }
-
-    /**
-     * Send a **INFO** log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    @JvmStatic
-    fun i(obj: Any?, message: String?, tr: Throwable?) {
-        print(getTag(obj), getFormattedThrowable(message, tr!!), Level.INFO, true)
-    }
-
-    /**
-     * Send a **WARN** log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    @JvmStatic
-    fun w(obj: Any?, message: String?, tr: Throwable?) {
-        print(getTag(obj), getFormattedThrowable(message, tr!!), Level.WARNING, true)
-    }
-
-    /**
-     * Send a **ERROR** log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param tr      An throwable to log
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun e(obj: Any?, message: String?, tr: Throwable?) {
-        print(getTag(obj), getFormattedThrowable(message, tr!!), Level.ERROR, true)
-    }
-
-    /**
-     * Send a **What a Terrible Failure: Report a condition that should never happen** log message and log the throwable. Using when you
-     * extend any Class and wont to receive full info in LogCat tag. Usually you can use "this" in "objl" parameter. As result you receive tag
-     * string "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param tr      An throwable to log
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun wtf(obj: Any?, message: String?, tr: Throwable?) {
-        print(getTag(obj), getFormattedThrowable(message, tr!!), Level.WTF, true)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedThrowable(data, message, tr!!), Level.WTF, true)
     }
 
     // =========================== Collections, arrays and objects ===============================
@@ -366,7 +218,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun map(map: Map<*, *>?, title: String? = "Map") {
-        print(getTag(), getFormattedMessage(Format.map(map), title), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.map(map), title), Level.INFO, false)
     }
 
     /**
@@ -377,7 +230,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun list(list: List<*>?, title: String? = "List") {
-        print(getTag(), getFormattedMessage(Format.list(list), title), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.list(list), title), Level.INFO, false)
     }
 
     /**
@@ -388,7 +242,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun listD(list: List<*>?, title: String? = "List") {
-        print(getTag(), getFormattedMessage(Format.list(list), title), Level.DEBUG, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.list(list), title), Level.DEBUG, false)
     }
 
     /**
@@ -399,7 +254,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun listV(list: List<*>?, title: String? = "List") {
-        print(getTag(), getFormattedMessage(Format.list(list), title), Level.VERBOSE, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.list(list), title), Level.VERBOSE, false)
     }
 
     /**
@@ -410,7 +266,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun listW(list: List<*>?, title: String? = "List") {
-        print(getTag(), getFormattedMessage(Format.list(list), title), Level.WARNING, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.list(list), title), Level.WARNING, false)
     }
 
     /**
@@ -421,7 +278,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun listE(list: List<*>?, title: String? = "List") {
-        print(getTag(), getFormattedMessage(Format.list(list), title), Level.ERROR, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.list(list), title), Level.ERROR, false)
     }
 
     /**
@@ -431,6 +289,7 @@ object LogLong {
      */
     @JvmStatic
     fun <T : Any> array(array: Array<T>?) {
+        val data = Format.getLocationContainer()
         array(array, Format.ARRAY)
     }
 
@@ -441,7 +300,8 @@ object LogLong {
      */
     @JvmStatic
     fun <T : Any> array(array: Array<T>?, title: String?) {
-        print(getTag(), getFormattedMessage(Format.arrayT(array), title), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.arrayT(array), title), Level.INFO, false)
     }
 
     /**
@@ -451,7 +311,8 @@ object LogLong {
      */
     @JvmStatic
     fun array(array: Array<String>?, title: String?) {
-        print(getTag(), getFormattedMessage(Format.arrayString(array), title), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.arrayString(array), title), Level.INFO, false)
     }
 
     /**
@@ -462,7 +323,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun array(array: IntArray?, title: String? = Format.ARRAY) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.array(array), title), Level.INFO, false)
     }
 
     /**
@@ -473,7 +335,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun array(array: FloatArray?, title: String? = Format.ARRAY) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.array(array), title), Level.INFO, false)
     }
 
     /**
@@ -484,7 +347,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun array(array: BooleanArray?, title: String? = Format.ARRAY) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.array(array), title), Level.INFO, false)
     }
 
     /**
@@ -495,7 +359,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun array(array: CharArray?, title: String? = Format.ARRAY) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.array(array), title), Level.INFO, false)
     }
 
     /**
@@ -506,7 +371,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun array(array: DoubleArray?, title: String? = Format.ARRAY) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.array(array), title), Level.INFO, false)
     }
 
     /**
@@ -517,7 +383,8 @@ object LogLong {
     @JvmOverloads
     @JvmStatic
     fun array(array: LongArray?, title: String? = Format.ARRAY) {
-        print(getTag(), getFormattedMessage(Format.array(array), title), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, Format.array(array), message = null, title), Level.INFO, false)
     }
 
     /**
@@ -527,8 +394,14 @@ object LogLong {
      * @param countPerLine count byte per line
      */
     @JvmStatic
-    fun hex(data: ByteArray?, countPerLine: Int) {
-        print(getTag(), getFormattedMessage(Format.hex(data, countPerLine)), Level.INFO, false)
+    fun hex(array: ByteArray?, countPerLine: Int) {
+        val data = Format.getLocationContainer()
+        print(
+            data.tag,
+            getFormattedMessage(data, Format.hex(array, countPerLine), message = null, title = null),
+            Level.INFO,
+            false
+        )
     }
 
     /**
@@ -537,8 +410,14 @@ object LogLong {
      * @param data your bytes array data
      */
     @JvmStatic
-    fun hex(data: ByteArray?) {
-        print(getTag(), getFormattedMessage(Format.hex(data)), Level.INFO, false)
+    fun hex(array: ByteArray?) {
+        val data = Format.getLocationContainer()
+        print(
+            data.tag,
+            getFormattedMessage(data, Format.hex(array), message = null, title = null),
+            Level.INFO,
+            false
+        )
     }
 
     /**
@@ -548,7 +427,13 @@ object LogLong {
      */
     @JvmStatic
     fun xml(xmlStr: String?) {
-        print(getTag(), getFormattedMessage(Format.xml(xmlStr)), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(
+            data.tag,
+            getFormattedMessage(data, Format.xml(xmlStr), message = null, title = null),
+            Level.INFO,
+            false
+        )
     }
 
     /**
@@ -559,8 +444,15 @@ object LogLong {
      */
     @JvmStatic
     fun xml(xmlStr: String?, indentation: Int) {
-        print(getTag(), getFormattedMessage(Format.xml(xmlStr, indentation)), Level.INFO, false)
+        val data = Format.getLocationContainer()
+        print(
+            data.tag,
+            getFormattedMessage(data, Format.xml(xmlStr, indentation), message = null, title = null),
+            Level.INFO,
+            false
+        )
     }
+
     // =========================== Thread and stack trace ===============================
     /**
      * Logged the current Thread info
@@ -570,7 +462,8 @@ object LogLong {
         val sb = StringBuilder()
         addThreadInfo(sb, Thread.currentThread())
         sb.append(Format.NL)
-        print(getTag(), getFormattedMessage(sb), Level.VERBOSE, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, sb, message = null, title = null), Level.VERBOSE, false)
     }
 
     /**
@@ -584,7 +477,8 @@ object LogLong {
         addThreadInfo(sb, Thread.currentThread())
         sb.append(Format.NL)
         addStackTrace(sb, throwable!!)
-        print(getTag(), getFormattedMessage(sb), Level.VERBOSE, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, sb, message = null, title = null), Level.VERBOSE, false)
     }
 
     /**
@@ -596,7 +490,8 @@ object LogLong {
         addThreadInfo(sb, Thread.currentThread())
         sb.append(Format.NL)
         addMessage(sb, message)
-        print(getTag(), getFormattedMessage(sb), Level.VERBOSE, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, sb, message = null, title = null), Level.VERBOSE, false)
     }
 
     /**
@@ -612,7 +507,8 @@ object LogLong {
         sb.append(Format.NL)
         addMessage(sb, message)
         addStackTrace(sb, throwable!!)
-        print(getTag(), getFormattedMessage(sb), Level.VERBOSE, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, sb, message = null, title = null), Level.VERBOSE, false)
     }
 
     /**
@@ -627,7 +523,8 @@ object LogLong {
         addThreadInfo(sb, thread)
         sb.append(Format.NL)
         addStackTrace(sb, throwable!!)
-        print(getTag(), getFormattedMessage(sb), Level.VERBOSE, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, sb, message = null, title = null), Level.VERBOSE, false)
     }
 
     /**
@@ -703,7 +600,8 @@ object LogLong {
         val sb = StringBuilder()
         addMessage(sb, message)
         addStackTrace(sb, Thread.currentThread())
-        print(getTag(), getFormattedMessage(sb), level, false)
+        val data = Format.getLocationContainer()
+        print(data.tag, getFormattedMessage(data, sb, message = null, title = null), level, false)
     }
 
     // =========================== Private methods ===============================
@@ -728,14 +626,14 @@ object LogLong {
                         }
                     }
                 }
-                val counter1 = "(Long message - part " + (i + 1) + " from " + size + ")"
-                val counter = """(${i + 1} from $size)
+                val counter1 = "[Long message - part " + (i + 1) + " from " + size + "] "
+                val counter = """[${i + 1} from $size]
 """
                 message = if (i == 0) {
                     if (message.endsWith("\n")) {
-                        "$counter1$message..."
+                        "$counter1 $message..."
                     } else {
-                        "$counter1$message\n..."
+                        "$counter1 $message\n..."
                     }
                 } else if (i == size - 1) {
                     "$counter...\n$message"
@@ -780,5 +678,4 @@ object LogLong {
         }
         return list
     }
-
 }

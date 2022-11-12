@@ -36,7 +36,6 @@ import ua.at.tsvetkov.util.logger.utils.Format.addStackTrace
 import ua.at.tsvetkov.util.logger.utils.Format.addThreadInfo
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedMessage
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedThrowable
-import ua.at.tsvetkov.util.logger.utils.Format.getTag
 
 /**
  * Extended logger. Allows you to automatically adequately logged class, method and line call in the log. Makes it easy to write logs. For
@@ -56,30 +55,14 @@ object Log {
     var isLogOutlined = true
 
     /**
-     * Is print a log string in new lines with spaces (as in AndroidStudio before 3.1). False by default
-     */
-    @Volatile
-    @JvmStatic
-    var isAlignNewLines = false
-
-    /**
-     * Set stamp for mark log. You can add a stamp which are awesome for binding the commits/build time to your logs among other things.
-     *
-     * @param stamp
-     */
-    @JvmStatic
-    fun setStamp(stamp: String?) {
-        Format.stamp = stamp
-    }
-
-    /**
      * Send a VERBOSE log message.
      *
      * @param message The message you would like logged.
      */
     @JvmStatic
     fun v(message: String?) {
-        logToAll(Level.VERBOSE, getTag(), getFormattedMessage(message).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.VERBOSE, data.tag, getFormattedMessage(data, message).toString())
     }
 
     /**
@@ -89,7 +72,8 @@ object Log {
      */
     @JvmStatic
     fun d(message: String?) {
-        logToAll(Level.DEBUG, getTag(), getFormattedMessage(message).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.DEBUG, data.tag, getFormattedMessage(data, message).toString())
     }
 
     /**
@@ -99,7 +83,8 @@ object Log {
      */
     @JvmStatic
     fun i(message: String?) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(message).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, message).toString())
     }
 
     /**
@@ -109,7 +94,8 @@ object Log {
      */
     @JvmStatic
     fun w(message: String?) {
-        logToAll(Level.WARNING, getTag(), getFormattedMessage(message).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.WARNING, data.tag, getFormattedMessage(data, message).toString())
     }
 
     /**
@@ -119,7 +105,8 @@ object Log {
      */
     @JvmStatic
     fun e(message: String?) {
-        logToAll(Level.ERROR, getTag(), getFormattedMessage(message).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.ERROR, data.tag, getFormattedMessage(data, message).toString())
     }
 
     /**
@@ -131,8 +118,10 @@ object Log {
      */
     @JvmStatic
     fun wtf(message: String?) {
-        logToAll(Level.WTF, getTag(), getFormattedMessage(message).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.WTF, data.tag, getFormattedMessage(data, message).toString())
     }
+
     // ==========================================================
     /**
      * Send a VERBOSE log message and log the throwable.
@@ -142,7 +131,8 @@ object Log {
      */
     @JvmStatic
     fun v(message: String?, tr: Throwable) {
-        logToAll(Level.VERBOSE, getTag(), getFormattedThrowable(message, tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.VERBOSE, data.tag, getFormattedThrowable(data, message, tr).toString(), tr)
     }
 
     /**
@@ -153,7 +143,8 @@ object Log {
      */
     @JvmStatic
     fun d(message: String?, tr: Throwable) {
-        logToAll(Level.DEBUG, getTag(), getFormattedThrowable(message, tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.DEBUG, data.tag, getFormattedThrowable(data, message, tr).toString(), tr)
     }
 
     /**
@@ -164,7 +155,8 @@ object Log {
      */
     @JvmStatic
     fun i(message: String?, tr: Throwable) {
-        logToAll(Level.INFO, getTag(), getFormattedThrowable(message, tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedThrowable(data, message, tr).toString(), tr)
     }
 
     /**
@@ -175,7 +167,8 @@ object Log {
      */
     @JvmStatic
     fun w(message: String?, tr: Throwable) {
-        logToAll(Level.WARNING, getTag(), getFormattedThrowable(message, tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.WARNING, data.tag, getFormattedThrowable(data, message, tr).toString(), tr)
     }
 
     /**
@@ -186,7 +179,8 @@ object Log {
      */
     @JvmStatic
     fun e(message: String?, tr: Throwable) {
-        logToAll(Level.ERROR, getTag(), getFormattedThrowable(message, tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.ERROR, data.tag, getFormattedThrowable(data, message, tr).toString(), tr)
     }
 
     /**
@@ -200,7 +194,8 @@ object Log {
         if (tr is RuntimeException) {
             throw RuntimeException(tr)
         }
-        logToAll(Level.ERROR, getTag(), getFormattedThrowable(message, tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.ERROR, data.tag, getFormattedThrowable(data, message, tr).toString(), tr)
     }
 
     /**
@@ -211,8 +206,10 @@ object Log {
      */
     @JvmStatic
     fun wtf(message: String?, tr: Throwable) {
-        logToAll(Level.WTF, getTag(), getFormattedThrowable(message, tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.WTF, data.tag, getFormattedThrowable(data, message, tr).toString(), tr)
     }
+
     // ==========================================================
     /**
      * Send a VERBOSE log the throwable.
@@ -221,7 +218,8 @@ object Log {
      */
     @JvmStatic
     fun v(tr: Throwable) {
-        logToAll(Level.VERBOSE, getTag(), getFormattedThrowable(tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.VERBOSE, data.tag, getFormattedThrowable(data, tr).toString(), tr)
     }
 
     /**
@@ -231,7 +229,8 @@ object Log {
      */
     @JvmStatic
     fun d(tr: Throwable) {
-        logToAll(Level.DEBUG, getTag(), getFormattedThrowable(tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.DEBUG, data.tag, getFormattedThrowable(data, tr).toString(), tr)
     }
 
     /**
@@ -241,7 +240,8 @@ object Log {
      */
     @JvmStatic
     fun i(tr: Throwable) {
-        logToAll(Level.INFO, getTag(), getFormattedThrowable(tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedThrowable(data, tr).toString(), tr)
     }
 
     /**
@@ -251,7 +251,8 @@ object Log {
      */
     @JvmStatic
     fun w(tr: Throwable) {
-        logToAll(Level.WARNING, getTag(), getFormattedThrowable(tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.WARNING, data.tag, getFormattedThrowable(data, tr).toString(), tr)
     }
 
     /**
@@ -261,7 +262,8 @@ object Log {
      */
     @JvmStatic
     fun e(tr: Throwable) {
-        logToAll(Level.ERROR, getTag(), getFormattedThrowable(tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.ERROR, data.tag, getFormattedThrowable(data, tr).toString(), tr)
     }
 
     /**
@@ -274,7 +276,8 @@ object Log {
         if (tr is RuntimeException) {
             throw RuntimeException(tr)
         }
-        logToAll(Level.ERROR, getTag(), getFormattedThrowable(tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.ERROR, data.tag, getFormattedThrowable(data, tr).toString(), tr)
     }
 
     /**
@@ -284,166 +287,8 @@ object Log {
      */
     @JvmStatic
     fun wtf(tr: Throwable) {
-        logToAll(Level.WTF, getTag(), getFormattedThrowable(tr).toString(), tr)
-    }
-    // ==========================================================
-    /**
-     * Send a **VERBOSE** log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumberClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun v(obj: Any?, message: String?) {
-        logToAll(Level.VERBOSE, getTag(obj), getFormattedMessage(message).toString())
-    }
-
-    /**
-     * Send a **DEBUG** log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun d(obj: Any?, message: String?) {
-        logToAll(Level.DEBUG, getTag(obj), getFormattedMessage(message).toString())
-    }
-
-    /**
-     * Send a **INFO** log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun i(obj: Any?, message: String?) {
-        logToAll(Level.INFO, getTag(obj), getFormattedMessage(message).toString())
-    }
-
-    /**
-     * Send a **WARN** log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun w(obj: Any?, message: String?) {
-        logToAll(Level.WARNING, getTag(obj), getFormattedMessage(message).toString())
-    }
-
-    /**
-     * Send a **ERROR** log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-     * "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun e(obj: Any?, message: String?) {
-        logToAll(Level.ERROR, getTag(obj), getFormattedMessage(message).toString())
-    }
-
-    /**
-     * Send a **What a Terrible Failure: Report a condition that should never happen** log message. Using when you extend any Class and
-     * wont to receive full info in LogCat tag. Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun wtf(obj: Any?, message: String?) {
-        logToAll(Level.WTF, getTag(obj), getFormattedMessage(message).toString())
-    }
-    // ==========================================================
-    /**
-     * Send a **VERBOSE** log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    @JvmStatic
-    fun v(obj: Any?, message: String?, tr: Throwable) {
-        logToAll(Level.VERBOSE, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
-    }
-
-    /**
-     * Send a **DEBUG** log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    @JvmStatic
-    fun d(obj: Any?, message: String?, tr: Throwable) {
-        logToAll(Level.DEBUG, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
-    }
-
-    /**
-     * Send a **INFO** log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    @JvmStatic
-    fun i(obj: Any?, message: String?, tr: Throwable) {
-        logToAll(Level.INFO, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
-    }
-
-    /**
-     * Send a **WARN** log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param message The message you would like logged.
-     * @param tr      An throwable to log
-     */
-    @JvmStatic
-    fun w(obj: Any?, message: String?, tr: Throwable) {
-        logToAll(Level.WARNING, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
-    }
-
-    /**
-     * Send a **ERROR** log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-     * Usually you can use "this" in "objl" parameter. As result you receive tag string
-     * "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param tr      An throwable to log
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun e(obj: Any?, message: String?, tr: Throwable) {
-        logToAll(Level.ERROR, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
-    }
-
-    /**
-     * Send a **What a Terrible Failure: Report a condition that should never happen** log message and log the throwable. Using when you
-     * extend any Class and wont to receive full info in LogCat tag. Usually you can use "this" in "objl" parameter. As result you receive tag
-     * string "**(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber**"
-     *
-     * @param obj     main class
-     * @param tr      An throwable to log
-     * @param message The message you would like logged.
-     */
-    @JvmStatic
-    fun wtf(obj: Any?, message: String?, tr: Throwable) {
-        logToAll(Level.WTF, getTag(obj), getFormattedThrowable(message, tr).toString(), tr)
+        val data = Format.getLocationContainer()
+        logToAll(Level.WTF, data.tag, getFormattedThrowable(data, tr).toString(), tr)
     }
 
     // =========================== Collections, arrays and objects ===============================
@@ -457,7 +302,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun map(map: Map<*, *>?, title: String? = "Map") {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.map(map), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.map(map), title).toString())
     }
 
     /**
@@ -469,7 +315,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun list(list: List<*>?, title: String? = "List") {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.list(list), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.list(list), title).toString())
     }
 
     /**
@@ -481,7 +328,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun listD(list: List<*>?, title: String? = "List") {
-        logToAll(Level.DEBUG, getTag(), getFormattedMessage(Format.list(list), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.DEBUG, data.tag, getFormattedMessage(data, Format.list(list), title).toString())
     }
 
     /**
@@ -493,7 +341,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun listV(list: List<*>?, title: String? = "List") {
-        logToAll(Level.VERBOSE, getTag(), getFormattedMessage(Format.list(list), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.VERBOSE, data.tag, getFormattedMessage(data, Format.list(list), title).toString())
     }
 
     /**
@@ -505,7 +354,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun listW(list: List<*>?, title: String? = "List") {
-        logToAll(Level.WARNING, getTag(), getFormattedMessage(Format.list(list), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.WARNING, data.tag, getFormattedMessage(data, Format.list(list), title).toString())
     }
 
     /**
@@ -517,7 +367,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun listE(list: List<*>?, title: String? = "List") {
-        logToAll(Level.ERROR, getTag(), getFormattedMessage(Format.list(list), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.ERROR, data.tag, getFormattedMessage(data, Format.list(list), title).toString())
     }
 
     /**
@@ -538,7 +389,8 @@ object Log {
      */
     @JvmStatic
     fun <T : Any> array(array: Array<T>?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.arrayT(array), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.arrayT(array), title).toString())
     }
 
     /**
@@ -550,7 +402,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: Array<String>?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.arrayString(array), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.arrayString(array), title).toString())
     }
 
     /**
@@ -561,7 +414,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: IntArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.array(array), title).toString())
     }
 
     /**
@@ -572,7 +426,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: FloatArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.array(array), title).toString())
     }
 
     /**
@@ -583,7 +438,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: BooleanArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.array(array), title).toString())
     }
 
     /**
@@ -594,7 +450,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: CharArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.array(array), title).toString())
     }
 
     /**
@@ -605,7 +462,8 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: DoubleArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.array(array), title).toString())
     }
 
     /**
@@ -616,7 +474,12 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun array(array: LongArray?, title: String? = Format.ARRAY) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.array(array), title).toString())
+        val data = Format.getLocationContainer()
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, Format.array(array), message = null, title).toString()
+        )
     }
 
     /**
@@ -626,7 +489,12 @@ object Log {
      */
     @JvmStatic
     fun classInfo(obj: Any) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.classInfo(obj), obj.javaClass.simpleName).toString())
+        val data = Format.getLocationContainer()
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, Format.classInfo(obj), obj.javaClass.simpleName).toString()
+        )
     }
 
     /**
@@ -636,7 +504,12 @@ object Log {
      */
     @JvmStatic
     fun objectInfo(obj: Any) {
-        logToAll(Level.INFO, getTag(), getFormattedMessage(Format.objectInfo(obj), obj.javaClass.simpleName).toString())
+        val data = Format.getLocationContainer()
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, Format.objectInfo(obj), obj.javaClass.simpleName).toString()
+        )
     }
 
     /**
@@ -680,6 +553,7 @@ object Log {
     fun xml(xmlStr: String?, indentation: Int) {
         i(Format.xml(xmlStr, indentation).toString())
     }
+
     // =========================== Thread and stack trace ===============================
     /**
      * Logged the current Thread info
@@ -689,7 +563,8 @@ object Log {
         val sb = StringBuilder()
         addThreadInfo(sb, Thread.currentThread())
         sb.append(Format.NL)
-        logToAll(Level.INFO, getTag(), getFormattedMessage(sb).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, sb, message = null, title = null).toString())
     }
 
     /**
@@ -703,7 +578,8 @@ object Log {
         addThreadInfo(sb, Thread.currentThread())
         sb.append(Format.NL)
         addStackTrace(sb, throwable)
-        logToAll(Level.INFO, getTag(), getFormattedMessage(sb).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, sb, message = null, title = null).toString())
     }
 
     /**
@@ -715,7 +591,8 @@ object Log {
         addThreadInfo(sb, Thread.currentThread())
         sb.append(Format.NL)
         addMessage(sb, message)
-        logToAll(Level.INFO, getTag(), getFormattedMessage(sb).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, sb, message = null, title = null).toString())
     }
 
     /**
@@ -731,7 +608,8 @@ object Log {
         sb.append(Format.NL)
         addMessage(sb, message)
         addStackTrace(sb, throwable)
-        logToAll(Level.INFO, getTag(), getFormattedMessage(sb.toString()).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, sb.toString()).toString())
     }
 
     /**
@@ -746,7 +624,8 @@ object Log {
         addThreadInfo(sb, thread)
         sb.append(Format.NL)
         addStackTrace(sb, throwable)
-        logToAll(Level.INFO, getTag(), getFormattedMessage(sb.toString()).toString())
+        val data = Format.getLocationContainer()
+        logToAll(Level.INFO, data.tag, getFormattedMessage(data, sb.toString()).toString())
     }
 
     /**
@@ -822,7 +701,8 @@ object Log {
         val sb = StringBuilder()
         addMessage(sb, message)
         addStackTrace(sb, Thread.currentThread())
-        logToAll(level, getTag(), getFormattedMessage(sb.toString()).toString())
+        val data = Format.getLocationContainer()
+        logToAll(level, data.tag, getFormattedMessage(data, sb.toString()).toString())
     }
 
     // ======================== Interceptors ==============================
@@ -919,5 +799,4 @@ object Log {
             }
         }
     }
-
 }
