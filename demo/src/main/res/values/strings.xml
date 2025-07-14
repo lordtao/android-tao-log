@@ -1,9 +1,8 @@
 <resources>
-    <string name="app_name">android-tao-log-demo</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="app_name">Tao logger Demo</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Tao Logger Java Demo</string>
+    <string name="nav_header_title">Android Tao Logger Kotlin Demo</string>
     <string name="nav_header_subtitle">https://github.com/lordtao/android-tao-log</string>
     <string name="nav_header_desc">Navigation header</string>
 

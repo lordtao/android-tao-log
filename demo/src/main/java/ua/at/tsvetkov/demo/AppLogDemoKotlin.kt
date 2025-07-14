@@ -1,6 +1,7 @@
-package ua.at.tsvetkov.demokotlin
+package ua.at.tsvetkov.demo
 
 import android.app.Application
+import ua.at.tsvetkov.util.BuildConfig
 import ua.at.tsvetkov.util.logger.Log
 import ua.at.tsvetkov.util.logger.LogComponents
 
