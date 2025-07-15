@@ -11,8 +11,8 @@ Also contains the LongLog class which allows you to print a long messages into t
 
 [Download the latest release](https://github.com/lordtao/android-tao-log/releases/tag/v2.2.69)
 
-**Just try the Java or Kotlin**
-[Demo apps](https://github.com/lordtao/android-tao-log/releases/tag/v2.1.0)
+**Just try**
+[Demo apps](https://github.com/lordtao/android-tao-log/releases/tag/v2.2.69)
 
 ![Image of LogDemo](img/log_demo.png)
 
