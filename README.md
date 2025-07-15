@@ -2,11 +2,14 @@ android-tao-log
 ================
 
 Tiny, lightweight, informative and very useful logger for Android.
-New LogCat adaptation for Android Studio Dolphin | 2021.3.1 Patch 1 and higher
-You don't need to define TAG. It is automatically generated and include file name, method, line number and of of course the link to the code.
+
+You don't need to define any tags. They are generated automatically and include the file name, method, and line number. Of course, you can quickly jump to that place in the code by clicking on the embedded link in the LogCat.
+
+You also see how Activities and Fragments are launched and destroyed. This is very helpful when parsing unfamiliar code. Insert taolog instead of any old logger, and faceless logs become obvious, with a name and a link.
+
 Also contains the LongLog class which allows you to print a long messages into the LogCat without limiting the standard output length to less than ~ 4075.
 
-[Download the latest release v2.1.1](https://github.com/lordtao/android-tao-log/releases/tag/v2.1.0)
+[Download the latest release](https://github.com/lordtao/android-tao-log/releases/tag/v2.2.69)
 
 **Just try the Java or Kotlin**
 [Demo apps](https://github.com/lordtao/android-tao-log/releases/tag/v2.1.0)
