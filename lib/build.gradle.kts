@@ -44,7 +44,11 @@ fun TaskContainer.registerCopyAarTask(variant: String) {
         }
         from(aarFile)
         into("../aar")
-        rename { "taolog-$variant.aar" }
+        if(variant == "release") {
+            rename { "taolog.aar" }
+        } else {
+            rename { "taolog-$variant.aar" }
+        }
         doLast {
             val versionFile = file("../aar/README.txt")
             versionFile.writeText("Library: taolog\nVersion: $versionName\nCreated: ${Date()}")
