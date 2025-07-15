@@ -126,6 +126,12 @@ implementation files('libs/taolog-*.aar')
 Changelog
 ---------
 
+#### 2.2.69 -- Migration and refactoring
+* Migration to the versions catalog
+* Refactoring the lib and demo
+* Refactoring logs for Activities and Fragments
+* Deleted java demo
+
 #### 2.1.0 -- New LogCat adaptation
 * New LogCat adaptation for Android Studio Dolphin | 2021.3.1 Patch 1 and higher
 
