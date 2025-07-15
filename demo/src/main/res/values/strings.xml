@@ -8,6 +8,7 @@
 
     <string name="menu_group_log">Log methods</string>
     <string name="menu_group_long_log">Long data log methods</string>
+    <string name="menu_group_components_log">Components log methods</string>
 
     <string name="action_log_short">Quick log show</string>
     <string name="action_log_common">Log.v … Log.wtf, Log.rt </string>
@@ -15,9 +16,23 @@
     <string name="action_log_arrays">Arrays, list, map, set</string>
     <string name="action_log_xml_hex">XML, HEX</string>
     <string name="action_log_objects">Class and object info</string>
+
     <string name="action_log_long_common">Long data. Log.v … Log.wtf, Log.rt </string>
     <string name="action_log_long_thread">Long data. Threads and stack trace</string>
     <string name="action_log_long_arrays">Long data. Arrays, list, map, set</string>
     <string name="action_log_long_xml_hex">Long data. XML, HEX</string>
+
+    <string name="action_log_components_activity">Run another Activity</string>
+    <string name="action_log_components_fragment">Run another Fragment</string>
+
+    <string name="click_back_to_destroy_test_activity">Click Back to see the activity destruction log.</string>
+
+    <string name="click_back_to_see_fragment_log_1_title">Test Fragment 1</string>
+    <string name="click_back_to_see_fragment_log_2_title">Test Fragment 2</string>
+    <string name="click_back_to_see_fragment_log_3_title">Test Fragment 3</string>
+
+    <string name="click_back_to_see_fragment_log_1">Click Back to see the fragment log.</string>
+    <string name="click_back_to_see_fragment_log_2">Click Back to see the Test Fragment 1.</string>
+    <string name="click_back_to_see_fragment_log_3">Click Back to see the Test Fragment 2.</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package ua.at.tsvetkov.demo
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
@@ -8,6 +9,11 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ua.at.tsvetkov.demo.databinding.ActivityMainBinding
 import ua.at.tsvetkov.util.logger.Log
 import ua.at.tsvetkov.util.logger.LogLong
@@ -23,6 +29,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val testObject = TestObject("A Test Object")
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var logFragment: LogFragment
+    private lateinit var testFragment1: TestFragment1
+    private lateinit var testFragment2: TestFragment2
+    private lateinit var testFragment3: TestFragment3
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,17 +41,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setSupportActionBar(binding.appBarMain.toolbar)
         toggle = ActionBarDrawerToggle(
-                this,
+            this,
             binding.drawerLayout,
             binding.appBarMain.toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         binding.navView.setNavigationItemSelectedListener(this)
         logFragment = LogFragment()
-        supportFragmentManager.beginTransaction().add(R.id.frameContent, logFragment).commit()
+        testFragment1 = TestFragment1()
+        testFragment2 = TestFragment2()
+        testFragment3 = TestFragment3()
+
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.frameContent, logFragment)
+            .commit()
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -79,6 +95,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_log_long_thread -> runLogLongThread()
             R.id.nav_log_long_arrays -> runLogLongArrays()
             R.id.nav_log_long_xml_hex -> runLongLogXmlHex()
+            R.id.nav_log_component_activity -> runActivity()
+            R.id.nav_log_component_fragment -> runFragment()
         }
         logFragment.scrollDown()
     }
@@ -296,18 +314,48 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val sb = StringBuilder("<note>\n")
         for (i in 0..499) {
             sb
-                    .append("<to")
-                    .append(i)
-                    .append(">Tove")
-                    .append(i)
-                    .append("</to")
-                    .append(i)
-                    .append(">\n")
+                .append("<to")
+                .append(i)
+                .append(">Tove")
+                .append(i)
+                .append("</to")
+                .append(i)
+                .append(">\n")
         }
         sb.append("</note>")
         val xml = sb.toString()
         LogLong.xml(xml)
         LogLong.xml(xml, 3)
+    }
+
+    private fun runActivity() {
+        val intent = Intent(this, TestActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun runFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frameContent, testFragment1)
+            .addToBackStack("TestFragment1")
+            .commit()
+
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(500)
+            withContext(Dispatchers.Main) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameContent, testFragment2)
+                    .addToBackStack("TestFragment2")
+                    .commit()
+            }
+            delay(500)
+            withContext(Dispatchers.Main) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameContent, testFragment3)
+                    .addToBackStack("TestFragment3")
+                    .commit()
+            }
+            Log.i("You can see changes in the fragment stack in your LogCat")
+        }
     }
 
     companion object {

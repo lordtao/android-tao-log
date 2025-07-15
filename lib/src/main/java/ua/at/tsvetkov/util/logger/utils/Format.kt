@@ -23,6 +23,7 @@
  * *****************************************************************************/
 package ua.at.tsvetkov.util.logger.utils
 
+import android.os.Build
 import android.text.TextUtils
 import androidx.fragment.app.FragmentManager
 import org.w3c.dom.NodeList
@@ -54,7 +55,6 @@ internal object Format {
     const val PREFIX = '|'
     const val COLON = ':'
     const val HEX_FORM = "%02X "
-    const val PREFIX_MAIN_STRING = " ▪ "
     const val GROUP = "|Group:"
     const val PRIORITY = "|Priority:"
     const val ID = "|Id:"
@@ -62,18 +62,17 @@ internal object Format {
     const val HALF_LINE = "---------------------"
     const val ACTIVITY_CLASS = "android.app.Activity"
     const val DELIMITER_START = "· "
-    const val DELIMITER = "············································································"
+    const val DELIMITER =
+        "············································································"
     const val CHAR_DELIMITER = '·'
     const val THROWABLE_DELIMITER_START = "‖ "
     const val THROWABLE_DELIMITER_PREFIX = "    "
-    const val THROWABLE_DELIMITER = "============================================================================"
+    const val THROWABLE_DELIMITER =
+        "============================================================================"
     const val NL = "\n"
     const val SPACE = ' '
     const val AT = "at "
     const val ARRAY = "Array"
-
-    @Volatile
-    var maxTagLength = MAX_TAG_LENGTH
 
     @Volatile
     var beforeTagSpacesCount: Int = 0
@@ -504,7 +503,10 @@ internal object Format {
             val transformerFactory = TransformerFactory.newInstance()
             //         transformerFactory.setAttribute("indent-number", indent);
             val transformer = transformerFactory.newTransformer()
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", indent.toString())
+            transformer.setOutputProperty(
+                "{http://xml.apache.org/xslt}indent-amount",
+                indent.toString()
+            )
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8")
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
             transformer.setOutputProperty(OutputKeys.INDENT, "yes")
@@ -525,14 +527,23 @@ internal object Format {
     // ============================== Fragments ==============================
 
     @JvmStatic
-    fun getFragmentsStackInfo(fm: FragmentManager, operation: String, backStackCount: Int): String {
-        val logs = arrayOfNulls<String>(backStackCount + 1)
-        logs[0] = operation
-        for (i in 0 until backStackCount) {
+    fun getFragmentsStackInfo(fm: FragmentManager, operation: String): String {
+        val backStackCount = fm.backStackEntryCount
+        val logs = mutableListOf<String>()
+        logs.add(operation)
+        var idx = backStackCount
+        for(i in backStackCount - 1 downTo 0) {
             val entry = fm.getBackStackEntryAt(i)
-            logs[i + 1] = "   #" + i + "  " + entry.name
+            entry.name?.let{
+                if(idx == backStackCount) {
+                    logs.add( "   # ${idx--} ${entry.name} \uD83D\uDD1D")
+                } else {
+                    logs.add( "   # ${idx--} ${entry.name}")
+                }
+            }
         }
-        return getFSString(logs)
+
+        return getFSString(logs.toTypedArray())
     }
 
     @JvmStatic
@@ -585,7 +596,10 @@ internal object Format {
         return if (clazz != null) {
             if (!TextUtils.isEmpty(clazz.simpleName)) {
                 if (clazz.name.contains("$")) {
-                    clazz.name.substring(clazz.name.lastIndexOf('.') + 1, clazz.name.lastIndexOf('$'))
+                    clazz.name.substring(
+                        clazz.name.lastIndexOf('.') + 1,
+                        clazz.name.lastIndexOf('$')
+                    )
                 } else {
                     clazz.simpleName
                 }
@@ -593,7 +607,10 @@ internal object Format {
         } else ""
     }
 
-    fun findStackTraceElement(traces: Array<StackTraceElement>, startsFrom: String): StackTraceElement? {
+    fun findStackTraceElement(
+        traces: Array<StackTraceElement>,
+        startsFrom: String
+    ): StackTraceElement? {
         var trace: StackTraceElement? = null
         for (i in traces.indices) {
             if (traces[i].className.startsWith(startsFrom)) {
@@ -610,7 +627,11 @@ internal object Format {
     }
 
     @JvmStatic
-    fun getFormattedMessage(data: LocationContainer, message: String, title: String?): StringBuilder {
+    fun getFormattedMessage(
+        data: LocationContainer,
+        message: String,
+        title: String?
+    ): StringBuilder {
         return getFormattedMessage(data, null, message, title)
     }
 
@@ -648,12 +669,18 @@ internal object Format {
     }
 
     @JvmStatic
-    fun getFormattedThrowable(data: LocationContainer, message: String?, throwable: Throwable): StringBuilder {
+    fun getFormattedThrowable(
+        data: LocationContainer,
+        message: String?,
+        throwable: Throwable
+    ): StringBuilder {
         var lines = if (!message.isNullOrEmpty()) {
-            (message + ("\n" + getThrowableMessage(throwable))).split("\\n".toRegex()).dropLastWhile { it.isEmpty() }
+            (message + ("\n" + getThrowableMessage(throwable))).split("\\n".toRegex())
+                .dropLastWhile { it.isEmpty() }
                 .toTypedArray()
         } else {
-            getThrowableMessage(throwable).split("\\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            getThrowableMessage(throwable).split("\\n".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray()
         }
 
         val linesCount = getLinesCount(lines, throwable)
@@ -719,16 +746,16 @@ internal object Format {
         return lns
     }
 
-    private fun makeTitleLine(title: String?, delimeter: String, char: Char): String {
-        var string: String
-        string = if (title == null) {
-            delimeter
+    @Suppress("SameParameterValue")
+    private fun makeTitleLine(title: String?, separator: String, char: Char): String {
+        val string: String = if (title == null) {
+            separator
         } else {
             val longTitle = SPACE + title + SPACE
-            val fillLength: Int = (delimeter.length + longTitle.length) / 2
+            val fillLength: Int = (separator.length + longTitle.length) / 2
             if (fillLength > 0) {
                 val beginString = longTitle.padStart(fillLength, char)
-                beginString.padEnd(delimeter.length, char)
+                beginString.padEnd(separator.length, char)
             } else {
                 longTitle
             }
@@ -736,7 +763,11 @@ internal object Format {
         return string
     }
 
-    private fun createLines(throwable: Throwable?, lines: Array<String>?, count: Int): Array<String> {
+    private fun createLines(
+        throwable: Throwable?,
+        lines: Array<String>?,
+        count: Int
+    ): Array<String> {
         val lns = Array(count) { "" }
 
         val linesCount = lines?.size ?: 0
@@ -755,7 +786,8 @@ internal object Format {
                 val stack = throwable.stackTrace
                 for (i in stack.indices) {
                     if (i == 0) {
-                        lns[linesCount + 1 + i] = THROWABLE_DELIMITER_START + AT + stack[i].toString()
+                        lns[linesCount + 1 + i] =
+                            THROWABLE_DELIMITER_START + AT + stack[i].toString()
                     } else {
                         lns[linesCount + 1 + i] =
                             THROWABLE_DELIMITER_START + THROWABLE_DELIMITER_PREFIX + AT + stack[i].toString()
@@ -822,7 +854,12 @@ internal object Format {
     @JvmStatic
     fun addThreadInfo(sb: StringBuilder, thread: Thread?) {
         if (thread != null) {
-            val id = thread.id
+            val id = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+                thread.threadId()
+            } else {
+                @Suppress("DEPRECATION")
+                thread.id
+            }
             val name = thread.name
             val priority = thread.priority.toLong()
             sb.append(THREAD_NAME)
@@ -903,6 +940,7 @@ internal object Format {
                     sb.append(lineNumber)
                     sb.append(')')
                 }
+
                 in traces.indices -> {
                     var notZeroLineNumberOffset = 0
                     var number = 0
@@ -915,6 +953,7 @@ internal object Format {
                     sb.append(number)
                     sb.append(')')
                 }
+
                 else -> {
                     sb.append("No stacktrace ")
                     sb.append(stackTraceDepth)

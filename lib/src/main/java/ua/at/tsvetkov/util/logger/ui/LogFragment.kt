@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import ua.at.tsvetkov.util.R
 import ua.at.tsvetkov.util.databinding.FragmentLogBinding
 import ua.at.tsvetkov.util.logger.interceptor.Level
 import ua.at.tsvetkov.util.logger.interceptor.LogToFileInterceptor
@@ -36,9 +38,9 @@ class LogFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.let {
-            logAdapter = LogAdapter(it)
-        } // LogAdapter using shared instance of LogToMemoryCacheInterceptor
+        logAdapter = LogAdapter(requireActivity())
+
+        // LogAdapter using shared instance of LogToMemoryCacheInterceptor
         layoutManager = LinearLayoutManager(context)
         with(binding) {
             fragmentLogMessagesRecycleView.layoutManager = layoutManager
@@ -51,11 +53,13 @@ class LogFragment : Fragment() {
             logToolBarButtonScroll.setOnClickListener { scrollDown() }
             logToolBarButtonSearchClear.setOnClickListener { logSearchClear() }
 
-            logToolBarLevelSpinner.adapter = ArrayAdapter(
+            val adapter = ArrayAdapter(
                 requireContext(),
-                android.R.layout.simple_spinner_item,
+                R.layout.item_spinner,
                 Level.names
             )
+            adapter.setDropDownViewResource(R.layout.item_spinner)
+            logToolBarLevelSpinner.adapter = adapter
             logToolBarLevelSpinner.setSelection(0)
             logToolBarLevelSpinner.onItemSelectedListener =
                 object : AdapterView.OnItemSelectedListener {
@@ -68,7 +72,7 @@ class LogFragment : Fragment() {
                     ) {
                         LogToMemoryCacheInterceptor.sharedInstance.filterLevel =
                             Level.valueOf(logToolBarLevelSpinner.selectedItem.toString())
-                        logAdapter.notifyDataSetChanged()
+                        logAdapter.applyFilteredList()
                     }
 
                     override fun onNothingSelected(var1: AdapterView<*>?) {}
@@ -76,6 +80,11 @@ class LogFragment : Fragment() {
 
             logZipper = LogZipper(LogToFileInterceptor.getSharedInstance(requireContext()))
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logAdapter.applyFilteredList()
     }
 
     fun scrollDown() {
@@ -101,9 +110,11 @@ class LogFragment : Fragment() {
         val isEnabled = !LogToMemoryCacheInterceptor.sharedInstance.enabled
         LogToMemoryCacheInterceptor.sharedInstance.enabled = isEnabled
         if (isEnabled) {
-            binding.logToolBarButtonRecord.setImageResource(android.R.drawable.presence_online)
+            binding.logToolBarButtonRecord.setImageResource(R.drawable.ic_pause)
+            Toast.makeText(context, "Log show started", Toast.LENGTH_LONG).show()
         } else {
-            binding.logToolBarButtonRecord.setImageResource(android.R.drawable.presence_offline)
+            binding.logToolBarButtonRecord.setImageResource(R.drawable.ic_play)
+            Toast.makeText(context, "Log show paused", Toast.LENGTH_LONG).show()
         }
     }
 

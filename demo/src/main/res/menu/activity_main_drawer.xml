@@ -43,4 +43,15 @@
         </menu>
     </item>
 
+    <item android:title="@string/menu_group_components_log">
+        <menu>
+            <item
+                android:id="@+id/nav_log_component_activity"
+                android:title="@string/action_log_components_activity" />
+            <item
+                android:id="@+id/nav_log_component_fragment"
+                android:title="@string/action_log_components_fragment" />
+        </menu>
+    </item>
+
 </menu>

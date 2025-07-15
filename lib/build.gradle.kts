@@ -1,12 +1,22 @@
+import java.util.Date
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
 
+val skipCommitsCount = 0
 val versionMajor = 2
 val versionMinor = 2
-val versionPatch = 0
-val versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+val versionPatch = providers
+    .exec {
+        commandLine("git", "rev-list", "--count", "HEAD")
+    }.standardOutput.asText
+    .get()
+    .trim()
+    .toInt()
+
+val versionName = "${versionMajor}.${versionMinor}.${versionPatch - skipCommitsCount}"
 
 fun TaskContainer.registerCopyAarTask(variant: String) {
     val capVariant = variant.replaceFirstChar { it.uppercaseChar() }
@@ -36,8 +46,8 @@ fun TaskContainer.registerCopyAarTask(variant: String) {
         into("../aar")
         rename { "taolog-$variant.aar" }
         doLast {
-            val versionFile = file("../aar/version-$versionName.txt")
-            versionFile.writeText("Current 'taolog' lib version: $versionName")
+            val versionFile = file("../aar/README.txt")
+            versionFile.writeText("Library: taolog\nVersion: $versionName\nCreated: ${Date()}")
             println("Created version file: ${versionFile.absolutePath}")
         }
     }

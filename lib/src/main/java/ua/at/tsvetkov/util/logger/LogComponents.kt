@@ -1,17 +1,13 @@
 package ua.at.tsvetkov.util.logger
 
-import android.annotation.TargetApi
 import android.app.Activity
 import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import ua.at.tsvetkov.util.logger.utils.Format
-import ua.at.tsvetkov.util.logger.utils.Format.getFormattedMessage
 import ua.at.tsvetkov.util.logger.utils.FragmentLifecycleLogger
-import java.util.*
 
 /**
  * Activity life circle and fragments stack logger
@@ -21,7 +17,8 @@ object LogComponents {
     @Volatile
     private var activityLifecycleCallback: ActivityLifecycleCallbacks? = null
 
-    private val supportFragmentLifecycleCallbacks = HashMap<String, FragmentManager.FragmentLifecycleCallbacks>()
+    private val supportFragmentLifecycleCallbacks =
+        HashMap<String, FragmentManager.FragmentLifecycleCallbacks>()
 
     /**
      * Added auto log messages for activity lifecycle and fragment stack events.
@@ -43,7 +40,6 @@ object LogComponents {
      *
      * @param application the application instance
      */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     fun enableActivityLifecycleLogger(application: Application) {
         enableActivityLifecycleLogger(application, false)
     }
@@ -54,8 +50,10 @@ object LogComponents {
      * @param application            the application instance
      * @param isAttachFragmentLogger attach fragment stack changes logger
      */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private fun enableActivityLifecycleLogger(application: Application, isAttachFragmentLogger: Boolean) {
+    private fun enableActivityLifecycleLogger(
+        application: Application,
+        isAttachFragmentLogger: Boolean
+    ) {
         if (activityLifecycleCallback == null) {
             activityLifecycleCallback = object : ActivityLifecycleCallbacks {
 
@@ -131,7 +129,6 @@ object LogComponents {
      *
      * @param application the application instance
      */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     fun disableComponentsChangesLogging(application: Application) {
         disableActivityLifecycleLogger(application)
     }
@@ -141,7 +138,6 @@ object LogComponents {
      *
      * @param application the application instance
      */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     fun disableActivityLifecycleLogger(application: Application) {
         application.unregisterActivityLifecycleCallbacks(activityLifecycleCallback)
     }
@@ -151,7 +147,6 @@ object LogComponents {
      *
      * @param activity
      */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     fun enableFragmentStackChangesLogger(activity: Activity) {
         if (Log.isEnabled()) {
             val tag = activity.javaClass.simpleName
@@ -170,7 +165,6 @@ object LogComponents {
      *
      * @param activity
      */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     fun disableFragmentStackChangesLogger(activity: Activity) {
         if (Log.isEnabled()) {
             if (activity is AppCompatActivity) {
@@ -178,8 +172,7 @@ object LogComponents {
                 val logger = supportFragmentLifecycleCallbacks[activity.toString()]
                 activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(logger!!)
                 supportFragmentLifecycleCallbacks.remove(activity.toString())
-                val data = Format.getLocationContainer()
-                Log.i(getFormattedMessage(data, "Fragment Lifecycle Logger detached from $tag").toString())
+                Log.i(" =====----- \uD83D\uDCA5 $tag was destroyed \uD83D\uDCA5 -----===== ")
             }
         }
     }
