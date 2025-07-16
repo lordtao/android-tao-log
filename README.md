@@ -9,10 +9,10 @@ You also see how Activities and Fragments are launched and destroyed. This is ve
 
 Also contains the LongLog class which allows you to print a long messages into the LogCat without limiting the standard output length to less than ~ 4075.
 
-[Download the latest release](https://github.com/lordtao/android-tao-log/releases/tag/v2.2.69)
+[Download the latest release](https://github.com/lordtao/android-tao-log/releases)
 
 **Just try**
-[Demo apps](https://github.com/lordtao/android-tao-log/releases/tag/v2.2.69)
+[Demo apps](https://github.com/lordtao/android-tao-log/releases)
 
 ![Image of LogDemo](img/log_demo.png)
 
