@@ -1,29 +1,33 @@
 /******************************************************************************
- * Copyright (c) 2010 Alexandr Tsvetkov.
+ * Copyright (c) 2010-2025 Alexandr Tsvetkov.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Lesser General Public License
+ * are made available under the terms of the MIT License
  * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl.html
- *
+ * https://opensource.org/license/mit
  *
  * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
  *
- *
  * Project:
- * TAO Core
- *
+ * TAO Log
  *
  * License agreement:
  *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- * 1. This code is published AS IS. Author is not responsible for any damage that can be
- * caused by any application that uses this code.
- * 2. Author does not give a garantee, that this code is error free.
- * 3. This code can be used in NON-COMMERCIAL applications AS IS without any special
- * permission from author.
- * 4. This code can be modified without any special permission from author IF AND OFormat.NLY IF
- * this license agreement will remain unchanged.
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package ua.at.tsvetkov.util.logger
 
@@ -43,7 +47,7 @@ import ua.at.tsvetkov.util.logger.utils.Format.getFormattedThrowable
  * <p>
  * 04-04 08:29:40.336: V > SomeClass: someMethod: 286  Message
  *
- * @author A.Tsvetkov 2010 http://tsvetkov.at.ua mailto:tsvetkov2010@gmail.com
+ * @author A.Tsvetkov 2010 https://github.com/lordtao/
  */
 object Log {
 
@@ -316,7 +320,11 @@ object Log {
     @JvmStatic
     fun list(list: List<*>?, title: String? = "List") {
         val data = Format.getLocationContainer()
-        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.list(list), title).toString())
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, Format.list(list), title).toString()
+        )
     }
 
     /**
@@ -327,9 +335,14 @@ object Log {
      */
     @JvmOverloads
     @JvmStatic
+    @Suppress("unused")
     fun listD(list: List<*>?, title: String? = "List") {
         val data = Format.getLocationContainer()
-        logToAll(Level.DEBUG, data.tag, getFormattedMessage(data, Format.list(list), title).toString())
+        logToAll(
+            Level.DEBUG,
+            data.tag,
+            getFormattedMessage(data, Format.list(list), title).toString()
+        )
     }
 
     /**
@@ -340,9 +353,14 @@ object Log {
      */
     @JvmOverloads
     @JvmStatic
+    @Suppress("unused")
     fun listV(list: List<*>?, title: String? = "List") {
         val data = Format.getLocationContainer()
-        logToAll(Level.VERBOSE, data.tag, getFormattedMessage(data, Format.list(list), title).toString())
+        logToAll(
+            Level.VERBOSE,
+            data.tag,
+            getFormattedMessage(data, Format.list(list), title).toString()
+        )
     }
 
     /**
@@ -353,9 +371,14 @@ object Log {
      */
     @JvmOverloads
     @JvmStatic
+    @Suppress("unused")
     fun listW(list: List<*>?, title: String? = "List") {
         val data = Format.getLocationContainer()
-        logToAll(Level.WARNING, data.tag, getFormattedMessage(data, Format.list(list), title).toString())
+        logToAll(
+            Level.WARNING,
+            data.tag,
+            getFormattedMessage(data, Format.list(list), title).toString()
+        )
     }
 
     /**
@@ -366,9 +389,14 @@ object Log {
      */
     @JvmOverloads
     @JvmStatic
+    @Suppress("unused")
     fun listE(list: List<*>?, title: String? = "List") {
         val data = Format.getLocationContainer()
-        logToAll(Level.ERROR, data.tag, getFormattedMessage(data, Format.list(list), title).toString())
+        logToAll(
+            Level.ERROR,
+            data.tag,
+            getFormattedMessage(data, Format.list(list), title).toString()
+        )
     }
 
     /**
@@ -390,7 +418,11 @@ object Log {
     @JvmStatic
     fun <T : Any> array(array: Array<T>?, title: String? = Format.ARRAY) {
         val data = Format.getLocationContainer()
-        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.arrayT(array), title).toString())
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, Format.arrayT(array), title).toString()
+        )
     }
 
     /**
@@ -401,9 +433,14 @@ object Log {
      */
     @JvmOverloads
     @JvmStatic
+    @Suppress("unused")
     fun array(array: Array<String>?, title: String? = Format.ARRAY) {
         val data = Format.getLocationContainer()
-        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.arrayString(array), title).toString())
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, Format.arrayString(array), title).toString()
+        )
     }
 
     /**
@@ -415,7 +452,11 @@ object Log {
     @JvmStatic
     fun array(array: IntArray?, title: String? = Format.ARRAY) {
         val data = Format.getLocationContainer()
-        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.array(array), title).toString())
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, Format.array(array), title).toString()
+        )
     }
 
     /**
@@ -427,7 +468,11 @@ object Log {
     @JvmStatic
     fun array(array: FloatArray?, title: String? = Format.ARRAY) {
         val data = Format.getLocationContainer()
-        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.array(array), title).toString())
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, Format.array(array), title).toString()
+        )
     }
 
     /**
@@ -439,7 +484,11 @@ object Log {
     @JvmStatic
     fun array(array: BooleanArray?, title: String? = Format.ARRAY) {
         val data = Format.getLocationContainer()
-        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.array(array), title).toString())
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, Format.array(array), title).toString()
+        )
     }
 
     /**
@@ -451,7 +500,11 @@ object Log {
     @JvmStatic
     fun array(array: CharArray?, title: String? = Format.ARRAY) {
         val data = Format.getLocationContainer()
-        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.array(array), title).toString())
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, Format.array(array), title).toString()
+        )
     }
 
     /**
@@ -463,7 +516,11 @@ object Log {
     @JvmStatic
     fun array(array: DoubleArray?, title: String? = Format.ARRAY) {
         val data = Format.getLocationContainer()
-        logToAll(Level.INFO, data.tag, getFormattedMessage(data, Format.array(array), title).toString())
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, Format.array(array), title).toString()
+        )
     }
 
     /**
@@ -564,7 +621,11 @@ object Log {
         addThreadInfo(sb, Thread.currentThread())
         sb.append(Format.NL)
         val data = Format.getLocationContainer()
-        logToAll(Level.INFO, data.tag, getFormattedMessage(data, sb, message = null, title = null).toString())
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, sb, message = null, title = null).toString()
+        )
     }
 
     /**
@@ -579,7 +640,11 @@ object Log {
         sb.append(Format.NL)
         addStackTrace(sb, throwable)
         val data = Format.getLocationContainer()
-        logToAll(Level.INFO, data.tag, getFormattedMessage(data, sb, message = null, title = null).toString())
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, sb, message = null, title = null).toString()
+        )
     }
 
     /**
@@ -592,7 +657,11 @@ object Log {
         sb.append(Format.NL)
         addMessage(sb, message)
         val data = Format.getLocationContainer()
-        logToAll(Level.INFO, data.tag, getFormattedMessage(data, sb, message = null, title = null).toString())
+        logToAll(
+            Level.INFO,
+            data.tag,
+            getFormattedMessage(data, sb, message = null, title = null).toString()
+        )
     }
 
     /**
@@ -718,6 +787,7 @@ object Log {
      * Set LogCat logs enabled
      */
     @JvmStatic
+    @Suppress("unused")
     fun setEnabled() {
         logCatInterceptor.enabled = true
     }
@@ -740,6 +810,7 @@ object Log {
      * Is LogCat logs disabled
      */
     @JvmStatic
+    @Suppress("unused")
     fun isDisabled() = !logCatInterceptor.enabled
 
     @JvmStatic
@@ -748,36 +819,43 @@ object Log {
     }
 
     @JvmStatic
+    @Suppress("unused")
     fun removeInterceptor(interceptor: LogInterceptor) {
         interceptors.remove(interceptor.hashCode())
     }
 
     @JvmStatic
+    @Suppress("unused")
     fun removeInterceptors() {
         interceptors.clear()
     }
 
     @JvmStatic
+    @Suppress("unused")
     fun removeLogCatInterceptor() {
         interceptors.remove(logCatInterceptor.hashCode())
     }
 
     @JvmStatic
+    @Suppress("unused")
     fun addLogCatInterceptor() {
         interceptors.put(logCatInterceptor.hashCode(), logCatInterceptor)
     }
 
     @JvmStatic
+    @Suppress("unused")
     fun getInterceptor(id: Int): LogInterceptor? {
         return interceptors[id]
     }
 
     @JvmStatic
+    @Suppress("unused")
     fun hasInterceptor(id: Int): Boolean {
         return interceptors.containsKey(id)
     }
 
     @JvmStatic
+    @Suppress("unused")
     fun hasInterceptor(interceptor: LogInterceptor): Boolean {
         return interceptors.containsValue(interceptor)
     }

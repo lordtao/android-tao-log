@@ -38,7 +38,7 @@ class LogFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        logAdapter = LogAdapter(requireActivity())
+        logAdapter = LogAdapter()
 
         // LogAdapter using shared instance of LogToMemoryCacheInterceptor
         layoutManager = LinearLayoutManager(context)

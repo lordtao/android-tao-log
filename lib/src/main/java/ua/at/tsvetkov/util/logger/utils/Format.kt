@@ -1,26 +1,34 @@
 /******************************************************************************
- * Copyright (c) 2010 Alexandr Tsvetkov.
+ * Copyright (c) 2010-2025 Alexandr Tsvetkov.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Lesser General Public License
+ * are made available under the terms of the MIT License
  * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl.html
+ * https://opensource.org/license/mit
  *
  * Contributors:
- * Alexandr Tsvetkov
+ * Alexandr Tsvetkov - initial API and implementation
  *
  * Project:
  * TAO Log
  *
  * License agreement:
  *
- * 1. This code is published AS IS. Author is not responsible for any damage that can be
- * caused by any application that uses this code.
- * 2. Author does not give a garantee, that this code is error free.
- * 3. This code can be used in NON-COMMERCIAL applications AS IS without any special
- * permission from author.
- * 4. This code can be modified without any special permission from author IF AND ONLY IF
- * this license agreement will remain unchanged.
- * *****************************************************************************/
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 package ua.at.tsvetkov.util.logger.utils
 
 import android.os.Build
@@ -50,7 +58,6 @@ internal object Format {
 
     private val LOG_CLASS_NAME = Log::class.java.name
 
-    const val MAX_TAG_LENGTH = 65
     const val MAGIC_SPACES_COUNT = 34
     const val PREFIX = '|'
     const val COLON = ':'
@@ -916,8 +923,10 @@ internal object Format {
             }
         }
 
-        fun isKotlin() = className.endsWith(".kt", true)
+        @Suppress("unused")
+        fun isKotlinFile() = className.endsWith(".kt", true)
 
+        @Suppress("unused")
         fun addLinkTo(sb: StringBuilder) {
             sb.append('(')
             sb.append(className)
@@ -926,6 +935,7 @@ internal object Format {
             sb.append(')')
         }
 
+        @Suppress("unused")
         fun appendLink(sb: StringBuilder) {
             sb.append(getLink())
         }

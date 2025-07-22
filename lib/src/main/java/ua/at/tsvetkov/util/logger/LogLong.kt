@@ -1,31 +1,33 @@
-/**
- * ****************************************************************************
- * Copyright (c) 2010 Alexandr Tsvetkov.
+/******************************************************************************
+ * Copyright (c) 2010-2025 Alexandr Tsvetkov.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Lesser General Public License
+ * are made available under the terms of the MIT License
  * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl.html
- *
+ * https://opensource.org/license/mit
  *
  * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
  *
- *
  * Project:
- * TAO Core
- *
+ * TAO Log
  *
  * License agreement:
  *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
  *
- * 1. This code is published AS IS. Author is not responsible for any damage that can be
- * caused by any application that uses this code.
- * 2. Author does not give a garantee, that this code is error free.
- * 3. This code can be used in NON-COMMERCIAL applications AS IS without any special
- * permission from author.
- * 4. This code can be modified without any special permission from author IF AND OFormat.NLY IF
- * this license agreement will remain unchanged.
- * ****************************************************************************
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package ua.at.tsvetkov.util.logger
 
@@ -43,7 +45,7 @@ import java.lang.ref.SoftReference
  * Shows a long log string in LogCat. The LogCat have the real message size for both binary and non-binary logs is ~4076 bytes.
  * The LogLong the same as the Log class, but can print to LogCat a full message - split to several usual messages.
  *
- * @author A.Tsvetkov 2018 http://tsvetkov.at.ua mailto:tsvetkov2010@gmail.com
+ * @author A.Tsvetkov 2018 https://github.com/lordtao/android-tao-log
  */
 object LogLong {
 
@@ -241,6 +243,7 @@ object LogLong {
      */
     @JvmOverloads
     @JvmStatic
+    @Suppress("unused")
     fun listD(list: List<*>?, title: String? = "List") {
         val data = Format.getLocationContainer()
         print(data.tag, getFormattedMessage(data, Format.list(list), title), Level.DEBUG, false)
@@ -253,6 +256,7 @@ object LogLong {
      */
     @JvmOverloads
     @JvmStatic
+    @Suppress("unused")
     fun listV(list: List<*>?, title: String? = "List") {
         val data = Format.getLocationContainer()
         print(data.tag, getFormattedMessage(data, Format.list(list), title), Level.VERBOSE, false)
@@ -265,6 +269,7 @@ object LogLong {
      */
     @JvmOverloads
     @JvmStatic
+    @Suppress("unused")
     fun listW(list: List<*>?, title: String? = "List") {
         val data = Format.getLocationContainer()
         print(data.tag, getFormattedMessage(data, Format.list(list), title), Level.WARNING, false)
@@ -277,6 +282,7 @@ object LogLong {
      */
     @JvmOverloads
     @JvmStatic
+    @Suppress("unused")
     fun listE(list: List<*>?, title: String? = "List") {
         val data = Format.getLocationContainer()
         print(data.tag, getFormattedMessage(data, Format.list(list), title), Level.ERROR, false)
@@ -289,7 +295,6 @@ object LogLong {
      */
     @JvmStatic
     fun <T : Any> array(array: Array<T>?) {
-        val data = Format.getLocationContainer()
         array(array, Format.ARRAY)
     }
 
@@ -310,9 +315,15 @@ object LogLong {
      * @param array an array
      */
     @JvmStatic
+    @Suppress("unused")
     fun array(array: Array<String>?, title: String?) {
         val data = Format.getLocationContainer()
-        print(data.tag, getFormattedMessage(data, Format.arrayString(array), title), Level.INFO, false)
+        print(
+            data.tag,
+            getFormattedMessage(data, Format.arrayString(array), title),
+            Level.INFO,
+            false
+        )
     }
 
     /**
@@ -384,13 +395,18 @@ object LogLong {
     @JvmStatic
     fun array(array: LongArray?, title: String? = Format.ARRAY) {
         val data = Format.getLocationContainer()
-        print(data.tag, getFormattedMessage(data, Format.array(array), message = null, title), Level.INFO, false)
+        print(
+            data.tag,
+            getFormattedMessage(data, Format.array(array), message = null, title),
+            Level.INFO,
+            false
+        )
     }
 
     /**
      * Logged readable representation of bytes array data like 0F CD AD.... Each countPerLine bytes will print in new line
      *
-     * @param data         your bytes array data
+     * @param array         your bytes array data
      * @param countPerLine count byte per line
      */
     @JvmStatic
@@ -398,7 +414,12 @@ object LogLong {
         val data = Format.getLocationContainer()
         print(
             data.tag,
-            getFormattedMessage(data, Format.hex(array, countPerLine), message = null, title = null),
+            getFormattedMessage(
+                data,
+                Format.hex(array, countPerLine),
+                message = null,
+                title = null
+            ),
             Level.INFO,
             false
         )
@@ -407,7 +428,7 @@ object LogLong {
     /**
      * Logged readable representation of bytes array data like 0F CD AD....
      *
-     * @param data your bytes array data
+     * @param array your bytes array data
      */
     @JvmStatic
     fun hex(array: ByteArray?) {
@@ -447,7 +468,12 @@ object LogLong {
         val data = Format.getLocationContainer()
         print(
             data.tag,
-            getFormattedMessage(data, Format.xml(xmlStr, indentation), message = null, title = null),
+            getFormattedMessage(
+                data,
+                Format.xml(xmlStr, indentation),
+                message = null,
+                title = null
+            ),
             Level.INFO,
             false
         )
@@ -463,7 +489,12 @@ object LogLong {
         addThreadInfo(sb, Thread.currentThread())
         sb.append(Format.NL)
         val data = Format.getLocationContainer()
-        print(data.tag, getFormattedMessage(data, sb, message = null, title = null), Level.VERBOSE, false)
+        print(
+            data.tag,
+            getFormattedMessage(data, sb, message = null, title = null),
+            Level.VERBOSE,
+            false
+        )
     }
 
     /**
@@ -478,7 +509,12 @@ object LogLong {
         sb.append(Format.NL)
         addStackTrace(sb, throwable!!)
         val data = Format.getLocationContainer()
-        print(data.tag, getFormattedMessage(data, sb, message = null, title = null), Level.VERBOSE, false)
+        print(
+            data.tag,
+            getFormattedMessage(data, sb, message = null, title = null),
+            Level.VERBOSE,
+            false
+        )
     }
 
     /**
@@ -491,7 +527,12 @@ object LogLong {
         sb.append(Format.NL)
         addMessage(sb, message)
         val data = Format.getLocationContainer()
-        print(data.tag, getFormattedMessage(data, sb, message = null, title = null), Level.VERBOSE, false)
+        print(
+            data.tag,
+            getFormattedMessage(data, sb, message = null, title = null),
+            Level.VERBOSE,
+            false
+        )
     }
 
     /**
@@ -508,7 +549,12 @@ object LogLong {
         addMessage(sb, message)
         addStackTrace(sb, throwable!!)
         val data = Format.getLocationContainer()
-        print(data.tag, getFormattedMessage(data, sb, message = null, title = null), Level.VERBOSE, false)
+        print(
+            data.tag,
+            getFormattedMessage(data, sb, message = null, title = null),
+            Level.VERBOSE,
+            false
+        )
     }
 
     /**
@@ -524,7 +570,12 @@ object LogLong {
         sb.append(Format.NL)
         addStackTrace(sb, throwable!!)
         val data = Format.getLocationContainer()
-        print(data.tag, getFormattedMessage(data, sb, message = null, title = null), Level.VERBOSE, false)
+        print(
+            data.tag,
+            getFormattedMessage(data, sb, message = null, title = null),
+            Level.VERBOSE,
+            false
+        )
     }
 
     /**

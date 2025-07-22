@@ -14,6 +14,8 @@ Also contains the LongLog class which allows you to print a long messages into t
 **Just try**
 [Demo apps](https://github.com/lordtao/android-tao-log/releases)
 
+[Licence](https://opensource.org/license/mit)
+
 ![Image of LogDemo](img/log_demo.png)
 
 Simple code example
