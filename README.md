@@ -1,4 +1,4 @@
-taolog
+android-tao-log
 ================
 
 Tiny, lightweight, informative and very useful logger for Android.
