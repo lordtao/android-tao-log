@@ -129,11 +129,16 @@ afterEvaluate {
 
 // Publishing
 
-val owner = "lordtao"
 val repo = "android-tao-log"
+val repoDescription = "Tiny, lightweight and informative logger for Android."
+
+val owner = "lordtao"
 val libGroupId = "ua.at.tsvetkov"
 val libArtifactId = libName
 val libVersionName = versionName
+
+val licenseName = "The MIT License"
+val licenseUrl = "https://opensource.org/licenses/MIT"
 
 afterEvaluate {
     publishing {
@@ -145,41 +150,29 @@ afterEvaluate {
 
                 from(components.getByName("release"))
 
-                // Метаданные POM - очень важны
                 pom {
                     name.set(libArtifactId) // Или более описательное имя
-                    description.set("Tiny, lightweight and informative logger for Android.")
-                    url.set("https://github.com/lordtao/android-tao-log") // URL вашего проекта
+                    description.set(repoDescription)
+                    url.set("https://github.com/$owner/$repo") // URL of your project
 
                     licenses {
                         license {
-                            name.set("The MIT License")
-                            url.set("https://opensource.org/licenses/MIT")
+                            name.set(licenseName)
+                            url.set(licenseUrl)
                         }
                     }
                     developers {
                         developer {
-                            id.set("lordtao")
+                            id.set(owner)
                             name.set("Alexandr Tsvetkov")
                             email.set("tsvetkov2010@gmail.com")
                         }
                     }
                     scm {
-                        connection.set("scm:git:git://github.com/lordtao/android-tao-log.git")
-                        developerConnection.set("scm:git:ssh://github.com/lordtao/android-tao-log.git")
-                        url.set("https://github.com/lordtao/android-tao-log")
+                        connection.set("scm:git:git://github.com/$owner/$repo.git")
+                        developerConnection.set("scm:git:ssh://github.com/$owner/$repo.git")
+                        url.set("https://github.com/$owner/$repo")
                     }
-                }
-            }
-        }
-
-        repositories {
-            maven {
-                name = "GitHubPackages" // Repository name in publish.yml script
-                url = uri("https://maven.pkg.github.com/$owner/$repo")
-                credentials {
-                    username = System.getenv("GITHUB_ACTOR")
-                    password = System.getenv("GITHUB_TOKEN")
                 }
             }
         }
