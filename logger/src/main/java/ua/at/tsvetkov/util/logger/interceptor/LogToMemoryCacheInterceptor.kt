@@ -31,6 +31,7 @@
  */
 package ua.at.tsvetkov.util.logger.interceptor
 
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -57,6 +58,7 @@ class LogToMemoryCacheInterceptor(
     var filterLevel = Level.VERBOSE
     var filterSearchString: CharSequence? = null
 
+    @OptIn(DelicateCoroutinesApi::class)
     @InternalCoroutinesApi
     override fun log(level: Level, tag: String?, msg: String?, throwable: Throwable?) {
         val logItem = LogItem(Date(), level, tag, msg)

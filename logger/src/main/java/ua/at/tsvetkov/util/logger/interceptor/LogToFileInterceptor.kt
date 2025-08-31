@@ -31,6 +31,7 @@
  */
 package ua.at.tsvetkov.util.logger.interceptor
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.Log
@@ -40,7 +41,7 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
-import java.util.*
+import java.util.Date
 
 /**
  * Create the Log Interceptor which save a log messages to file (default dir - context.filesDir file Log.txt).
@@ -189,7 +190,9 @@ Version code: $verCode
         const val LOG_LINE_SEPARATOR = '\u2028'
         const val LOG_SEPARATOR = '\u2063'
 
+        @SuppressLint("StaticFieldLeak")
         private var sharedInstance: LogToFileInterceptor? = null
+
         fun getSharedInstance(context: Context): LogToFileInterceptor {
             return init(context)
         }

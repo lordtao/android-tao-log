@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/log_fragment_background"
     android:orientation="vertical"
-    tools:context=".logger.ui.LogFragment">
+    tools:context=".ui.LogFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
