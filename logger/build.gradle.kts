@@ -107,7 +107,9 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
 }
 
+
 afterEvaluate {
+
     tasks.named("assembleDebug").configure {
         finalizedBy("copyDebugAar")
     }
@@ -118,15 +120,13 @@ afterEvaluate {
         dependsOn("copyReleaseAar")
         dependsOn("copyDebugAar")
     }
-}
 
-// Publishing
+    // Publishing
 
-val libGroupId = "ua.at.tsvetkov"
-val libArtifactId = libName
-val libVersionName = versionName
+    val libGroupId = "ua.at.tsvetkov"
+    val libArtifactId = libName
+    val libVersionName = versionName
 
-afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("release") {
