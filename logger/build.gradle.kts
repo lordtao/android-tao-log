@@ -135,53 +135,51 @@ val libGroupId = "ua.at.tsvetkov"
 val libArtifactId = libName
 val libVersionName = versionName
 
-publishing {
-    publications {
-        create<MavenPublication>("release")  {
-            groupId = libGroupId
-            artifactId = libArtifactId
-            version = libVersionName
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                groupId = libGroupId
+                artifactId = libArtifactId
+                version = libVersionName
 
-//            from(components["release"])
-//            from(components.getByName("release"))
-            afterEvaluate {
-                from(components["release"])
+                from(components.getByName("release"))
+
+                // Метаданные POM - очень важны
+                pom {
+                    name.set(libArtifactId) // Или более описательное имя
+                    description.set("Tiny, lightweight and informative logger for Android.")
+                    url.set("https://github.com/lordtao/android-tao-log") // URL вашего проекта
+
+                    licenses {
+                        license {
+                            name.set("The MIT License")
+                            url.set("https://opensource.org/licenses/MIT")
+                        }
+                    }
+                    developers {
+                        developer {
+                            id.set("lordtao")
+                            name.set("Alexandr Tsvetkov")
+                            email.set("tsvetkov2010@gmail.com")
+                        }
+                    }
+                    scm {
+                        connection.set("scm:git:git://github.com/lordtao/android-tao-log.git")
+                        developerConnection.set("scm:git:ssh://github.com/lordtao/android-tao-log.git")
+                        url.set("https://github.com/lordtao/android-tao-log")
+                    }
+                }
             }
+        }
 
-            pom {
-                name.set(libArtifactId)
-                description.set("Tiny, lightweight and informative logger for Android.")
-                url.set("https://github.com/lordtao/android-tao-log")
-
-                licenses {
-                    license {
-                        name.set("The MIT License") // Пример
-                        url.set("https://opensource.org/licenses/MIT")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("lordtao")
-                        name.set("Alexandr Tsvetkov")
-                        email.set("tsvetkov2010@gmail.com")
-                    }
-                }
-                scm {
-                    connection.set("scm:git:git://github.com/lordtao/android-tao-log.git")
-                    developerConnection.set("scm:git:ssh://github.com/lordtao/android-tao-log.git")
-                    url.set("https://github.com/lordtao/android-tao-log")
-                }
-            }
-
-            repositories {
-                // 4. Определяем репозиторий GitHub Packages
-                maven {
-                    name = "TaoLog"
-                    url = uri("https://maven.pkg.github.com/$owner/$repo")
-                    credentials {
-                        username = System.getenv("GITHUB_ACTOR")
-                        password = System.getenv("GITHUB_TOKEN")
-                    }
+        repositories {
+            maven {
+                name = "TaoLog"
+                url = uri("https://maven.pkg.github.com/$owner/$repo")
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
                 }
             }
         }
