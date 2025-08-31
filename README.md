@@ -1,6 +1,8 @@
 android-tao-log
 ================
 
+[![](https://jitpack.io/v/lordtao/android-tao-log.svg)](https://jitpack.io/#lordtao/android-tao-log)
+
 Tiny, lightweight, informative and very useful logger for Android.
 
 You don't need to define any tags. They are generated automatically and include the file name, method, and line number. Of course, you can quickly jump to that place in the code by clicking on the embedded link in the LogCat.
@@ -10,6 +12,28 @@ You also see how Activities and Fragments are launched and destroyed. This is ve
 Also contains the LongLog class which allows you to print a long messages into the LogCat without limiting the standard output length to less than ~ 4075.
 
 [Download the latest release](https://github.com/lordtao/android-tao-log/releases)
+
+**To get a Git project into your build:**
+
+Step 1. Add the JitPack repository to your build file
+
+```
+dependencyResolutionManagement {
+        repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+        repositories {
+            mavenCentral()
+            maven { url = uri("https://jitpack.io") }
+        }
+    }
+```
+
+Step 2. Add the dependency
+
+```
+dependencies {
+            implementation("com.github.lordtao:android-tao-log:latestVersion")
+    }
+```
 
 **Just try**
 [Demo apps](https://github.com/lordtao/android-tao-log/releases)
