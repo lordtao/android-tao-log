@@ -1,4 +1,4 @@
-android-tao-log
+TAO Logger (Android)
 ================
 
 [![](https://jitpack.io/v/lordtao/android-tao-log.svg)](https://jitpack.io/#lordtao/android-tao-log)
@@ -15,7 +15,7 @@ Also contains the LongLog class which allows you to print a long messages into t
 
 **To get a Git project into your build:**
 
-Step 1. Add the JitPack repository to your build file
+Step 1. Add the JitPack repository to your build file with the latest version [![](https://jitpack.io/v/lordtao/android-tao-log.svg)](https://jitpack.io/#lordtao/android-tao-log)
 
 ```
 dependencyResolutionManagement {
