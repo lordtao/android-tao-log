@@ -40,7 +40,7 @@ dependencies {
 
 [Licence](https://opensource.org/license/mit)
 
-<img src="img/log_demo.png" title="" alt="Image of LogDemo" data-align="center">
+<p align="center"><img src="media/log_demo.png" alt="drawing" width="400"  data-align="center"/></p>
 
 Simple code example
 --------------------
@@ -64,20 +64,20 @@ Possibility to outline the log strings (by default). You can also turn off this,
 You'll get in your LogCat the lines like below.
 Clicking on the tag brings you to log into the source code of the class which was caused by the logger:
 
-![Image of LogCat example](img/log_example.png)
+![Image of LogCat example](media/log_example.png)
 
 Easy objects formatting
 
-![Image of LogCat example](img/log_hex_xml.png)
+![Image of LogCat example](media/log_hex_xml.png)
 
 Arrays
-![Image of LogCat example](img/log_arrays.png)
+![Image of LogCat example](media/log_arrays.png)
 Long data logger
 ----------------
 
 Sometimes there is a need to display a log of big data. Usual a loggers truncate it. Use LongLog. It will output all data page by page without loss.
 
-![Image of LogLong example](img/log_long.png)
+![Image of LogLong example](media/log_long.png)
 Activity lifecicle and fragments stack logger
 ---------------------------------------------
 
@@ -89,11 +89,11 @@ ComponentLog.enableComponentsChangesLogging(this);
 
 You will receive information about an activity lifecycle calls
 
-![Image of LogActivity example](img/log_activity.png)
+![Image of LogActivity example](media/log_activity.png)
 
 and a changes of the fragments stack
 
-![Image of LogFragments example](img/log_fragments.png)
+![Image of LogFragments example](media/log_fragments.png)
 Log interceptor.
 -----------------
 
@@ -129,7 +129,8 @@ val logFragment = LogFragment()
 supportFragmentManager.beginTransaction().add(R.id.frameContent, logFragment).commit()
 ```
 
-![Image of LogFragment example](img/log_fragment.png)
+<p align="center"><img src="media/log_fragment.png" alt="drawing" width="400"  data-align="center"/></p>
+
 Zip and share you log
 ---------------------
 
@@ -146,7 +147,8 @@ logZipper = LogZipper(LogToFileInterceptor.getSharedInstance(context))
 logZipper.shareZip(activity)
 ```
 
-![Image of Log Share example](img/log_share.png)
+<p align="center"><img src="media/log_share.png" alt="drawing" width="400"  data-align="center"/></p>
+
 Add android-tao-log to your project
 -----------------------------------
 
@@ -162,6 +164,10 @@ implementation files('libs/taolog-*.aar')
 
 Changelog
 ---------
+
+#### 2.2.80 -- Added auto-publishing to jitpack.io
+
+* Added auto-publishing to jitpack.io
 
 #### 2.2.69 -- Migration and refactoring
 
