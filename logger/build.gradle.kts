@@ -175,7 +175,7 @@ afterEvaluate {
 
         repositories {
             maven {
-                name = "TaoLog"
+                name = "GitHubPackages" // Repository name in publish.yml script
                 url = uri("https://maven.pkg.github.com/$owner/$repo")
                 credentials {
                     username = System.getenv("GITHUB_ACTOR")
