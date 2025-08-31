@@ -118,6 +118,12 @@ afterEvaluate {
         dependsOn("copyReleaseAar")
         dependsOn("copyDebugAar")
     }
+
+    // For publishing
+    val publication = project.extensions.getByType(PublishingExtension::class.java)
+        .publications.getByName("release") as MavenPublication
+
+    publication.from(components.getByName("release"))
 }
 
 // Publishing
@@ -132,6 +138,9 @@ publishing {
             groupId = libGroupId
             artifactId = libArtifactId
             version = libVersionName
+
+//            from(components["release"])
+//            from(components.getByName("release"))
 
             pom {
                 name.set(libArtifactId)
