@@ -107,9 +107,7 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
 }
 
-
 afterEvaluate {
-
     tasks.named("assembleDebug").configure {
         finalizedBy("copyDebugAar")
     }
@@ -120,45 +118,43 @@ afterEvaluate {
         dependsOn("copyReleaseAar")
         dependsOn("copyDebugAar")
     }
+}
 
-    // Publishing
+// Publishing
 
-    val libGroupId = "ua.at.tsvetkov"
-    val libArtifactId = libName
-    val libVersionName = versionName
+val libGroupId = "ua.at.tsvetkov"
+val libArtifactId = libName
+val libVersionName = versionName
 
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
-                groupId = libGroupId
-                artifactId = libArtifactId
-                version = libVersionName
+publishing {
+    publications {
+        create<MavenPublication>("release")  {
+            groupId = libGroupId
+            artifactId = libArtifactId
+            version = libVersionName
 
-                from(components.getByName("release"))
+            pom {
+                name.set(libArtifactId)
+                description.set("Tiny, lightweight and informative logger for Android.")
+                url.set("https://github.com/lordtao/android-tao-log")
 
-                pom {
-                    name.set(libArtifactId)
-                    description.set("Tiny, lightweight and informative logger for Android.") // Ваше описание
-                    url.set("https://github.com/lordtao/android-tao-log") // URL проекта
-
-                    licenses {
-                        license {
-                            name.set("The MIT License") // Пример
-                            url.set("https://opensource.org/licenses/MIT")
-                        }
+                licenses {
+                    license {
+                        name.set("The MIT License") // Пример
+                        url.set("https://opensource.org/licenses/MIT")
                     }
-                    developers {
-                        developer {
-                            id.set("lordtao")
-                            name.set("Alexandr Tsvetkov")
-                            email.set("tsvetkov2010@gmail.com")
-                        }
+                }
+                developers {
+                    developer {
+                        id.set("lordtao")
+                        name.set("Alexandr Tsvetkov")
+                        email.set("tsvetkov2010@gmail.com")
                     }
-                    scm {
-                        connection.set("scm:git:git://github.com/lordtao/android-tao-log.git")
-                        developerConnection.set("scm:git:ssh://github.com/lordtao/android-tao-log.git")
-                        url.set("https://github.com/lordtao/android-tao-log")
-                    }
+                }
+                scm {
+                    connection.set("scm:git:git://github.com/lordtao/android-tao-log.git")
+                    developerConnection.set("scm:git:ssh://github.com/lordtao/android-tao-log.git")
+                    url.set("https://github.com/lordtao/android-tao-log")
                 }
             }
         }
