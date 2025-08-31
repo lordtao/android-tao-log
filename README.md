@@ -1,8 +1,6 @@
 android-tao-log
 ================
 
-[![](https://jitpack.io/v/lordtao/android-tao-log.svg)](https://jitpack.io/#lordtao/android-tao-log)
-
 Tiny, lightweight, informative and very useful logger for Android.
 
 You don't need to define any tags. They are generated automatically and include the file name, method, and line number. Of course, you can quickly jump to that place in the code by clicking on the embedded link in the LogCat.
