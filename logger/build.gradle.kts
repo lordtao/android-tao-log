@@ -3,7 +3,7 @@ import java.util.Date
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("maven-publish")
+    `maven-publish`
 }
 
 val libName = "taolog"
@@ -90,6 +90,13 @@ android {
 
     buildFeatures.viewBinding = true
     buildFeatures.buildConfig = true
+
+    publishing {
+        singleVariant( "release" ) {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 kotlin {
@@ -119,11 +126,11 @@ afterEvaluate {
         dependsOn("copyDebugAar")
     }
 
-    // For publishing
-    val publication = project.extensions.getByType(PublishingExtension::class.java)
-        .publications.getByName("release") as MavenPublication
-
-    publication.from(components.getByName("release"))
+//    // For publishing
+//    val publication = project.extensions.getByType(PublishingExtension::class.java)
+//        .publications.getByName("release") as MavenPublication
+//
+//    publication.from(components.getByName("release"))
 }
 
 // Publishing
@@ -141,6 +148,9 @@ publishing {
 
 //            from(components["release"])
 //            from(components.getByName("release"))
+            afterEvaluate {
+                from(components["release"])
+            }
 
             pom {
                 name.set(libArtifactId)
