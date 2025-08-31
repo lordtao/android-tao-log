@@ -125,16 +125,12 @@ afterEvaluate {
         dependsOn("copyReleaseAar")
         dependsOn("copyDebugAar")
     }
-
-//    // For publishing
-//    val publication = project.extensions.getByType(PublishingExtension::class.java)
-//        .publications.getByName("release") as MavenPublication
-//
-//    publication.from(components.getByName("release"))
 }
 
 // Publishing
 
+val owner = "lordtao"
+val repo = "android-tao-log"
 val libGroupId = "ua.at.tsvetkov"
 val libArtifactId = libName
 val libVersionName = versionName
@@ -174,6 +170,18 @@ publishing {
                     connection.set("scm:git:git://github.com/lordtao/android-tao-log.git")
                     developerConnection.set("scm:git:ssh://github.com/lordtao/android-tao-log.git")
                     url.set("https://github.com/lordtao/android-tao-log")
+                }
+            }
+
+            repositories {
+                // 4. Определяем репозиторий GitHub Packages
+                maven {
+                    name = "TaoLog"
+                    url = uri("https://maven.pkg.github.com/$owner/$repo")
+                    credentials {
+                        username = System.getenv("GITHUB_ACTOR")
+                        password = System.getenv("GITHUB_TOKEN")
+                    }
                 }
             }
         }

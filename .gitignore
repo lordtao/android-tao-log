@@ -53,9 +53,9 @@ freeline_project_description.json
 .idea/markdown-exported-files.xml
 .idea/misc.xml
 .idea/
-#/gradle/wrapper/gradle-wrapper.jar
-#/gradlew
-#/gradlew.bat
+/gradle/wrapper/gradle-wrapper.jar
+/gradlew
+/gradlew.bat
 
 /aar
 /aar/*.*

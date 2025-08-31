@@ -1,0 +1,51 @@
+# .github/workflows/publish.yml
+
+name: Publish Package to GitHub Packages
+
+on:
+  push:
+    tags:
+      - 'v*' # Публиковать при создании тегов, начинающихся с 'v' (например, v1.0.0, v2.1.3-beta)
+  # Или можно публиковать при каждом пуше в main/master, если хотите:
+  # push:
+  #   branches:
+  #     - main
+  workflow_dispatch: # Позволяет запускать workflow вручную из интерфейса GitHub Actions
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read       # Необходимо для checkout
+      packages: write      # Необходимо для публикации пакетов в GitHub Packages
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Используйте актуальную версию
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4 # Используйте актуальную версию
+        with:
+          java-version: '21' # Укажите версию JDK, которую использует ваш проект (например, 11, 17, 21)
+          distribution: 'temurin' # Или 'zulu', 'adopt', и т.д.
+          cache: gradle # Кэширование зависимостей Gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew # Важно, чтобы gradlew был исполняемым
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3 # Используйте актуальную версию
+          # with:
+        # gradle-version: wrapper # Использует версию из вашего gradle-wrapper.properties
+
+      - name: Publish package
+        # Запускаем задачу Gradle для публикации. Имя задачи формируется как:
+        # publish<PublicationName>PublicationTo<RepositoryName>Repository
+        # В нашем случае: publishReleasePublicationToGitHubPackagesRepository
+        run: ./gradlew :logger:publishReleasePublicationToGitHubPackagesRepository # Укажите правильный путь к вашему модулю (:logger:)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Передаем GITHUB_TOKEN из secrets
+          # Если вы определили groupId, artifactId, version в gradle.properties
+          # и хотите их переопределить или задать из secrets/vars, можно сделать так:
+          # ORG_GRADLE_PROJECT_libVersion: ${{ github.ref_name }} # Пример: использовать имя тега как версию
+
