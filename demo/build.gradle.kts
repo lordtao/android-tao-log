@@ -34,7 +34,7 @@ kotlin {
 
 dependencies {
     implementation(fileTree("libs") { include("*.jar") })
-    implementation(project(":lib"))
+    implementation(project(":logger"))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.google.material)

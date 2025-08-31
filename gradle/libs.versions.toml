@@ -4,24 +4,30 @@ compileSdk = "36"
 targetSdk = "36"
 minSdk = "26"
 
+# Publishing
+mavenPublishPlugin = "0.25.3"
+libGroup = "ua.at.tsvetkov"
+libArtifact = "taolog"
+libVersion = "2.2.69"
+
 # Plugins
-agp = "8.11.1"
-kotlin = "2.2.0"
-androidx-core-ktx = "1.16.0"
-androidx-work-runtime-ktx = "2.10.2"
+agp = "8.12.2"
+kotlin = "2.2.10"
 
 # AndroidX
-core_ktx = "1.16.0"
+core_ktx = "1.17.0"
 appcompat = "1.7.1"
 constraintlayout = "2.2.1"
 recyclerview = "1.4.0"
 cardview = "1.0.0"
 material = "1.12.0"
-navigation = "2.9.1"
-lifecycle = "2.9.1"
+navigation = "2.9.3"
+lifecycle = "2.9.3"
 activity = "1.10.1"
+okhttp = "5.1.0"
 
 [libraries]
+
 # Google
 google-material = { module = "com.google.android.material:material", version.ref = "material" }
 
@@ -37,6 +43,10 @@ androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx",
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigation" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+
+# OkHttp
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

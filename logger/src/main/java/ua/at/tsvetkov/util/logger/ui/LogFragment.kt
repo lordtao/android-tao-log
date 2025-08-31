@@ -9,8 +9,8 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import ua.at.tsvetkov.util.R
-import ua.at.tsvetkov.util.databinding.FragmentLogBinding
+import ua.at.tsvetkov.util.logger.R
+import ua.at.tsvetkov.util.logger.databinding.FragmentLogBinding
 import ua.at.tsvetkov.util.logger.interceptor.Level
 import ua.at.tsvetkov.util.logger.interceptor.LogToFileInterceptor
 import ua.at.tsvetkov.util.logger.interceptor.LogToMemoryCacheInterceptor

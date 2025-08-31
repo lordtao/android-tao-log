@@ -37,8 +37,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import ua.at.tsvetkov.util.R
 import ua.at.tsvetkov.util.logger.Log
+import ua.at.tsvetkov.util.logger.R
 import ua.at.tsvetkov.util.logger.interceptor.LogToMemoryCacheInterceptor
 import ua.at.tsvetkov.util.logger.ui.LogAdapter.LogViewHolder
 import java.util.LinkedList

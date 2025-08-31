@@ -23,5 +23,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "taolog"
-include(":lib", ":demo")
+rootProject.name = "TAO Log"
+include(":logger", ":demo")
