@@ -4,12 +4,6 @@ compileSdk = "36"
 targetSdk = "36"
 minSdk = "26"
 
-# Publishing
-mavenPublishPlugin = "0.25.3"
-libGroup = "ua.at.tsvetkov"
-libArtifact = "taolog"
-libVersion = "2.2.69"
-
 # Plugins
 agp = "8.12.2"
 kotlin = "2.2.10"
