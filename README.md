@@ -13,28 +13,6 @@ Also contains the LongLog class which allows you to print a long messages into t
 
 [Download the latest release](https://github.com/lordtao/android-tao-log/releases)
 
-**To get a Git project into your build:**
-
-Step 1. Add the JitPack repository to your build file
-
-```
-dependencyResolutionManagement {
-        repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-        repositories {
-            mavenCentral()
-            maven { url = uri("https://jitpack.io") }
-        }
-    }
-```
-
-Step 2. Add the dependency
-
-```
-dependencies {
-            implementation("com.github.lordtao:android-tao-log:latestVersion")
-    }
-```
-
 **Just try**
 [Demo apps](https://github.com/lordtao/android-tao-log/releases)
 
