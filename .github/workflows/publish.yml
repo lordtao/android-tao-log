@@ -42,7 +42,7 @@ jobs:
         # Запускаем задачу Gradle для публикации. Имя задачи формируется как:
         # publish<PublicationName>PublicationTo<RepositoryName>Repository
         # В нашем случае: publishReleasePublicationToGitHubPackagesRepository
-        run: ./gradlew :logger:publishing:publishReleasePublicationToGitHubPackagesRepository
+        run: ./gradlew :logger:publishReleasePublicationToGitHubPackagesRepository
         # Укажите правильный путь к вашему модулю (:logger:)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Передаем GITHUB_TOKEN из secrets
