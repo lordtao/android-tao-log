@@ -3,6 +3,13 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+// Don't build the demo app on release builds
+configure<com.android.build.api.variant.ApplicationAndroidComponentsExtension> {
+    beforeVariants(selector().withBuildType("release")) {
+        it.enable = false
+    }
+}
+
 configure<com.android.build.api.dsl.ApplicationExtension> {
     namespace = "ua.at.tsvetkov.demo"
     compileSdk = libs.versions.compileSdk.get().toInt()
@@ -23,21 +30,22 @@ configure<com.android.build.api.dsl.ApplicationExtension> {
 //            storeFile = file("keystore/keystore.keystore")
 //        }
 //    }
-//
-//    buildTypes {
-//        getByName("release") {
+
+    buildTypes {
+        getByName("release") {
 //            isMinifyEnabled = false
 //            isDebuggable = false
 //            isShrinkResources = false
 //            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 //            signingConfig = signingConfigs.getByName("release")
-//        }
-//    }
+        }
+    }
 
     buildFeatures {
         viewBinding = true
         buildConfig = true
     }
+
 }
 
 kotlin {
