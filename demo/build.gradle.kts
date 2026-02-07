@@ -37,7 +37,7 @@ configure<com.android.build.api.dsl.ApplicationExtension> {
 //            isDebuggable = false
 //            isShrinkResources = false
 //            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-//            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
