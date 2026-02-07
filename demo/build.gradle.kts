@@ -14,12 +14,24 @@ android {
         versionCode = 2
         versionName = "2.0"
     }
+
+
+    signingConfigs {
+        create("release") {
+            keyAlias = "testing"
+            keyPassword = "testing"
+            storePassword = "testing"
+            storeFile = file("keystore/keystore.keystore")
+        }
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
             isDebuggable = false
             isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     buildFeatures {

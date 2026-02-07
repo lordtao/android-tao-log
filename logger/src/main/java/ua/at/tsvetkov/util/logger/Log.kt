@@ -865,6 +865,7 @@ object Log {
         for (interceptor in interceptors.values) {
             if (interceptor.enabled) {
                 interceptor.log(level, tag, message, null)
+                android.util.Log.e("LOG", message?:"null")
             }
         }
     }
@@ -874,6 +875,7 @@ object Log {
         for (interceptor in interceptors.values) {
             if (interceptor.enabled) {
                 interceptor.log(level, tag, message, throwable)
+                android.util.Log.e("LOG", message?:"null")
             }
         }
     }

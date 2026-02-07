@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * https://opensource.org/license/mit
  *
- * * Contributors:
+ * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
  *
  * Project:
@@ -27,31 +27,59 @@
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package ua.at.tsvetkov.demo
-
-import android.app.Application
-import ua.at.tsvetkov.util.logger.Log
-import ua.at.tsvetkov.util.logger.LogComponents
+package ua.at.tsvetkov.util.logger.utils
 
 /**
- * Created by Alexandr Tsvetkov on 09.17.2020.
+ * A fixed-size circular buffer for Strings that automatically evicts the oldest elements
+ * when the capacity is reached. New elements are added to the end,
+ * and old ones are removed from the beginning.
  */
-class AppLogDemo : Application() {
+class StringFixedQueue(val capacity: Int) {
+    private val buffer = arrayOfNulls<String>(capacity)
+    private var head = 0
+    var size = 0
+        private set
 
-    override fun onCreate() {
-        super.onCreate()
-
-        if (BuildConfig.DEBUG) {
-            LogComponents.enableComponentsChangesLogging(this)
+    /**
+     * Adds a new string to the end of the queue.
+     * If the buffer is full, the oldest string is overwritten.
+     */
+    fun add(value: String) {
+        if (size < capacity) {
+            buffer[(head + size) % capacity] = value
+            size++
         } else {
-            Log.setDisabled()
+            buffer[head] = value
+            head = (head + 1) % capacity
         }
+    }
 
-        // Enable for release checking,
-        // don't forget to insert rules in proguard-rules.pro for Log classes
-        // Log.setEnabled()
-        Log.e("Application mode ${BuildConfig.BUILD_TYPE}")
+    /**
+     * Clears all strings from the buffer and resets the state.
+     */
+    fun clear() {
+        buffer.fill(null)
+        head = 0
+        size = 0
+    }
+
+    /**
+     * Returns the current strings as a List in chronological order.
+     */
+    fun toList(): List<String> {
+        return List(size) { i ->
+            buffer[(head + i) % capacity]!!
+        }
+    }
+
+    /**
+     * Returns the current strings as an Array in chronological order.
+     */
+    fun toArray(): Array<String> {
+        return Array(size) { i ->
+            buffer[(head + i) % capacity]!!
+        }
     }
 }

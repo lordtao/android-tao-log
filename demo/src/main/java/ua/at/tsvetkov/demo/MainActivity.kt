@@ -48,6 +48,7 @@ import kotlinx.coroutines.withContext
 import ua.at.tsvetkov.demo.databinding.ActivityMainBinding
 import ua.at.tsvetkov.util.logger.Log
 import ua.at.tsvetkov.util.logger.LogLong
+import ua.at.tsvetkov.util.logger.PacketLog
 import ua.at.tsvetkov.util.logger.interceptor.Level
 import ua.at.tsvetkov.util.logger.ui.LogFragment
 import java.util.*
@@ -129,6 +130,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_log_long_thread -> runLogLongThread()
             R.id.nav_log_long_arrays -> runLogLongArrays()
             R.id.nav_log_long_xml_hex -> runLongLogXmlHex()
+            R.id.nav_log_packet_log -> runPacketLog()
             R.id.nav_log_component_activity -> runActivity()
             R.id.nav_log_component_fragment -> runFragment()
         }
@@ -360,6 +362,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val xml = sb.toString()
         LogLong.xml(xml)
         LogLong.xml(xml, 3)
+    }
+
+    private fun runPacketLog() {
+        val packet = PacketLog()
+        packet.logI("PacketLog test started")
+        packet.logD("This is a debug message")
+        packet.logW("This is a warning")
+        packet.logE("This is an error")
+        packet.logV("And a verbose message")
+        packet.printLogs("PacketLog Test")
     }
 
     private fun runActivity() {

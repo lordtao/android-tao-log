@@ -56,3 +56,5 @@ freeline_project_description.json
 
 /aar
 /aar/*.*
+
+/demo/KEYSTORE/*.*

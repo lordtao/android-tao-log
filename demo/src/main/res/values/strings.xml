@@ -21,6 +21,7 @@
     <string name="action_log_long_thread">Long data. Threads and stack trace</string>
     <string name="action_log_long_arrays">Long data. Arrays, list, map, set</string>
     <string name="action_log_long_xml_hex">Long data. XML, HEX</string>
+    <string name="action_log_packet_log">Packet log stored in memory</string>
 
     <string name="action_log_components_activity">Run another Activity</string>
     <string name="action_log_components_fragment">Run another Fragment</string>
