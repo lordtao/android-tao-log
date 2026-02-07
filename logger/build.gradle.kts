@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.LibraryExtension
 import java.util.Date
 
 plugins {
@@ -21,6 +22,8 @@ val versionPatch = providers
 
 val versionName = "${versionMajor}.${versionMinor}.${versionPatch - skipCommitsCount}"
 
+base.archivesName.set("$libName-$versionName")
+
 fun TaskContainer.registerCopyAarTask(variant: String) {
     val capVariant = variant.replaceFirstChar { it.uppercaseChar() }
     register<Delete>("deleteOld${capVariant}Aar") {
@@ -38,7 +41,6 @@ fun TaskContainer.registerCopyAarTask(variant: String) {
         dependsOn("deleteOld${capVariant}Aar")
         val aarFile = file("build/outputs/aar/$libName-$versionName-$variant.aar")
         doFirst {
-            // Создать ../aar если не существует
             file("../aar").mkdirs()
             if (!aarFile.exists()) {
                 throw GradleException("AAR file does not exist: $aarFile")
@@ -63,12 +65,11 @@ fun TaskContainer.registerCopyAarTask(variant: String) {
 tasks.registerCopyAarTask("release")
 tasks.registerCopyAarTask("debug")
 
-android {
+extensions.configure<LibraryExtension> {
     namespace = "ua.at.tsvetkov.util.logger"
     compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
-        setProperty("archivesBaseName", "$libName-$versionName")
     }
     buildTypes {
         getByName("debug") {
@@ -78,7 +79,7 @@ android {
         getByName("release") {
             isMinifyEnabled = false
             isShrinkResources = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.txt")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.txt")
         }
     }
 
@@ -151,9 +152,9 @@ afterEvaluate {
                 from(components.getByName("release"))
 
                 pom {
-                    name.set(libArtifactId) // Или более описательное имя
+                    name.set(libArtifactId)
                     description.set(repoDescription)
-                    url.set("https://github.com/$owner/$repo") // URL of your project
+                    url.set("https://github.com/$owner/$repo")
 
                     licenses {
                         license {
