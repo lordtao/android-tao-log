@@ -31,6 +31,7 @@
  */
 package ua.at.tsvetkov.util.logger
 
+import android.content.Context
 import ua.at.tsvetkov.util.logger.utils.StringFixedQueue
 import java.io.File
 import java.io.FileWriter
@@ -177,6 +178,27 @@ class PacketLog(
     fun printLogsW(title: String) {
         LogLong.listW(getLogs(), title)
         clear()
+    }/**
+     * Writes all logs to a file named after the provided object's class within a 'logs' directory
+     * in the application's internal storage. It then optionally clears the in-memory log buffer.
+     * This operation is thread-safe and appends to the file.
+     * If writing fails, the logs are not cleared.
+     *
+     * @param obj The object whose class name will be used for the log file.
+     * @param context The context needed to access the application's file directory.
+     * @param clearAfterWrite If true, clears logs from memory after writing to the file.
+     */
+    @Synchronized
+    fun writeLogsToFile(obj: Any, context: Context, clearAfterWrite: Boolean = false) {
+        if (!isEnabled) {
+            return
+        }
+        val logDir = File(context.filesDir, "logs")
+        if (!logDir.exists()) {
+            logDir.mkdirs()
+        }
+        val logFile = File(logDir, "${obj.javaClass.simpleName}.txt")
+        writeLogsToFile(logFile, clearAfterWrite)
     }
 
     /**
