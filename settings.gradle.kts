@@ -22,4 +22,9 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "TAO Log"
-include(":logger", ":demo")
+include(":logger")
+
+// Exclude the demo module on JitPack builds
+if (System.getenv("JITPACK") != "true") {
+    include(":demo")
+}
