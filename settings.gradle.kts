@@ -22,9 +22,15 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "TAO Log"
+
+println(">>> SETTINGS.GRADLE.KTS FROM LATEST COMMIT EXECUTED! <<<")
+
 include(":logger")
 
-// Exclude the demo module on JitPack builds
-if (System.getenv("JITPACK") != "true") {
+val isOnJitPack = System.getenv("JITPACK") == "true"
+println(">>> JITPACK ENV DETECTED: $isOnJitPack <<<")
+
+if (!isOnJitPack) {
+    println(">>> INCLUDING :demo MODULE FOR LOCAL BUILD <<<")
     include(":demo")
 }
