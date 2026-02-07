@@ -32,6 +32,9 @@
 package ua.at.tsvetkov.util.logger
 
 import ua.at.tsvetkov.util.logger.utils.StringFixedQueue
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -67,27 +70,47 @@ class PacketLog(
     /**
      * Logs an info message.
      */
-    fun logI(message: String) = log("INFO   ", message) { Log.i(it) }
+    fun logI(message: String) = log("INFO   ", message) { Log.i(message) }
 
     /**
      * Logs a verbose message.
      */
-    fun logV(message: String) = log("VERBOSE", message) { Log.v(it) }
+    fun logV(message: String) = log("VERBOSE", message) { Log.v(message) }
 
     /**
      * Logs a debug message.
      */
-    fun logD(message: String) = log("DEBUG  ", message) { Log.d(it) }
+    fun logD(message: String) = log("DEBUG  ", message) { Log.d(message) }
 
     /**
      * Logs a warning message.
      */
-    fun logW(message: String) = log("WARN   ", message) { Log.w(it) }
+    fun logW(message: String) = log("WARN   ", message) { Log.w(message) }
+
+    /**
+     * Logs a warning message and a throwable.
+     *
+     * @param message The message to log.
+     * @param e The throwable to log.
+     */
+    fun logW(message: String, e: Throwable) {
+        log("WARN   ", "$message\n${e.stackTraceToString()}") { Log.w(message, e) }
+    }
 
     /**
      * Logs an error message.
      */
-    fun logE(message: String) = log("ERROR  ", message) { Log.e(it) }
+    fun logE(message: String) = log("ERROR  ", message) { Log.e(message) }
+
+    /**
+     * Logs an error message and a throwable.
+     *
+     * @param message The message to log.
+     * @param e The throwable to log.
+     */
+    fun logE(message: String, e: Throwable) {
+        log("ERROR  ", "$message\n${e.stackTraceToString()}") { Log.e(message, e) }
+    }
 
     private fun log(level: String, message: String, logcatAction: (String) -> Unit) {
         if (isEnabled) {
@@ -154,5 +177,39 @@ class PacketLog(
     fun printLogsW(title: String) {
         LogLong.listW(getLogs(), title)
         clear()
+    }
+
+    /**
+     * Writes all logs to the specified file and then optionally clears the in-memory log buffer.
+     * This operation is thread-safe and appends to the file.
+     * If writing fails, the logs are not cleared.
+     *
+     * @param file The destination file.
+     * @param clearAfterWrite If true, clears logs from memory after writing to the file.
+     */
+    @Synchronized
+    fun writeLogsToFile(file: File, clearAfterWrite: Boolean = false) {
+        if (!isEnabled) {
+            return
+        }
+        val logsToWrite = getLogs()
+        if (logsToWrite.isEmpty()) {
+            return
+        }
+
+        try {
+            file.parentFile?.mkdirs()
+            FileWriter(file, true).buffered().use { writer ->
+                logsToWrite.forEach { logLine ->
+                    writer.write(logLine)
+                    writer.newLine()
+                }
+            }
+            if (clearAfterWrite) {
+                clear()
+            }
+        } catch (e: IOException) {
+            logE("Failed to write logs to file: ${file.absolutePath}", e)
+        }
     }
 }
