@@ -31,6 +31,9 @@
  */
 package ua.at.tsvetkov.util.logger
 
+import ua.at.tsvetkov.util.logger.Log.array
+import ua.at.tsvetkov.util.logger.Log.list
+import ua.at.tsvetkov.util.logger.Log.map
 import ua.at.tsvetkov.util.logger.interceptor.Level
 import ua.at.tsvetkov.util.logger.interceptor.LogCatInterceptor
 import ua.at.tsvetkov.util.logger.interceptor.LogInterceptor
@@ -40,6 +43,7 @@ import ua.at.tsvetkov.util.logger.utils.Format.addStackTrace
 import ua.at.tsvetkov.util.logger.utils.Format.addThreadInfo
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedMessage
 import ua.at.tsvetkov.util.logger.utils.Format.getFormattedThrowable
+import kotlin.collections.set
 
 /**
  * Extended logger. Allows you to automatically adequately logged class, method and line call in the log. Makes it easy to write logs. For
@@ -777,10 +781,10 @@ object Log {
     // ======================== Interceptors ==============================
 
     private val interceptors = HashMap<Int, LogInterceptor>()
-    private val logCatInterceptor = LogCatInterceptor()
+    private var standardInterceptorHashCode =0
 
     init {
-        interceptors[logCatInterceptor.hashCode()] = logCatInterceptor
+        addLogCatInterceptor()
     }
 
     /**
@@ -789,7 +793,9 @@ object Log {
     @JvmStatic
     @Suppress("unused")
     fun setEnabled() {
-        logCatInterceptor.enabled = true
+        interceptors.forEach { 
+            it.value.enabled = true
+        }
     }
 
     /**
@@ -797,31 +803,39 @@ object Log {
      */
     @JvmStatic
     fun setDisabled() {
-        logCatInterceptor.enabled = false
+        interceptors.forEach {
+            it.value.enabled = false
+        }
     }
 
     /**
      * Is LogCat logs enabled
      */
     @JvmStatic
-    fun isEnabled() = logCatInterceptor.enabled
+    fun isEnabled() =  interceptors[standardInterceptorHashCode]?.enabled == true
 
     /**
      * Is LogCat logs disabled
      */
     @JvmStatic
     @Suppress("unused")
-    fun isDisabled() = !logCatInterceptor.enabled
+    fun isDisabled() = interceptors[standardInterceptorHashCode]?.enabled == false
 
     @JvmStatic
     fun addInterceptor(interceptor: LogInterceptor) {
-        interceptors.put(interceptor.hashCode(), interceptor)
+        interceptors[interceptor.hashCode()] = interceptor
     }
 
     @JvmStatic
     @Suppress("unused")
     fun removeInterceptor(interceptor: LogInterceptor) {
         interceptors.remove(interceptor.hashCode())
+    }
+
+    @JvmStatic
+    @Suppress("unused")
+    fun removeStandardInterceptor() {
+        interceptors.remove(standardInterceptorHashCode)
     }
 
     @JvmStatic
@@ -833,25 +847,27 @@ object Log {
     @JvmStatic
     @Suppress("unused")
     fun removeLogCatInterceptor() {
-        interceptors.remove(logCatInterceptor.hashCode())
+        interceptors.remove(standardInterceptorHashCode)
     }
 
     @JvmStatic
     @Suppress("unused")
     fun addLogCatInterceptor() {
-        interceptors.put(logCatInterceptor.hashCode(), logCatInterceptor)
+        val interceptor = LogCatInterceptor()
+        standardInterceptorHashCode = interceptor.hashCode()
+        interceptors[standardInterceptorHashCode] = interceptor
     }
 
     @JvmStatic
     @Suppress("unused")
-    fun getInterceptor(id: Int): LogInterceptor? {
-        return interceptors[id]
+    fun getInterceptor(hashCode: Int): LogInterceptor? {
+        return interceptors[hashCode]
     }
 
     @JvmStatic
     @Suppress("unused")
-    fun hasInterceptor(id: Int): Boolean {
-        return interceptors.containsKey(id)
+    fun hasInterceptor(hashCode: Int): Boolean {
+        return interceptors.containsKey(hashCode)
     }
 
     @JvmStatic
@@ -865,7 +881,6 @@ object Log {
         for (interceptor in interceptors.values) {
             if (interceptor.enabled) {
                 interceptor.log(level, tag, message, null)
-                android.util.Log.e("LOG", message?:"null")
             }
         }
     }
@@ -875,7 +890,6 @@ object Log {
         for (interceptor in interceptors.values) {
             if (interceptor.enabled) {
                 interceptor.log(level, tag, message, throwable)
-                android.util.Log.e("LOG", message?:"null")
             }
         }
     }
