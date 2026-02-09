@@ -45,7 +45,9 @@ import java.util.Locale
  * and optionally duplicates them to Android's Logcat.
  *
  * It is designed to accumulate a batch of logs in memory for later use,
- * either retrieved as a list or printed to Logcat in one go.
+ * either retrieved as a list or printed to Logcat in one go. This is especially
+ * useful for logging within a single class to see logs without mixing them
+ * with other log sources.
  */
 class PacketLog(
     val capacity: Int = 500,
@@ -196,7 +198,9 @@ class PacketLog(
     fun printLogsW(title: String) {
         LogLong.listW(getLogs(), title)
         clear()
-    }/**
+    }
+
+    /**
      * Writes all logs to a file named after the provided object's class within a 'logs' directory
      * in the application's internal storage. It then optionally clears the in-memory log buffer.
      * This operation is thread-safe and appends to the file.
