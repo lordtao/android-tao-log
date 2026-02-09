@@ -99,6 +99,15 @@ class PacketLog(
     }
 
     /**
+     * Logs a throwable.
+     *
+     * @param e The throwable to log.
+     */
+    fun logW(e: Throwable) {
+        log("WARN   ", "$e.message\n${e.stackTraceToString()}") { Log.w(e.message, e) }
+    }
+
+    /**
      * Logs an error message.
      */
     fun logE(message: String) = log("ERROR  ", message) { Log.e(message) }
@@ -111,6 +120,15 @@ class PacketLog(
      */
     fun logE(message: String, e: Throwable) {
         log("ERROR  ", "$message\n${e.stackTraceToString()}") { Log.e(message, e) }
+    }
+
+    /**
+     * Logs a throwable.
+     *
+     * @param e The throwable to log.
+     */
+    fun logE(e: Throwable) {
+        log("ERROR  ", "$e.message\n${e.stackTraceToString()}") { Log.e(e.message, e) }
     }
 
     private fun log(level: String, message: String, logcatAction: (String) -> Unit) {
