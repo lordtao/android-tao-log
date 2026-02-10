@@ -64,6 +64,26 @@ class PacketLog(
     }
 
     /**
+     * Starts a new logging session. Clears any existing logs and adds a "START" marker.
+     */
+    fun start() {
+        memoryLogs?.clear()
+        logI("START")
+    }
+
+    /**
+     * Ends the current logging session. Adds an "END" marker.
+     *
+     * @param isClear If true, clears logs from memory after adding the "END" marker.
+     */
+    fun end(isClear: Boolean = false) {
+        logI("END")
+        if (isClear) {
+            clear()
+        }
+    }
+
+    /**
      * Clears all logs stored in memory.
      */
     fun clear() {
@@ -101,12 +121,12 @@ class PacketLog(
     }
 
     /**
-     * Logs a throwable.
+     * Logs a throwable with a warning level.
      *
      * @param e The throwable to log.
      */
     fun logW(e: Throwable) {
-        log("WARN   ", "$e.message\n${e.stackTraceToString()}") { Log.w(e.message, e) }
+        log("WARN   ", "${e.message}\n${e.stackTraceToString()}") { Log.w(e.message, e) }
     }
 
     /**
@@ -125,12 +145,12 @@ class PacketLog(
     }
 
     /**
-     * Logs a throwable.
+     * Logs a throwable with an error level.
      *
      * @param e The throwable to log.
      */
     fun logE(e: Throwable) {
-        log("ERROR  ", "$e.message\n${e.stackTraceToString()}") { Log.e(e.message, e) }
+        log("ERROR  ", "${e.message}\n${e.stackTraceToString()}") { Log.e(e.message, e) }
     }
 
     private fun log(level: String, message: String, logcatAction: (String) -> Unit) {
@@ -151,53 +171,83 @@ class PacketLog(
     fun getLogs(): List<String> = memoryLogs?.toList() ?: emptyList()
 
     /**
-     * Prints all logs with INFO level to Logcat and clears them.
+     * Prints all logs with INFO level to Logcat.
      *
      * @param title The title for the log output.
+     * @param isClear If true, clears logs from memory after printing.
      */
-    fun printLogs(title: String) {
+    fun printLogs(title: String, isClear: Boolean = true) {
+        if (!isEnabled) {
+            return
+        }
         LogLong.list(getLogs(), title)
-        clear()
+        if (isClear) {
+            clear()
+        }
     }
 
     /**
-     * Prints all logs with DEBUG level to Logcat and clears them.
+     * Prints all logs with DEBUG level to Logcat.
      *
      * @param title The title for the log output.
+     * @param isClear If true, clears logs from memory after printing.
      */
-    fun printLogsD(title: String) {
+    fun printLogsD(title: String, isClear: Boolean = true) {
+        if (!isEnabled) {
+            return
+        }
         LogLong.listD(getLogs(), title)
-        clear()
+        if (isClear) {
+            clear()
+        }
     }
 
     /**
-     * Prints all logs with ERROR level to Logcat and clears them.
+     * Prints all logs with ERROR level to Logcat.
      *
      * @param title The title for the log output.
+     * @param isClear If true, clears logs from memory after printing.
      */
-    fun printLogsE(title: String) {
+    fun printLogsE(title: String, isClear: Boolean = true) {
+        if (!isEnabled) {
+            return
+        }
         LogLong.listE(getLogs(), title)
-        clear()
+        if (isClear) {
+            clear()
+        }
     }
 
     /**
-     * Prints all logs with VERBOSE level to Logcat and clears them.
+     * Prints all logs with VERBOSE level to Logcat.
      *
      * @param title The title for the log output.
+     * @param isClear If true, clears logs from memory after printing.
      */
-    fun printLogsV(title: String) {
+    fun printLogsV(title: String, isClear: Boolean = true) {
+        if (!isEnabled) {
+            return
+        }
         LogLong.listV(getLogs(), title)
-        clear()
+        if (isClear) {
+            clear()
+        }
     }
 
     /**
-     * Prints all logs with WARN level to Logcat and clears them.
+     * Prints all logs with WARN level to Logcat.
      *
      * @param title The title for the log output.
+     * @param isClear If true, clears logs from memory after printing.
      */
-    fun printLogsW(title: String) {
+    fun printLogsW(title: String, isClear: Boolean = true) {
+        if (!isEnabled) {
+            return
+        }
         LogLong.listW(getLogs(), title)
-        clear()
+        if (isClear) {
+            clear()
+        }
     }
 
     /**
@@ -219,7 +269,7 @@ class PacketLog(
         if (!logDir.exists()) {
             logDir.mkdirs()
         }
-        val logFile = File(logDir, "${obj.javaClass.simpleName}.txt")
+        val logFile = File(logDir, "${obj.javaClass.simpleName}.log")
         writeLogsToFile(logFile, clearAfterWrite)
     }
 
