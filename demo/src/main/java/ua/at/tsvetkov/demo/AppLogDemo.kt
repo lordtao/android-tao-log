@@ -52,6 +52,6 @@ class AppLogDemo : Application() {
         // Enable for release checking,
         // don't forget to insert rules in proguard-rules.pro for Log classes
         // Log.setEnabled()
-        Log.e("Application mode ${BuildConfig.BUILD_TYPE}")
+        Log.i("============= Application mode ${BuildConfig.BUILD_TYPE} =============")
     }
 }

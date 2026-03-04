@@ -64,10 +64,15 @@ class PacketLog(
     }
 
     /**
-     * Starts a new logging session. Clears any existing logs and adds a "START" marker.
+     * Starts a new logging session. Adds an "START" marker.
+     *
+     * @param isClear If true, clears logs from memory after adding the "START" marker.
+     * True by default.
      */
-    fun start() {
-        memoryLogs?.clear()
+    fun start(isClear: Boolean = true) {
+        if (isClear) {
+            clear()
+        }
         logI("START")
     }
 
@@ -75,6 +80,7 @@ class PacketLog(
      * Ends the current logging session. Adds an "END" marker.
      *
      * @param isClear If true, clears logs from memory after adding the "END" marker.
+     * False by default.
      */
     fun end(isClear: Boolean = false) {
         logI("END")
@@ -271,6 +277,19 @@ class PacketLog(
         }
         val logFile = File(logDir, "${obj.javaClass.simpleName}.log")
         writeLogsToFile(logFile, clearAfterWrite)
+    }
+
+    /**
+     * Writes all logs to the specified file and then optionally clears the in-memory log buffer.
+     * This operation is thread-safe and appends to the file.
+     * If writing fails, the logs are not cleared.
+     *
+     * @param absolutePathToFile Absolute path to the target file.
+     * @param clearAfterWrite If true, clears logs from memory after writing to the file.
+     */
+    @Synchronized
+    fun writeLogsToFile(absolutePathToFile: String, clearAfterWrite: Boolean = false) {
+        writeLogsToFile(File(absolutePathToFile), clearAfterWrite)
     }
 
     /**

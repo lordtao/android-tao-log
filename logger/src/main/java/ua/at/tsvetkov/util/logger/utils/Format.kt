@@ -37,6 +37,9 @@ import androidx.fragment.app.FragmentManager
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import ua.at.tsvetkov.util.logger.Log
+import ua.at.tsvetkov.util.logger.utils.Format.array
+import ua.at.tsvetkov.util.logger.utils.Format.list
+import ua.at.tsvetkov.util.logger.utils.Format.map
 import java.io.ByteArrayInputStream
 import java.io.StringWriter
 import java.lang.reflect.Field
@@ -89,30 +92,31 @@ internal object Format {
     }
 
     private fun getPackageNameLength(): Int {
-        var notFound = true
-        var id = 0
-        var appPackageName: String? = null
-
-        val thisPackageName = Log::class.java.getPackage()!!.name
+        var traceId = 0
+        val thisPackageName = Log::class.java.getPackage()?.name ?: ""
         val tr = Thread.currentThread().stackTrace
-        while (notFound) {
-            appPackageName = tr[id++].className
-            if (appPackageName!!.contains(thisPackageName)) {
-                notFound = false
+
+        var foundLoggerClass = false
+        while (traceId < tr.size) {
+            val className = tr[traceId].className
+            if (className.contains(thisPackageName)) {
+                foundLoggerClass = true
+            } else if (foundLoggerClass) {
+                break
             }
+            traceId++
         }
-        notFound = true
-        while (notFound) {
-            appPackageName = tr[id++].className
-            if (!appPackageName!!.contains(thisPackageName)) {
-                notFound = false
-                appPackageName = appPackageName.substring(0, appPackageName.lastIndexOf('.'))
-            }
+        if (traceId >= tr.size) {
+            return 0
         }
-        return if (notFound) {
-            0
+
+        val appClassName = tr[traceId].className
+        val lastDotIndex = appClassName.lastIndexOf('.')
+
+        return if (lastDotIndex != -1) {
+            appClassName.substring(0, lastDotIndex).length
         } else {
-            appPackageName!!.length
+            0
         }
     }
 
@@ -539,13 +543,13 @@ internal object Format {
         val logs = mutableListOf<String>()
         logs.add(operation)
         var idx = backStackCount
-        for(i in backStackCount - 1 downTo 0) {
+        for (i in backStackCount - 1 downTo 0) {
             val entry = fm.getBackStackEntryAt(i)
-            entry.name?.let{
-                if(idx == backStackCount) {
-                    logs.add( "   # ${idx--} ${entry.name} \uD83D\uDD1D")
+            entry.name?.let {
+                if (idx == backStackCount) {
+                    logs.add("   # ${idx--} ${entry.name} \uD83D\uDD1D")
                 } else {
-                    logs.add( "   # ${idx--} ${entry.name}")
+                    logs.add("   # ${idx--} ${entry.name}")
                 }
             }
         }

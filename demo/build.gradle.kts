@@ -15,22 +15,31 @@ configure<com.android.build.api.dsl.ApplicationExtension> {
         versionName = "2.0"
     }
 
-//    signingConfigs {
-//        create("release") {
-//            keyAlias = "testing"
-//            keyPassword = "testing"
-//            storePassword = "testing"
-//            storeFile = file("keystore/keystore.keystore")
-//        }
-//    }
+    signingConfigs {
+        create("release") {
+            keyAlias = "testing"
+            keyPassword = "testing"
+            storePassword = "testing"
+            storeFile = file("keystore/keystore.keystore")
+        }
+    }
 
     buildTypes {
-        getByName("release") {
-//            isMinifyEnabled = false
-//            isDebuggable = false
-//            isShrinkResources = false
-//            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-//            signingConfig = signingConfigs.getByName("release")
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            isDebuggable = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("release")
+        }
+        debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
+            isDebuggable = true
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
