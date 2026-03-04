@@ -920,8 +920,8 @@ internal object Format {
                 while (number == 0) {
                     number = traces[notZeroLineNumberOffset++].lineNumber
                 }
-                className = traces[0].fileName
-                methodName = traces[0].methodName
+                className = traces[0].fileName ?: UNDEFINED
+                methodName = traces[0].methodName ?: UNDEFINED
                 tag = className.substringBeforeLast('.')
                 lineNumber = number
             }
