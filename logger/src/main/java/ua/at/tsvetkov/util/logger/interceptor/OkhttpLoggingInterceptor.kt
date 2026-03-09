@@ -15,7 +15,7 @@ import java.io.IOException
 
 class OkhttpLoggingInterceptor : Interceptor {
 
-    companion object{
+    companion object {
         const val MAX_LOG_LENGTH = 3000
     }
 
@@ -31,19 +31,22 @@ class OkhttpLoggingInterceptor : Interceptor {
                 var requestContentLengthLog = ""
                 if (body != null) {
                     if (body.contentType() != null) {
-                        requestContentTypeLog = "Content-Type: ${body.contentType()}".trimIndent()
+                        requestContentTypeLog = "Content-Type: ${body.contentType()}"
                     }
                     if (body.contentLength() != -1L) {
-                        requestContentLengthLog = "Content-Length: ${body.contentLength()}".trimIndent()
+                        requestContentLengthLog = "Content-Length: ${body.contentLength()}"
                     }
                 }
                 Log.v(
-                    ("--> Sending ${request.method} request ${request.url}\n" +
+                    "--> Sending ${request.method} request ${request.url}\n" +
+                            "Host: ${request.url.host}\n" +
+                            "Path: ${request.url.encodedPath}\n" +
+                            "Query: ${request.url.query ?: "[ no query ]"}\n" +
+                            "Cache-Control: ${request.cacheControl}\n" +
                             getHeadersLog(request) +
                             getContentLog(requestContentTypeLog) +
                             getContentLog(requestContentLengthLog) +
-                            getBodyLog(requestBuffer, requestContentTypeLog))
-                        .trimIndent()
+                            getBodyLog(requestBuffer, requestContentTypeLog)
                 )
             }
         } catch (e: Exception) {
@@ -61,15 +64,15 @@ class OkhttpLoggingInterceptor : Interceptor {
                     val array = JSONArray(content)
                     if (content.length > MAX_LOG_LENGTH)
                         LogLong.v(
-                            (logHeader +
+                            logHeader +
                                     "-------------------------- Body (Json) -------------------------\n" +
-                                    array.toString(2)).trimIndent()
+                                    array.toString(2)
                         )
                     else {
                         Log.v(
-                            (logHeader +
+                            logHeader +
                                     "-------------------------- Body (Json) -------------------------\n" +
-                                    array.toString(2)).trimIndent()
+                                    array.toString(2)
                         )
                     }
                 } catch (e: JSONException) {
@@ -80,15 +83,15 @@ class OkhttpLoggingInterceptor : Interceptor {
                     val obj = JSONObject(content)
                     if (content.length > MAX_LOG_LENGTH)
                         LogLong.v(
-                            (logHeader +
+                            logHeader +
                                     "-------------------------- Body (Json) -------------------------\n" +
-                                    obj.toString(2)).trimIndent()
+                                    obj.toString(2)
                         )
                     else
                         Log.v(
-                            (logHeader +
+                            logHeader +
                                     "-------------------------- Body (Json) -------------------------\n" +
-                                    obj.toString(2)).trimIndent()
+                                    obj.toString(2)
                         )
                 } catch (e: JSONException) {
                     Log.e(e)
@@ -97,15 +100,15 @@ class OkhttpLoggingInterceptor : Interceptor {
         } else {
             if (content.length > MAX_LOG_LENGTH)
                 LogLong.v(
-                    (logHeader +
+                    logHeader +
                             "-------------------------- Body (Text/Html) -------------------------\n" +
-                            content).trimIndent()
+                            content
                 )
             else
                 Log.v(
-                    (logHeader +
+                    logHeader +
                             "-------------------------- Body (Text/Html) -------------------------\n" +
-                            content).trimIndent()
+                            content
                 )
         }
         val wrappedBody = content.toResponseBody(contentType)
@@ -119,11 +122,11 @@ class OkhttpLoggingInterceptor : Interceptor {
         } else {
             if (requestContentTypeLog.contains("application/json")) {
                 "-------------------------- Body (Json) -------------------------\n" +
-                if (body.startsWith("[")) {
-                    JSONArray(body).toString(2).trimIndent()
-                } else {
-                    JSONObject(body).toString(2).trimIndent()
-                }
+                        if (body.startsWith("[")) {
+                            JSONArray(body).toString(2).trimIndent()
+                        } else {
+                            JSONObject(body).toString(2).trimIndent()
+                        }
             } else {
                 "-------------------------- Body (Text/Html) -------------------------\n${body}"
             }
@@ -151,6 +154,16 @@ class OkhttpLoggingInterceptor : Interceptor {
     private fun getLogHeader(response: Response, time: Long) =
         "<-- Received response for ${response.request.method} ${response.request.url}\n" +
                 "HTTP Code: ${response.code}\n" +
+                "Message: ${response.message}\n" +
+                "Protocol: ${response.protocol}\n" +
+                "Status: ${if (response.isSuccessful) "Successful" else "Failed"}\n" +
+                "Source: ${
+                    when {
+                        response.networkResponse != null -> "Network"
+                        response.cacheResponse != null -> "Cache"
+                        else -> "Unknown"
+                    }
+                }\n" +
                 "Execution time: ${(System.nanoTime() - time) / 1e6}ms\n" +
                 "${response.headers}"
 
