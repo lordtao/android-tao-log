@@ -12,38 +12,46 @@ import org.json.JSONObject
 import ua.at.tsvetkov.util.logger.Log
 import ua.at.tsvetkov.util.logger.LogLong
 import java.io.IOException
+import java.util.UUID
 
 class OkhttpLoggingInterceptor : Interceptor {
 
     companion object {
         const val MAX_LOG_LENGTH = 3000
+        const val REQUEST_ID_HEADER = "TAO-LOG-Request-ID"
     }
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
+        val originalRequest = chain.request()
+        val requestId = UUID.randomUUID().toString()
+        val requestWithId = originalRequest.newBuilder()
+            .addHeader(REQUEST_ID_HEADER, requestId)
+            .build()
+
         val t1 = System.nanoTime()
         try {
             Buffer().use { requestBuffer ->
-                val body = request.body
+                val body = requestWithId.body
                 body?.writeTo(requestBuffer)
                 var requestContentTypeLog = ""
                 var requestContentLengthLog = ""
                 if (body != null) {
-                    if (body.contentType() != null) {
-                        requestContentTypeLog = "Content-Type: ${body.contentType()}"
+                    body.contentType()?.let {
+                        requestContentTypeLog = "Content-Type: $it"
                     }
                     if (body.contentLength() != -1L) {
                         requestContentLengthLog = "Content-Length: ${body.contentLength()}"
                     }
                 }
                 Log.v(
-                    "--> Sending ${request.method} request ${request.url}\n" +
-                            "Host: ${request.url.host}\n" +
-                            "Path: ${request.url.encodedPath}\n" +
-                            "Query: ${request.url.query ?: "[ no query ]"}\n" +
-                            "Cache-Control: ${request.cacheControl}\n" +
-                            getHeadersLog(request) +
+                    "--> Sending request with ID: $requestId, ${requestWithId.method} " +
+                            "${requestWithId.url}\n" +
+                            "Host: ${requestWithId.url.host}\n" +
+                            "Path: ${requestWithId.url.encodedPath}\n" +
+                            "Query: ${requestWithId.url.query ?: "[ no query ]"}\n" +
+                            "Cache-Control: ${requestWithId.cacheControl}\n" +
+                            getHeadersLog(requestWithId) +
                             getContentLog(requestContentTypeLog) +
                             getContentLog(requestContentLengthLog) +
                             getBodyLog(requestBuffer, requestContentTypeLog)
@@ -53,8 +61,8 @@ class OkhttpLoggingInterceptor : Interceptor {
             Log.e(e)
         }
 
-        val response = chain.proceed(request)
-        val logHeader = getLogHeader(response, t1)
+        val response = chain.proceed(requestWithId)
+        val logHeader = getLogHeader(response, t1, requestId)
         val contentType = response.body.contentType()
         val content = response.body.string()
 
@@ -128,7 +136,7 @@ class OkhttpLoggingInterceptor : Interceptor {
                             JSONObject(body).toString(2).trimIndent()
                         }
             } else {
-                "-------------------------- Body (Text/Html) -------------------------\n${body}"
+                "-------------------------- Body (Text/Html) -------------------------\n$body"
             }
         }
     }
@@ -151,8 +159,9 @@ class OkhttpLoggingInterceptor : Interceptor {
     }
 
     @SuppressLint("DefaultLocale")
-    private fun getLogHeader(response: Response, time: Long) =
-        "<-- Received response for ${response.request.method} ${response.request.url}\n" +
+    private fun getLogHeader(response: Response, time: Long, requestId: String) =
+        "<-- Received response with ID: $requestId for ${response.request.method} " +
+                "${response.request.url}\n" +
                 "HTTP Code: ${response.code}\n" +
                 "Message: ${response.message}\n" +
                 "Protocol: ${response.protocol}\n" +
@@ -166,5 +175,4 @@ class OkhttpLoggingInterceptor : Interceptor {
                 }\n" +
                 "Execution time: ${(System.nanoTime() - time) / 1e6}ms\n" +
                 "${response.headers}"
-
 }
