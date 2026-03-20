@@ -182,7 +182,7 @@ class PacketLog(
      * @param title The title for the log output.
      * @param isClear If true, clears logs from memory after printing.
      */
-    fun printLogs(title: String, isClear: Boolean = true) {
+    fun printLogs(title: String, isClear: Boolean = false) {
         if (!isEnabled) {
             return
         }
@@ -198,7 +198,7 @@ class PacketLog(
      * @param title The title for the log output.
      * @param isClear If true, clears logs from memory after printing.
      */
-    fun printLogsD(title: String, isClear: Boolean = true) {
+    fun printLogsD(title: String, isClear: Boolean = false) {
         if (!isEnabled) {
             return
         }
@@ -214,7 +214,7 @@ class PacketLog(
      * @param title The title for the log output.
      * @param isClear If true, clears logs from memory after printing.
      */
-    fun printLogsE(title: String, isClear: Boolean = true) {
+    fun printLogsE(title: String, isClear: Boolean = false) {
         if (!isEnabled) {
             return
         }
@@ -230,7 +230,7 @@ class PacketLog(
      * @param title The title for the log output.
      * @param isClear If true, clears logs from memory after printing.
      */
-    fun printLogsV(title: String, isClear: Boolean = true) {
+    fun printLogsV(title: String, isClear: Boolean = false) {
         if (!isEnabled) {
             return
         }
@@ -246,7 +246,7 @@ class PacketLog(
      * @param title The title for the log output.
      * @param isClear If true, clears logs from memory after printing.
      */
-    fun printLogsW(title: String, isClear: Boolean = true) {
+    fun printLogsW(title: String, isClear: Boolean = false) {
         if (!isEnabled) {
             return
         }

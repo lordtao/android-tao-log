@@ -2,7 +2,7 @@
 setlocal
 chcp 65001 > nul
 
-set "VERSION=2.3.11"
+set "VERSION=2.3.12"
 
 echo Текущая версия для тега: %VERSION%
 set /p "confirmation=Это правильная версия? (y/n): "
