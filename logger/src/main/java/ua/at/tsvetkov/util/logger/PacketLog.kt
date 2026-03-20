@@ -73,7 +73,7 @@ class PacketLog(
         if (isClear) {
             clear()
         }
-        logI("START")
+        i("START")
     }
 
     /**
@@ -83,7 +83,7 @@ class PacketLog(
      * False by default.
      */
     fun end(isClear: Boolean = false) {
-        logI("END")
+        i("END")
         if (isClear) {
             clear()
         }
@@ -99,22 +99,22 @@ class PacketLog(
     /**
      * Logs an info message.
      */
-    fun logI(message: String) = log("INFO   ", message) { Log.i(message) }
+    fun i(message: String) = log("INFO   ", message) { Log.i(message) }
 
     /**
      * Logs a verbose message.
      */
-    fun logV(message: String) = log("VERBOSE", message) { Log.v(message) }
+    fun v(message: String) = log("VERBOSE", message) { Log.v(message) }
 
     /**
      * Logs a debug message.
      */
-    fun logD(message: String) = log("DEBUG  ", message) { Log.d(message) }
+    fun d(message: String) = log("DEBUG  ", message) { Log.d(message) }
 
     /**
      * Logs a warning message.
      */
-    fun logW(message: String) = log("WARN   ", message) { Log.w(message) }
+    fun w(message: String) = log("WARN   ", message) { Log.w(message) }
 
     /**
      * Logs a warning message and a throwable.
@@ -122,7 +122,7 @@ class PacketLog(
      * @param message The message to log.
      * @param e The throwable to log.
      */
-    fun logW(message: String, e: Throwable) {
+    fun w(message: String, e: Throwable) {
         log("WARN   ", "$message\n${e.stackTraceToString()}") { Log.w(message, e) }
     }
 
@@ -131,14 +131,14 @@ class PacketLog(
      *
      * @param e The throwable to log.
      */
-    fun logW(e: Throwable) {
+    fun w(e: Throwable) {
         log("WARN   ", "${e.message}\n${e.stackTraceToString()}") { Log.w(e.message, e) }
     }
 
     /**
      * Logs an error message.
      */
-    fun logE(message: String) = log("ERROR  ", message) { Log.e(message) }
+    fun e(message: String) = log("ERROR  ", message) { Log.e(message) }
 
     /**
      * Logs an error message and a throwable.
@@ -146,7 +146,7 @@ class PacketLog(
      * @param message The message to log.
      * @param e The throwable to log.
      */
-    fun logE(message: String, e: Throwable) {
+    fun e(message: String, e: Throwable) {
         log("ERROR  ", "$message\n${e.stackTraceToString()}") { Log.e(message, e) }
     }
 
@@ -155,7 +155,7 @@ class PacketLog(
      *
      * @param e The throwable to log.
      */
-    fun logE(e: Throwable) {
+    fun e(e: Throwable) {
         log("ERROR  ", "${e.message}\n${e.stackTraceToString()}") { Log.e(e.message, e) }
     }
 
@@ -262,12 +262,12 @@ class PacketLog(
      * This operation is thread-safe and appends to the file.
      * If writing fails, the logs are not cleared.
      *
-     * @param obj The object whose class name will be used for the log file.
+     * @param classAsFileName The object whose class name will be used for the log file with ".log" extension.
      * @param context The context needed to access the application's file directory.
-     * @param clearAfterWrite If true, clears logs from memory after writing to the file.
+     * @param clearMemoryAfterWrite If true, clears logs from memory after writing to the file.
      */
     @Synchronized
-    fun writeLogsToFile(obj: Any, context: Context, clearAfterWrite: Boolean = false) {
+    fun writeLogsToFile(classAsFileName: Any, context: Context, clearMemoryAfterWrite: Boolean = false) {
         if (!isEnabled) {
             return
         }
@@ -275,8 +275,8 @@ class PacketLog(
         if (!logDir.exists()) {
             logDir.mkdirs()
         }
-        val logFile = File(logDir, "${obj.javaClass.simpleName}.log")
-        writeLogsToFile(logFile, clearAfterWrite)
+        val logFile = File(logDir, "${classAsFileName.javaClass.simpleName}.log")
+        writeLogsToFile(logFile, clearMemoryAfterWrite)
     }
 
     /**
@@ -285,11 +285,11 @@ class PacketLog(
      * If writing fails, the logs are not cleared.
      *
      * @param absolutePathToFile Absolute path to the target file.
-     * @param clearAfterWrite If true, clears logs from memory after writing to the file.
+     * @param clearMemoryAfterWrite If true, clears logs from memory after writing to the file.
      */
     @Synchronized
-    fun writeLogsToFile(absolutePathToFile: String, clearAfterWrite: Boolean = false) {
-        writeLogsToFile(File(absolutePathToFile), clearAfterWrite)
+    fun writeLogsToFile(absolutePathToFile: String, clearMemoryAfterWrite: Boolean = false) {
+        writeLogsToFile(File(absolutePathToFile), clearMemoryAfterWrite)
     }
 
     /**
@@ -298,10 +298,10 @@ class PacketLog(
      * If writing fails, the logs are not cleared.
      *
      * @param file The destination file.
-     * @param clearAfterWrite If true, clears logs from memory after writing to the file.
+     * @param clearMemoryAfterWrite If true, clears logs from memory after writing to the file.
      */
     @Synchronized
-    fun writeLogsToFile(file: File, clearAfterWrite: Boolean = false) {
+    fun writeLogsToFile(file: File, clearMemoryAfterWrite: Boolean = false) {
         if (!isEnabled) {
             return
         }
@@ -318,11 +318,11 @@ class PacketLog(
                     writer.newLine()
                 }
             }
-            if (clearAfterWrite) {
+            if (clearMemoryAfterWrite) {
                 clear()
             }
         } catch (e: IOException) {
-            logE("Failed to write logs to file: ${file.absolutePath}", e)
+            e("Failed to write logs to file: ${file.absolutePath}", e)
         }
     }
 }

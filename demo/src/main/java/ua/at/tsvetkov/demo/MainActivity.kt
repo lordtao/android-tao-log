@@ -366,11 +366,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun runPacketLog() {
         val packet = PacketLog()
-        packet.logI("PacketLog test started")
-        packet.logD("This is a debug message")
-        packet.logW("This is a warning")
-        packet.logE("This is an error")
-        packet.logV("And a verbose message")
+        packet.i("PacketLog test started")
+        packet.d("This is a debug message")
+        packet.w("This is a warning")
+        packet.e("This is an error")
+        packet.v("And a verbose message")
         packet.printLogs("PacketLog Test")
     }
 
