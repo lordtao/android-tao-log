@@ -11,14 +11,8 @@ val libName = "taolog"
 
 val skipCommitsCount = 0
 val versionMajor = 2
-val versionMinor = 2
-val versionPatch = providers
-    .exec {
-        commandLine("git", "rev-list", "--count", "HEAD")
-    }.standardOutput.asText
-    .get()
-    .trim()
-    .toInt()
+val versionMinor = 3
+val versionPatch = 13
 
 val versionName = "${versionMajor}.${versionMinor}.${versionPatch - skipCommitsCount}"
 
