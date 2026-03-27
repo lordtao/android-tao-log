@@ -1,4 +1,4 @@
-import com.android.build.api.dsl.LibraryExtension
+﻿import com.android.build.api.dsl.LibraryExtension
 import java.util.Date
 
 plugins {
@@ -12,7 +12,7 @@ val libName = "taolog"
 val skipCommitsCount = 0
 val versionMajor = 2
 val versionMinor = 3
-val versionPatch = 13
+val versionPatch = 14
 
 val versionName = "${versionMajor}.${versionMinor}.${versionPatch - skipCommitsCount}"
 

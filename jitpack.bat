@@ -4,7 +4,7 @@ chcp 65001 > nul
 
 set "MAJOR=2"
 set "MINOR=3"
-set "PATCH=13"
+set "PATCH=14"
 set "VERSION=%MAJOR%.%MINOR%.%PATCH%"
 
 echo Текущая версия для тега: %VERSION%
@@ -19,10 +19,10 @@ set /p "user_msg=> "
 if not "%user_msg%"=="" set "commit_msg=%user_msg%"
 
 echo.
-echo Обновление версии в lib/build.gradle.kts...
+echo Обновление версии в библиотечном build.gradle.kts...
 
 rem Используем PowerShell для замены значений в файле
-powershell -Command "$path = 'lib/build.gradle.kts'; (Get-Content $path) -replace 'val versionMajor = \d+', 'val versionMajor = %MAJOR%' -replace 'val versionMinor = \d+', 'val versionMinor = %MINOR%' -replace 'val versionPatch = \d+', 'val versionPatch = %PATCH%' | Set-Content $path -Encoding UTF8"
+powershell -Command "$path = 'logger/build.gradle.kts'; (Get-Content $path) -replace 'val versionMajor = \d+', 'val versionMajor = %MAJOR%' -replace 'val versionMinor = \d+', 'val versionMinor = %MINOR%' -replace 'val versionPatch = \d+', 'val versionPatch = %PATCH%' | Set-Content $path -Encoding UTF8"
 
 echo.
 echo Фиксация изменений в git...
